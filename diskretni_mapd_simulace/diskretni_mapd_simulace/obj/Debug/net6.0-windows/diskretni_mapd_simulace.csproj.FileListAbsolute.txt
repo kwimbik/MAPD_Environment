@@ -19,3 +19,15 @@ C:\Users\kwimbik\Desktop\skolaa\LS202122\rocnikovej_projekt\rocnikova_prace_simu
 C:\Users\kwimbik\Desktop\skolaa\LS202122\rocnikovej_projekt\rocnikova_prace_simulace\diskretni_mapd_simulace\diskretni_mapd_simulace\obj\Debug\net6.0-windows\ref\diskretni_mapd_simulace.dll
 C:\Users\kwimbik\Desktop\skolaa\LS202122\rocnikovej_projekt\rocnikova_prace_simulace\diskretni_mapd_simulace\diskretni_mapd_simulace\obj\Debug\net6.0-windows\Simulation.g.cs
 C:\Users\kwimbik\Desktop\skolaa\LS202122\rocnikovej_projekt\rocnikova_prace_simulace\diskretni_mapd_simulace\diskretni_mapd_simulace\obj\Debug\net6.0-windows\Simulation.baml
+C:\Users\kwimbik\Desktop\skolaa\LS202122\rocnikovej_projekt\rocnikova_prace_simulace\diskretni_mapd_simulace\diskretni_mapd_simulace\bin\Debug\net6.0-windows\Google.OrTools.dll
+C:\Users\kwimbik\Desktop\skolaa\LS202122\rocnikovej_projekt\rocnikova_prace_simulace\diskretni_mapd_simulace\diskretni_mapd_simulace\bin\Debug\net6.0-windows\Google.Protobuf.dll
+C:\Users\kwimbik\Desktop\skolaa\LS202122\rocnikovej_projekt\rocnikova_prace_simulace\diskretni_mapd_simulace\diskretni_mapd_simulace\bin\Debug\net6.0-windows\runtimes\linux-arm64\native\google-ortools-native.so
+C:\Users\kwimbik\Desktop\skolaa\LS202122\rocnikovej_projekt\rocnikova_prace_simulace\diskretni_mapd_simulace\diskretni_mapd_simulace\bin\Debug\net6.0-windows\runtimes\linux-arm64\native\libortools.so.9
+C:\Users\kwimbik\Desktop\skolaa\LS202122\rocnikovej_projekt\rocnikova_prace_simulace\diskretni_mapd_simulace\diskretni_mapd_simulace\bin\Debug\net6.0-windows\runtimes\linux-x64\native\google-ortools-native.so
+C:\Users\kwimbik\Desktop\skolaa\LS202122\rocnikovej_projekt\rocnikova_prace_simulace\diskretni_mapd_simulace\diskretni_mapd_simulace\bin\Debug\net6.0-windows\runtimes\linux-x64\native\libortools.so.9
+C:\Users\kwimbik\Desktop\skolaa\LS202122\rocnikovej_projekt\rocnikova_prace_simulace\diskretni_mapd_simulace\diskretni_mapd_simulace\bin\Debug\net6.0-windows\runtimes\osx-arm64\native\google-ortools-native.dylib
+C:\Users\kwimbik\Desktop\skolaa\LS202122\rocnikovej_projekt\rocnikova_prace_simulace\diskretni_mapd_simulace\diskretni_mapd_simulace\bin\Debug\net6.0-windows\runtimes\osx-arm64\native\libortools.9.dylib
+C:\Users\kwimbik\Desktop\skolaa\LS202122\rocnikovej_projekt\rocnikova_prace_simulace\diskretni_mapd_simulace\diskretni_mapd_simulace\bin\Debug\net6.0-windows\runtimes\osx-x64\native\google-ortools-native.dylib
+C:\Users\kwimbik\Desktop\skolaa\LS202122\rocnikovej_projekt\rocnikova_prace_simulace\diskretni_mapd_simulace\diskretni_mapd_simulace\bin\Debug\net6.0-windows\runtimes\osx-x64\native\libortools.9.dylib
+C:\Users\kwimbik\Desktop\skolaa\LS202122\rocnikovej_projekt\rocnikova_prace_simulace\diskretni_mapd_simulace\diskretni_mapd_simulace\bin\Debug\net6.0-windows\runtimes\win-x64\native\google-ortools-native.dll
+C:\Users\kwimbik\Desktop\skolaa\LS202122\rocnikovej_projekt\rocnikova_prace_simulace\diskretni_mapd_simulace\diskretni_mapd_simulace\obj\Debug\net6.0-windows\diskretni_mapd_simulace.csproj.CopyComplete

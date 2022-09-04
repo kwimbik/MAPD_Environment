@@ -7,8 +7,100 @@
   "targets": {
     ".NETCoreApp,Version=v6.0": {
       "diskretni_mapd_simulace/1.0.0": {
+        "dependencies": {
+          "Google.OrTools": "9.4.1874"
+        },
         "runtime": {
           "diskretni_mapd_simulace.dll": {}
+        }
+      },
+      "Google.OrTools/9.4.1874": {
+        "dependencies": {
+          "Google.OrTools.runtime.linux-arm64": "9.4.1874",
+          "Google.OrTools.runtime.linux-x64": "9.4.1874",
+          "Google.OrTools.runtime.osx-arm64": "9.4.1874",
+          "Google.OrTools.runtime.osx-x64": "9.4.1874",
+          "Google.OrTools.runtime.win-x64": "9.4.1874",
+          "Google.Protobuf": "3.19.4"
+        },
+        "runtime": {
+          "lib/net6.0/Google.OrTools.dll": {
+            "assemblyVersion": "9.4.1874.0",
+            "fileVersion": "9.4.1874.0"
+          }
+        }
+      },
+      "Google.OrTools.runtime.linux-arm64/9.4.1874": {
+        "runtimeTargets": {
+          "runtimes/linux-arm64/native/google-ortools-native.so": {
+            "rid": "linux-arm64",
+            "assetType": "native",
+            "fileVersion": "0.0.0.0"
+          },
+          "runtimes/linux-arm64/native/libortools.so.9": {
+            "rid": "linux-arm64",
+            "assetType": "native",
+            "fileVersion": "0.0.0.0"
+          }
+        }
+      },
+      "Google.OrTools.runtime.linux-x64/9.4.1874": {
+        "runtimeTargets": {
+          "runtimes/linux-x64/native/google-ortools-native.so": {
+            "rid": "linux-x64",
+            "assetType": "native",
+            "fileVersion": "0.0.0.0"
+          },
+          "runtimes/linux-x64/native/libortools.so.9": {
+            "rid": "linux-x64",
+            "assetType": "native",
+            "fileVersion": "0.0.0.0"
+          }
+        }
+      },
+      "Google.OrTools.runtime.osx-arm64/9.4.1874": {
+        "runtimeTargets": {
+          "runtimes/osx-arm64/native/google-ortools-native.dylib": {
+            "rid": "osx-arm64",
+            "assetType": "native",
+            "fileVersion": "0.0.0.0"
+          },
+          "runtimes/osx-arm64/native/libortools.9.dylib": {
+            "rid": "osx-arm64",
+            "assetType": "native",
+            "fileVersion": "0.0.0.0"
+          }
+        }
+      },
+      "Google.OrTools.runtime.osx-x64/9.4.1874": {
+        "runtimeTargets": {
+          "runtimes/osx-x64/native/google-ortools-native.dylib": {
+            "rid": "osx-x64",
+            "assetType": "native",
+            "fileVersion": "0.0.0.0"
+          },
+          "runtimes/osx-x64/native/libortools.9.dylib": {
+            "rid": "osx-x64",
+            "assetType": "native",
+            "fileVersion": "0.0.0.0"
+          }
+        }
+      },
+      "Google.OrTools.runtime.win-x64/9.4.1874": {
+        "runtimeTargets": {
+          "runtimes/win-x64/native/google-ortools-native.dll": {
+            "rid": "win-x64",
+            "assetType": "native",
+            "fileVersion": "0.0.0.0"
+          }
+        }
+      },
+      "Google.Protobuf/3.19.4": {
+        "runtime": {
+          "lib/net5.0/Google.Protobuf.dll": {
+            "assemblyVersion": "3.19.4.0",
+            "fileVersion": "3.19.4.0"
+          }
         }
       }
     }
@@ -18,6 +110,55 @@
       "type": "project",
       "serviceable": false,
       "sha512": ""
+    },
+    "Google.OrTools/9.4.1874": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-jqRoI+pYlym+fhoU25u+13oti5h+772bllQ9zDitTVMclDXVTiG6pxzvmYO74wnADBMdpb2SQlgiNQxoNk5dlA==",
+      "path": "google.ortools/9.4.1874",
+      "hashPath": "google.ortools.9.4.1874.nupkg.sha512"
+    },
+    "Google.OrTools.runtime.linux-arm64/9.4.1874": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-Z46ndZcZa2Lt5b76xU9kxVYbPLg/LfuMufhUVsu3Qo3L7Bibf7WXd9j7RRldjnuv8RIHWTqb0b+2FwwMxs0c5A==",
+      "path": "google.ortools.runtime.linux-arm64/9.4.1874",
+      "hashPath": "google.ortools.runtime.linux-arm64.9.4.1874.nupkg.sha512"
+    },
+    "Google.OrTools.runtime.linux-x64/9.4.1874": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-zGeDb8FuvP9HXjrsU7krVXtSDFpR+DUGNEsH51k94jL9tzf2vWYI8+WUBRHZ/cGe50dpLr+vIjfcNo3gFyOpkQ==",
+      "path": "google.ortools.runtime.linux-x64/9.4.1874",
+      "hashPath": "google.ortools.runtime.linux-x64.9.4.1874.nupkg.sha512"
+    },
+    "Google.OrTools.runtime.osx-arm64/9.4.1874": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-Wo0ZfDaH6DhiQw0jZm4HWJm/oPGPpWNwOLUz+EYaoH3MLtocSxItHGQj/Ta3HyhXnYNOv+TliAH8L+8RCXu/2w==",
+      "path": "google.ortools.runtime.osx-arm64/9.4.1874",
+      "hashPath": "google.ortools.runtime.osx-arm64.9.4.1874.nupkg.sha512"
+    },
+    "Google.OrTools.runtime.osx-x64/9.4.1874": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-IAfGgKR1og6vU87axK1d37Ak/4jy8B4NMoElovG/KZc/2UY+cJEAQDA709UMegtI4lBhuxTWFNUiHQYmRIB9yQ==",
+      "path": "google.ortools.runtime.osx-x64/9.4.1874",
+      "hashPath": "google.ortools.runtime.osx-x64.9.4.1874.nupkg.sha512"
+    },
+    "Google.OrTools.runtime.win-x64/9.4.1874": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-fUs5qDnZA6itygolcX6nPuachQkY9CVvQbakIzIiRAWKcaj8umQAbFdGwbkyzp3qp34BKW5mtPVsmMyfQBBjOQ==",
+      "path": "google.ortools.runtime.win-x64/9.4.1874",
+      "hashPath": "google.ortools.runtime.win-x64.9.4.1874.nupkg.sha512"
+    },
+    "Google.Protobuf/3.19.4": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-fd07/ykL4O4FhqrZIELm5lmiyOHfdPg9+o+hWr6tcfRdS7tHXnImg/2wtogLzlW2eEmr0J7j6ZrZvaWOLiJbxQ==",
+      "path": "google.protobuf/3.19.4",
+      "hashPath": "google.protobuf.3.19.4.nupkg.sha512"
     }
   }
 }
