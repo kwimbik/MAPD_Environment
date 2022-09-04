@@ -16,7 +16,7 @@ namespace diskretni_mapd_simulace
         public int VehicleNumber = 1; //default value
 
         //depot values must be different from any pickup or delivery location of an order
-        public int[] Depot; //default value of depot will be all zeros
+        public int Depot = 1; //default value of depot will be all zeros
 
 
         public void getTimeMatrix()

@@ -1,8 +1,16 @@
 {
   "version": 2,
-  "dgSpecHash": "XKBJ6DCZuOaqILoshAVWB1TFCkQiIrPXj4v+TUMGaQe8zQKUEtWq5E+LZEG6j4JFw60L13uQsVQ4CBrW87tCMQ==",
+  "dgSpecHash": "luCqOww0XmWL9Ik07JK6muJlIh235JF3v8xs0R2IPIFWy08zHXM681lrhIjsThoJn1+WeVWXUh+st/wMzrPSkQ==",
   "success": true,
   "projectFilePath": "C:\\Users\\kwimbik\\Desktop\\skolaa\\LS202122\\rocnikovej_projekt\\rocnikova_prace_simulace\\diskretni_mapd_simulace\\diskretni_mapd_simulace\\diskretni_mapd_simulace.csproj",
-  "expectedPackageFiles": [],
+  "expectedPackageFiles": [
+    "C:\\Users\\kwimbik\\.nuget\\packages\\google.ortools\\9.4.1874\\google.ortools.9.4.1874.nupkg.sha512",
+    "C:\\Users\\kwimbik\\.nuget\\packages\\google.ortools.runtime.linux-arm64\\9.4.1874\\google.ortools.runtime.linux-arm64.9.4.1874.nupkg.sha512",
+    "C:\\Users\\kwimbik\\.nuget\\packages\\google.ortools.runtime.linux-x64\\9.4.1874\\google.ortools.runtime.linux-x64.9.4.1874.nupkg.sha512",
+    "C:\\Users\\kwimbik\\.nuget\\packages\\google.ortools.runtime.osx-arm64\\9.4.1874\\google.ortools.runtime.osx-arm64.9.4.1874.nupkg.sha512",
+    "C:\\Users\\kwimbik\\.nuget\\packages\\google.ortools.runtime.osx-x64\\9.4.1874\\google.ortools.runtime.osx-x64.9.4.1874.nupkg.sha512",
+    "C:\\Users\\kwimbik\\.nuget\\packages\\google.ortools.runtime.win-x64\\9.4.1874\\google.ortools.runtime.win-x64.9.4.1874.nupkg.sha512",
+    "C:\\Users\\kwimbik\\.nuget\\packages\\google.protobuf\\3.19.4\\google.protobuf.3.19.4.nupkg.sha512"
+  ],
   "logs": []
 }
