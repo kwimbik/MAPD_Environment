@@ -1,12 +1,17 @@
-﻿<Window x:Class="diskretni_mapd_simulace.MainWindow"
+﻿<Window x:Class="diskretni_mapd_simulace.Simulation"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:diskretni_mapd_simulace"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid>
-
-    </Grid>
+        Title="Simulation" Height="450" Width="800">
+	<Grid x:Name="Simulation_grid" Margin="0,0,0,0">
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="1*" />
+			<ColumnDefinition Width="2*" />
+			<ColumnDefinition Width="1*" />
+		</Grid.ColumnDefinitions>
+	</Grid>
+	
 </Window>
