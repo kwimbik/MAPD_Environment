@@ -6,9 +6,7 @@ using System.Threading.Tasks;
 
 namespace diskretni_mapd_simulace
 {
-    public class Location
+    internal class Solver
     {
-        public int id;
-        public int[] coordination = new int[2];
     }
 }

@@ -8,9 +8,10 @@ namespace diskretni_mapd_simulace
 {
     internal class Database
     {
-        List<Location> locations;
-        List<Vehicle> vehicles;
-        List<Order> orders;
-        int[] gridSize = new int[2]; // najit neco na praci se souradnicema
+        public List<Location> locations = new List<Location>();
+        public List<Vehicle> vehicles = new List<Vehicle>();
+        public List<Order> orders = new List<Order>();
+        public int[] gridSize = new int[2]; // najit neco na praci se souradnicema
+
     }
 }

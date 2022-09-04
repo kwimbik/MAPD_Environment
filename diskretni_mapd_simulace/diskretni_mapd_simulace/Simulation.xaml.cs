@@ -19,11 +19,14 @@ namespace diskretni_mapd_simulace
     /// </summary>
     public partial class Simulation : Window
     {
+        Database db = new Database();
+
         public Simulation()
         {
             //grid 3 sloupce, simulace uprostred, data v levo, updaty (jaky vuz dokoncil jakou objednavku vlevo)
             InitializeComponent();
             generateGrid();
+            Console.WriteLine(db.locations.Count);
         }
 
         public void generateGrid()
@@ -31,6 +34,7 @@ namespace diskretni_mapd_simulace
             int gridWidth = 10;
             int gridHeihght = 10;
             int blankSpace = 40;
+            int locationCounter = 0;
 
             int rectHeight = 20;
             int rectangleWidth = 20;
@@ -39,6 +43,7 @@ namespace diskretni_mapd_simulace
             {
                 for (int j = 0; j < gridHeihght; j++)
                 {
+                    
                     Rectangle a = new Rectangle
                     {
                         Height = rectHeight,
@@ -52,11 +57,16 @@ namespace diskretni_mapd_simulace
                     };
                     Simulation_grid.Children.Add(a);
                     Grid.SetColumn(a, 1);
+                    createLocation(locationCounter++, new int[] { i* blankSpace +blankSpace, j* blankSpace +blankSpace});
                 }
             }
         }
 
-
+        public void createLocation(int locid, int[] loccoordinates)
+        {
+            Location location = new Location { id = locid, coordination = loccoordinates  };
+            db.locations.Add(location);
+        }
     }
 }
 
