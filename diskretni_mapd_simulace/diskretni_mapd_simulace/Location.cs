@@ -10,6 +10,8 @@ namespace diskretni_mapd_simulace
     {
         public int id;
         public int[] coordination = new int[2];
+        public List<Order> orders = new List<Order>();
+        public List<Vehicle> vehicles = new List<Vehicle>();
 
         public static int getDistance(Location loc1, Location loc2)
         {

@@ -31,3 +31,9 @@ C:\Users\kwimbik\Desktop\skolaa\LS202122\rocnikovej_projekt\rocnikova_prace_simu
 C:\Users\kwimbik\Desktop\skolaa\LS202122\rocnikovej_projekt\rocnikova_prace_simulace\diskretni_mapd_simulace\diskretni_mapd_simulace\bin\Debug\net6.0-windows\runtimes\osx-x64\native\libortools.9.dylib
 C:\Users\kwimbik\Desktop\skolaa\LS202122\rocnikovej_projekt\rocnikova_prace_simulace\diskretni_mapd_simulace\diskretni_mapd_simulace\bin\Debug\net6.0-windows\runtimes\win-x64\native\google-ortools-native.dll
 C:\Users\kwimbik\Desktop\skolaa\LS202122\rocnikovej_projekt\rocnikova_prace_simulace\diskretni_mapd_simulace\diskretni_mapd_simulace\obj\Debug\net6.0-windows\diskretni_mapd_simulace.csproj.CopyComplete
+C:\Users\kwimbik\Desktop\skolaa\LS202122\rocnikovej_projekt\rocnikova_prace_simulace\diskretni_mapd_simulace\diskretni_mapd_simulace\obj\Debug\net6.0-windows\LocationOptionWindow.g.cs
+C:\Users\kwimbik\Desktop\skolaa\LS202122\rocnikovej_projekt\rocnikova_prace_simulace\diskretni_mapd_simulace\diskretni_mapd_simulace\obj\Debug\net6.0-windows\LocationOptionWindow.baml
+C:\Users\kwimbik\Desktop\skolaa\LS202122\rocnikovej_projekt\rocnikova_prace_simulace\diskretni_mapd_simulace\diskretni_mapd_simulace\obj\Debug\net6.0-windows\NewOrderWindow.g.cs
+C:\Users\kwimbik\Desktop\skolaa\LS202122\rocnikovej_projekt\rocnikova_prace_simulace\diskretni_mapd_simulace\diskretni_mapd_simulace\obj\Debug\net6.0-windows\NewVehicleWindow.g.cs
+C:\Users\kwimbik\Desktop\skolaa\LS202122\rocnikovej_projekt\rocnikova_prace_simulace\diskretni_mapd_simulace\diskretni_mapd_simulace\obj\Debug\net6.0-windows\NewOrderWindow.baml
+C:\Users\kwimbik\Desktop\skolaa\LS202122\rocnikovej_projekt\rocnikova_prace_simulace\diskretni_mapd_simulace\diskretni_mapd_simulace\obj\Debug\net6.0-windows\NewVehicleWindow.baml

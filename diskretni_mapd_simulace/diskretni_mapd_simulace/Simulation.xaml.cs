@@ -22,6 +22,9 @@ namespace diskretni_mapd_simulace
         Database db = new Database();
         Routing_solverManager rsm = new Routing_solverManager();
         Routing_solver rs;
+        List<Button> location_buttons = new List<Button>();
+        Dictionary<Button, Location> butt_loc_dict = new Dictionary<Button, Location>();
+
 
         public Simulation()
         {
@@ -46,29 +49,35 @@ namespace diskretni_mapd_simulace
                 for (int j = 0; j < gridHeihght; j++)
                 {
                     
-                    Rectangle a = new Rectangle
-                    {
+                    Button button = new Button
+                    { 
                         Height = rectHeight,
                         Width = rectangleWidth,
                         Margin = new Thickness(i * blankSpace + blankSpace, j * blankSpace + blankSpace, 0, 0),
                         IsEnabled = true,
-                        Fill = Brushes.Red,
+                        Background = Brushes.Black,
                         VerticalAlignment = VerticalAlignment.Top,
                         HorizontalAlignment = HorizontalAlignment.Left,
-
+                        Content = ' ',
                     };
-                    Simulation_grid.Children.Add(a);
-                    Grid.SetColumn(a, 1);
-                    createLocation(locationCounter++, new int[] { i* blankSpace +blankSpace, j* blankSpace +blankSpace});
+                    Simulation_grid.Children.Add(button);
+                    Grid.SetColumn(button, 1);
+                    Location location = new Location { id = locationCounter++, coordination = new int[] { i * blankSpace + blankSpace, j * blankSpace + blankSpace } };
+                    db.locations.Add(location);
+                    location_buttons.Add(button);
+                    butt_loc_dict.Add(button, location);
+
+                    button.Click += (sender, e) =>
+                    {
+                        //TODO: proc locationOpetionWindow with button to add vehicle or Order
+                        // fill with function to proc correct window
+                        LocationOptionWindow locoptwindow = new LocationOptionWindow(butt_loc_dict[button], db);
+                        locoptwindow.Show();
+                    };
                 }
             }
         }
-
-        public void createLocation(int locid, int[] loccoordinates)
-        {
-            Location location = new Location { id = locid, coordination = loccoordinates  };
-            db.locations.Add(location);
-        }
+       
 
         private void solve_btn_Click(object sender, RoutedEventArgs e)
         {

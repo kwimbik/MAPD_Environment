@@ -8,10 +8,10 @@ namespace diskretni_mapd_simulace
 {
     public class Vehicle
     {
-        int id;
-        Location baseLocation;
-        Location targetLocation;
-        Order order;
+        public int id;
+        public Location baseLocation;
+        public Location targetLocation;
+        public Order order;
 
         public void display()
         {

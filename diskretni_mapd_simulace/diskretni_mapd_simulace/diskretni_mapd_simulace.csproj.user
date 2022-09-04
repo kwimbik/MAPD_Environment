@@ -2,11 +2,29 @@
 <Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup />
   <ItemGroup>
+    <Compile Update="LocationOptionWindow.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="NewOrderWindow.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="NewVehicleWindow.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="Simulation.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Page Update="LocationOptionWindow.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="NewOrderWindow.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="NewVehicleWindow.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="Simulation.xaml">
       <SubType>Designer</SubType>
     </Page>

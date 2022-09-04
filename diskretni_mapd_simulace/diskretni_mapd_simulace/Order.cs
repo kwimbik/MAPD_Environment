@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace diskretni_mapd_simulace
 {
-    internal class Order
+    public class Order
     {
         public int Id { get; set; }
         Location currLocation;
