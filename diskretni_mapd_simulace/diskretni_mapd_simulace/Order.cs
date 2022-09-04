@@ -8,5 +8,11 @@ namespace diskretni_mapd_simulace
 {
     internal class Order
     {
+        public int Id { get; set; }
+
+        public void display()
+        {
+
+        }
     }
 }
