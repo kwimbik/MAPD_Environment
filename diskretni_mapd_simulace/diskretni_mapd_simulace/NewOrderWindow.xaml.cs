@@ -20,8 +20,10 @@ namespace diskretni_mapd_simulace
     public partial class NewOrderWindow : Window
     {
         Database database;
+        Location location;
         public NewOrderWindow(Location location, Database db)
         {
+            this.location = location;
             database = db;
             InitializeComponent();
             createControls();
@@ -69,7 +71,14 @@ namespace diskretni_mapd_simulace
 
             bt.Click += (sender, e) =>
             {
-                //TODO: fill this to process new order
+                Order order = new Order
+                {
+                    Id = tb.Text,
+                    currLocation = location,
+                };
+                database.orders.Add(order);
+                location.orders.Add(order);
+                this.Close();
             };
         }
     }

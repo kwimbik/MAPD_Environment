@@ -56,7 +56,15 @@ namespace diskretni_mapd_simulace
 
             bt.Click += (sender, e) =>
             {
-                //TODO: fill this to process new vehicle
+                Vehicle vehicle = new Vehicle
+                {
+                    Id = tb.Text,
+                    baseLocation = location,
+                    targetLocation = location,
+                };
+                database.vehicles.Add(vehicle);
+                location.vehicles.Add(vehicle);
+                this.Close();
             };
         }
     }

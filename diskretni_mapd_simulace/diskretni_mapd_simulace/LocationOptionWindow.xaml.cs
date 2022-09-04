@@ -45,7 +45,7 @@ namespace diskretni_mapd_simulace
             {
                 foreach (Vehicle vehicle in location.vehicles)
                 {
-                    tbText += $"vehicle {vehicle.id} \n";
+                    tbText += $"vehicle {vehicle.Id} \n";
                 }
             }
             else tbText = "No vehicles";
@@ -58,7 +58,7 @@ namespace diskretni_mapd_simulace
                 VerticalAlignment = VerticalAlignment.Top,
                 Height = 50,
                 Width = 150,
-                FontSize = 25,
+                FontSize = 10,
             };
             loc_option_grid.Children.Add(tb);
 
@@ -79,7 +79,8 @@ namespace diskretni_mapd_simulace
 
             button.Click += (sender, e) =>
             {
-
+                NewVehicleWindow newVehicleWindow = new NewVehicleWindow(location, database);
+                newVehicleWindow.Show();
             };
         }
 
@@ -103,7 +104,7 @@ namespace diskretni_mapd_simulace
                 VerticalAlignment = VerticalAlignment.Top,
                 Height = 50,
                 Width = 150,
-                FontSize = 25,
+                FontSize = 10,
             };
             loc_option_grid.Children.Add(tb);
 
