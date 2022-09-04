@@ -20,13 +20,15 @@ namespace diskretni_mapd_simulace
     public partial class Simulation : Window
     {
         Database db = new Database();
+        Routing_solverManager rsm = new Routing_solverManager();
+        Routing_solver rs;
 
         public Simulation()
         {
             //grid 3 sloupce, simulace uprostred, data v levo, updaty (jaky vuz dokoncil jakou objednavku vlevo)
             InitializeComponent();
             generateGrid();
-            Console.WriteLine(db.locations.Count);
+            rs = new Routing_solver(rsm);
         }
 
         public void generateGrid()
@@ -66,6 +68,12 @@ namespace diskretni_mapd_simulace
         {
             Location location = new Location { id = locid, coordination = loccoordinates  };
             db.locations.Add(location);
+        }
+
+        private void solve_btn_Click(object sender, RoutedEventArgs e)
+        {
+            rsm.getSolutionData();
+            rs.solveProblemAndPrintResults();
         }
     }
 }

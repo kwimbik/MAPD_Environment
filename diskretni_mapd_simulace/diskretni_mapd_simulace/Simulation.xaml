@@ -12,6 +12,7 @@
 			<ColumnDefinition Width="2*" />
 			<ColumnDefinition Width="1*" />
 		</Grid.ColumnDefinitions>
+		<Button x:Name="solve_btn" Grid.Column="2" Content="Solve" HorizontalAlignment="Left" Margin="58,66,0,0" VerticalAlignment="Top" Height="75" Width="90"/>
 	</Grid>
-	
+
 </Window>

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace diskretni_mapd_simulace
 {
-    internal class SolverManager
+    internal class Routing_solverManager
     {
         public long[][] TimeMatrix;
         public int[][] PickupsDeliveries;
@@ -17,6 +17,16 @@ namespace diskretni_mapd_simulace
 
         //depot values must be different from any pickup or delivery location of an order
         public int Depot = 1; //default value of depot will be all zeros
+
+        public void getSolutionData()
+        {
+            getTimeMatrix();
+            getPickupsAndDeliveries();
+            getTimeWindows();
+            getDemands();
+            getVehicleNumber();
+            getDepot();
+        }
 
 
         public void getTimeMatrix()

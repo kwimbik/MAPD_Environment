@@ -13,7 +13,6 @@ namespace diskretni_mapd_simulace
         Location targetLocation;
         Order order;
 
-
         public void display()
         {
 

@@ -10,5 +10,10 @@ namespace diskretni_mapd_simulace
     {
         public int id;
         public int[] coordination = new int[2];
+
+        public static int getDistance(Location loc1, Location loc2)
+        {
+            return 1; //calculate distance
+        }
     }
 }

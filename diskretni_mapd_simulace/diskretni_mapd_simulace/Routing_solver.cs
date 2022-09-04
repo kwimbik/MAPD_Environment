@@ -10,13 +10,13 @@ namespace diskretni_mapd_simulace
 {
     internal class Routing_solver
     {
-        SolverManager svm;
-        public Routing_solver(SolverManager sm)
+        Routing_solverManager svm;
+        public Routing_solver(Routing_solverManager sm)
         {
             svm = sm;
         }
 
-        public void solveProblemAndPrintResults(int solutionPrintTarget, int solverType)
+        public void solveProblemAndPrintResults()
         {
             // Create Routing Index Manager
             RoutingIndexManager manager = new RoutingIndexManager(
@@ -114,6 +114,7 @@ namespace diskretni_mapd_simulace
             // Solve the problem.
             solver.MakeSolutionsLimit(1);
             Assignment solution = routing.SolveWithParameters(searchParameters);
+
             }
         }
 }
