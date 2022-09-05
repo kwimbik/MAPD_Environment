@@ -52,6 +52,7 @@ namespace diskretni_mapd_simulace
             RoutingIndexManager manager = new RoutingIndexManager(
                 svm.TimeMatrix.GetLength(0),
                 svm.VehicleNumber,
+                svm.Depot,
                 svm.Depot);
 
             // Create Routing Model.

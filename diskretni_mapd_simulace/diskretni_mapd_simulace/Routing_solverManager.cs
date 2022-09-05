@@ -8,6 +8,15 @@ namespace diskretni_mapd_simulace
 {
     internal class Routing_solverManager
     {
+        Database db;
+
+        public Routing_solverManager(Database db)
+        {
+            this.db = db;
+        }
+
+        public Dictionary<Location, int> locationToIndexMap = new Dictionary<Location, int>();
+        int locationToIndexCounter = 0;
         public long[][] TimeMatrix = new long[][] {
             new long []{ 0, 0, 0,  0, 0, 0, 4},
             new long []{ 0, 0, 8,  3, 2, 1, 4},
@@ -36,28 +45,42 @@ namespace diskretni_mapd_simulace
         public int VehicleNumber = 3; //default value
 
         //depot values must be different from any pickup or delivery location of an order
-        public int Depot = 0; //default value of depot will be all zeros
+        public int[] Depot = { 0, 0 ,0}; //default value of depot will be all zeros
 
         public void getSolutionData()
         {
+            locationToIndexCounter = 0;
             getTimeMatrix();
             getPickupsAndDeliveries();
+            getVehicleNumber();
             getTimeWindows();
             getDemands();
-            getVehicleNumber();
             getDepot();
         }
 
-
+        //TODO: nechci okno za vsechny lokace, jen ty uzitecne
         public void getTimeMatrix()
         {
-            return;
+            long[][] tw = new long[db.locations.Count][];
+            for (int i = 0; i < db.locations.Count; i++)
+            {
+                tw[i] = new long[] { 0, 30 };
+            }
+            this.TimeWindows = tw;
         }
 
 
         public void getPickupsAndDeliveries()
         {
-            return;
+            int[][] pickupsAndDeliveries = new int[db.orders.Count][];
+            for (int i = 0; i < db.orders.Count; i++)
+            {
+                Order order = db.orders[i];
+                locationToIndexMap.Add(order.currLocation, locationToIndexCounter++);
+                locationToIndexMap.Add(order.targetLocation, locationToIndexCounter++);
+                pickupsAndDeliveries[i] = new int[] { locationToIndexMap[order.currLocation], locationToIndexMap[order.targetLocation]};
+            }
+            this.PickupsDeliveries = pickupsAndDeliveries;
         }
 
         public void getTimeWindows()
@@ -70,13 +93,32 @@ namespace diskretni_mapd_simulace
             return;
         }
 
+        public void getCapacities()
+        {
+            VehicleCapacities = new long[db.vehicles.Count];
+            for (int i = 0; i < db.vehicles.Count; i++)
+            {
+                VehicleCapacities[i] = 1;
+            }
+        }
+
         public void getVehicleNumber()
         {
-            return;
+            VehicleNumber =  db.vehicles.Count;
+            for (int i = 0; i < db.vehicles.Count; i++)
+            {
+                locationToIndexMap.Add(db.vehicles[i].baseLocation, locationToIndexCounter++);
+            }
+            
         }
         public void getDepot()
         {
-            return;
+            int[] depot = new int[db.vehicles.Count];
+            for (int i = 0; i < depot.Length; i++)
+            {
+                depot[i] = locationToIndexMap[db.vehicles[i].baseLocation];
+            }
+            this.Depot = depot;
         }
     }
 

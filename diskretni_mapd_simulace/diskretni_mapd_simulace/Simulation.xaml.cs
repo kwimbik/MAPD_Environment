@@ -20,7 +20,7 @@ namespace diskretni_mapd_simulace
     public partial class Simulation : Window
     {
         Database db = new Database();
-        Routing_solverManager rsm = new Routing_solverManager();
+        Routing_solverManager rsm;
         Routing_solver rs;
         List<Button> location_buttons = new List<Button>();
         Dictionary<Button, Location> butt_loc_dict = new Dictionary<Button, Location>();
@@ -28,6 +28,7 @@ namespace diskretni_mapd_simulace
 
         public Simulation()
         {
+            rsm = new Routing_solverManager(db);
             //grid 3 sloupce, simulace uprostred, data v levo, updaty (jaky vuz dokoncil jakou objednavku vlevo)
             InitializeComponent();
             generateGrid();

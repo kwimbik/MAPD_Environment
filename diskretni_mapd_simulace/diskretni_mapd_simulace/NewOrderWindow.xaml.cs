@@ -53,7 +53,7 @@ namespace diskretni_mapd_simulace
             };
             foreach (Location loc in database.locations)
             {
-                cb.Items.Add($"Location: {loc.id}");
+                cb.Items.Add($"{loc.id}");
             }
             newOrder_grid.Children.Add(cb);
 
@@ -75,6 +75,7 @@ namespace diskretni_mapd_simulace
                 {
                     Id = tb.Text,
                     currLocation = location,
+                    targetLocation = database.getLocationByID(int.Parse(cb.Text)),
                 };
                 database.orders.Add(order);
                 location.orders.Add(order);

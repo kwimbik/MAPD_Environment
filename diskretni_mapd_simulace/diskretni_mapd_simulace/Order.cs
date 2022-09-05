@@ -10,6 +10,7 @@ namespace diskretni_mapd_simulace
     {
         public string Id { get; set; }
         public Location currLocation;
+        public Location targetLocation;
 
         public void display()
         {
