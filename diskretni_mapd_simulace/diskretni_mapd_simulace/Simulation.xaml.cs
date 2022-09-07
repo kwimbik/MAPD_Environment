@@ -63,7 +63,7 @@ namespace diskretni_mapd_simulace
                     };
                     Simulation_grid.Children.Add(button);
                     Grid.SetColumn(button, 1);
-                    Location location = new Location { id = locationCounter++, coordination = new int[] { i * blankSpace + blankSpace, j * blankSpace + blankSpace } };
+                    Location location = new Location { id = locationCounter++, coordination = new int[] { i, j } };
                     db.locations.Add(location);
                     location_buttons.Add(button);
                     butt_loc_dict.Add(button, location);

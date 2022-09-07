@@ -16,7 +16,13 @@ namespace diskretni_mapd_simulace
         }
 
         public Dictionary<Location, int> locationToIndexMap = new Dictionary<Location, int>();
+        public Dictionary<int, Location> indexToLocationMap = new Dictionary<int, Location>();
+
+
+
+
         int locationToIndexCounter = 0;
+
         public long[][] TimeMatrix = new long[][] {
             new long []{ 0, 0, 0,  0, 0, 0, 4},
             new long []{ 0, 0, 8,  3, 2, 1, 4},
@@ -50,67 +56,102 @@ namespace diskretni_mapd_simulace
         public void getSolutionData()
         {
             locationToIndexCounter = 0;
-            getTimeMatrix();
             getPickupsAndDeliveries();
             getVehicleNumber();
-            getTimeWindows();
             getDemands();
+            getCapacities();
             getDepot();
+            getTimeWindows();
+            getTimeMatrix();
         }
 
-        //TODO: nechci okno za vsechny lokace, jen ty uzitecne
+        //TODO: vrati vzdalenosti v jednotkach
         public void getTimeMatrix()
         {
-            long[][] tw = new long[db.locations.Count][];
-            for (int i = 0; i < db.locations.Count; i++)
+            int numOfLocation = locationToIndexMap.Count;
+            long[][] timeMatrix = new long[numOfLocation][];
+            for (int i = 0; i < numOfLocation; i++)
             {
-                tw[i] = new long[] { 0, 30 };
+                timeMatrix[i] = new long[numOfLocation];
+                for (int j = 0; j < numOfLocation; j++)
+                {
+                    timeMatrix[i][j] = Location.getDistance(indexToLocationMap[i], indexToLocationMap[j]);
+                }
             }
-            this.TimeWindows = tw;
+            this.TimeMatrix = timeMatrix;
         }
 
-
+        //get pickup and delivery pairs, assign each start and target location unique index for this problem
         public void getPickupsAndDeliveries()
         {
             int[][] pickupsAndDeliveries = new int[db.orders.Count][];
             for (int i = 0; i < db.orders.Count; i++)
             {
                 Order order = db.orders[i];
+                //adds map for location and indexes for current problem
+                indexToLocationMap.Add(locationToIndexCounter, order.currLocation);
                 locationToIndexMap.Add(order.currLocation, locationToIndexCounter++);
+                indexToLocationMap.Add(locationToIndexCounter, order.targetLocation);
                 locationToIndexMap.Add(order.targetLocation, locationToIndexCounter++);
+
                 pickupsAndDeliveries[i] = new int[] { locationToIndexMap[order.currLocation], locationToIndexMap[order.targetLocation]};
             }
             this.PickupsDeliveries = pickupsAndDeliveries;
         }
 
+        //gets time windows for orders to be delivered in
         public void getTimeWindows()
         {
-            return;
+            long[][] tw = new long[db.orders.Count][];
+            for (int i = 0; i < db.orders.Count; i++)
+            {
+                tw[i] = new long[] { 0, 30 };
+            }
+            this.TimeWindows = tw;
         }
 
+        //gets size of orders, base = 1, on target locations -1, on depots 0
         public void getDemands()
         {
-            return;
-        }
+            long[] demands = new long[locationToIndexMap.Count];
+            for (int i = 0; i < db.orders.Count; i++)
+            {
+                demands[locationToIndexMap[db.orders[i].currLocation]] = 1;
+                demands[locationToIndexMap[db.orders[i].targetLocation]] = -1;
+            }
 
-        public void getCapacities()
-        {
-            VehicleCapacities = new long[db.vehicles.Count];
             for (int i = 0; i < db.vehicles.Count; i++)
             {
-                VehicleCapacities[i] = 1;
+                demands[locationToIndexMap[db.vehicles[i].baseLocation]] = 0;
             }
+            this.Demands = demands;
         }
 
+        //gets capacities of vehicle, base = 1
+        public void getCapacities()
+        {
+            long[] vehicleCapacities = new long[db.vehicles.Count];
+            for (int i = 0; i < db.vehicles.Count; i++)
+            {
+                vehicleCapacities[i] = 1;
+            }
+            this.VehicleCapacities = vehicleCapacities;
+        }
+
+
+        //get number of vehicle and assign each location of vehicle unique index for this problem
         public void getVehicleNumber()
         {
             VehicleNumber =  db.vehicles.Count;
             for (int i = 0; i < db.vehicles.Count; i++)
             {
+                indexToLocationMap.Add(locationToIndexCounter, db.vehicles[i].baseLocation);
                 locationToIndexMap.Add(db.vehicles[i].baseLocation, locationToIndexCounter++);
             }
-            
+
         }
+
+        //Gets starting position for all vehicles base on index of location for current problem
         public void getDepot()
         {
             int[] depot = new int[db.vehicles.Count];

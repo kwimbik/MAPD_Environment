@@ -15,7 +15,7 @@ namespace diskretni_mapd_simulace
 
         public static int getDistance(Location loc1, Location loc2)
         {
-            return 1; //calculate distance
+            return Math.Abs((loc1.coordination[0] - loc2.coordination[0]) + (loc1.coordination[1] - loc2.coordination[1]));
         }
     }
 }
