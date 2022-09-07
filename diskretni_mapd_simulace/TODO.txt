@@ -1,0 +1,3 @@
+Osetrit zadavani lokaci, tj je mozne vic objednavek v jedne lokaci
+Result solver - komponenta, ktera na zaklade vysledku je schopna priradit agentum a objednavkam jejich pristi lokaci
+Osetrit korekti zadavani, tj objednavka nemuze mit jako target lokaci svou vlastni
