@@ -17,35 +17,34 @@ namespace diskretni_mapd_simulace
             svm = sm;
         }
 
-        static void PrintSolution(in Routing_solverManager svm, in RoutingModel routing, in RoutingIndexManager manager,
-                              in Assignment solution)
+        static void PrintSolution(in RoutingSolverResults rsr)
         {
-            Console.WriteLine($"Objective {solution.ObjectiveValue()}:");
+            Console.WriteLine($"Objective {rsr.solution.ObjectiveValue()}:");
 
             // Inspect solution.
-            RoutingDimension timeDimension = routing.GetMutableDimension("Time");
+            RoutingDimension timeDimension = rsr.routingModel.GetMutableDimension("Time");
             long totalTime = 0;
-            for (int i = 0; i < svm.VehicleNumber; ++i)
+            for (int i = 0; i < rsr.routingSolverManager.VehicleNumber; ++i)
             {
                 Console.WriteLine("Route for Vehicle {0}:", i);
-                var index = routing.Start(i);
-                while (routing.IsEnd(index) == false)
+                var index = rsr.routingModel.Start(i);
+                while (rsr.routingModel.IsEnd(index) == false)
                 {
                     var timeVar = timeDimension.CumulVar(index);
-                    Console.Write("{0} Time({1},{2}) -> ", manager.IndexToNode(index), solution.Min(timeVar),
-                                  solution.Max(timeVar));
-                    index = solution.Value(routing.NextVar(index));
+                    Console.Write("{0} Time({1},{2}) -> ", rsr.routingIndexManager.IndexToNode(index), rsr.solution.Min(timeVar),
+                                  rsr.solution.Max(timeVar));
+                    index = rsr.solution.Value(rsr.routingModel.NextVar(index));
                 }
                 var endTimeVar = timeDimension.CumulVar(index);
-                Console.WriteLine("{0} Time({1},{2})", manager.IndexToNode(index), solution.Min(endTimeVar),
-                                  solution.Max(endTimeVar));
-                Console.WriteLine("Time of the route: {0}min", solution.Min(endTimeVar));
-                totalTime += solution.Min(endTimeVar);
+                Console.WriteLine("{0} Time({1},{2})", rsr.routingIndexManager.IndexToNode(index), rsr.solution.Min(endTimeVar),
+                                  rsr.solution.Max(endTimeVar));
+                Console.WriteLine("Time of the route: {0}min", rsr.solution.Min(endTimeVar));
+                totalTime += rsr.solution.Min(endTimeVar);
             }
             Console.WriteLine("Total time of all routes: {0}min", totalTime);
         }
 
-
+        //misto void vratit objekt vysledku, co pak poslu adekvatni komponente na zpracovani
         public void solveProblemAndPrintResults()
         {
             // Create Routing Index Manager
@@ -145,7 +144,11 @@ namespace diskretni_mapd_simulace
             // Solve the problem.
             solver.MakeSolutionsLimit(1);
             Assignment solution = routing.SolveWithParameters(searchParameters);
-            PrintSolution(svm, routing, manager, solution);
+            RoutingSolverResults srs = new RoutingSolverResults(svm, routing, manager, solution);
+
+            PrintSolution(srs);
+
+            //TODO: pripsat zmenu pozic vozidel a zakazek
         }
     }
 }

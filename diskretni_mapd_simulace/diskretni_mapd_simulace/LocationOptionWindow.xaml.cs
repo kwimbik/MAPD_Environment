@@ -29,7 +29,6 @@ namespace diskretni_mapd_simulace
             addControls();
             this.Title = $"Location {loc.id}";
             //TODO: Displat current location -> id, curr orders, curr vehicles
-            //TODO: buttons to add vehicle, add order
         }
 
         private void addControls()

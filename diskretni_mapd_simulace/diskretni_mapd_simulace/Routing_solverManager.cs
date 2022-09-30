@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace diskretni_mapd_simulace
 {
-    internal class Routing_solverManager
+    public class Routing_solverManager
     {
         Database db;
 
@@ -15,12 +15,18 @@ namespace diskretni_mapd_simulace
             this.db = db;
         }
 
+        //Map from location/order to index in solver
         public Dictionary<Location, int> locationToIndexMap = new Dictionary<Location, int>();
         public Dictionary<int, Location> indexToLocationMap = new Dictionary<int, Location>();
 
+        //map from vehicle to index in solver
+        public Dictionary<Vehicle, int> vehicleToIndexMap =  new Dictionary<Vehicle, int>();
+        public Dictionary<int, Vehicle> indexToVehicleMap = new Dictionary<int, Vehicle>();
 
 
 
+
+        int vehicleToIndexCounter = 0;
         int locationToIndexCounter = 0;
 
         public long[][] TimeMatrix = new long[][] {
@@ -139,12 +145,15 @@ namespace diskretni_mapd_simulace
         }
 
 
-        //get number of vehicle and assign each location of vehicle unique index for this problem
+        //get number of vehicle and assign each location of vehicle unique index for this problem and assign each vehicle unique number
         public void getVehicleNumber()
         {
             VehicleNumber =  db.vehicles.Count;
             for (int i = 0; i < db.vehicles.Count; i++)
             {
+                vehicleToIndexMap.Add(db.vehicles[i], vehicleToIndexCounter);
+                indexToVehicleMap.Add(vehicleToIndexCounter++, db.vehicles[i]);
+
                 indexToLocationMap.Add(locationToIndexCounter, db.vehicles[i].baseLocation);
                 locationToIndexMap.Add(db.vehicles[i].baseLocation, locationToIndexCounter++);
             }
