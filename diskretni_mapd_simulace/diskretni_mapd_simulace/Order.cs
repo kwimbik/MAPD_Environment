@@ -11,6 +11,15 @@ namespace diskretni_mapd_simulace
         public string Id { get; set; }
         public Location currLocation;
         public Location targetLocation;
+        public int state;
+        
+
+        public enum states
+        {
+            pending,
+            processed,
+            delivered
+        }
 
         public void display()
         {

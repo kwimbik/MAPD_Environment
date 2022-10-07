@@ -128,7 +128,7 @@ namespace diskretni_mapd_simulace
                     locationToIndexMap.Add(order.currLocation, new List<List<int>> { new List<int> { locationToIndexCounter++ }, new List<int>(), new List<int>() } );
 
                 }
-                else locationToIndexMap[order.currLocation][baseLocationOrders].Append(locationToIndexCounter++);
+                else locationToIndexMap[order.currLocation][baseLocationOrders].Add(locationToIndexCounter++);
 
                 //add map for target location
                 indexToLocationMap.Add(locationToIndexCounter, order.targetLocation);
@@ -142,7 +142,7 @@ namespace diskretni_mapd_simulace
                     locationToIndexMap.Add(order.targetLocation, new List<List<int>> { new List<int>() , new List<int>  { locationToIndexCounter++ }, new List<int>() });
 
                 }
-                else locationToIndexMap[order.targetLocation][targetLocationOrders].Append(locationToIndexCounter++);
+                else locationToIndexMap[order.targetLocation][targetLocationOrders].Add(locationToIndexCounter++);
 
                 int baseIndex = locationToIndexMap[order.currLocation][baseLocationOrders].Count() - 1;
                 int targetIndex = locationToIndexMap[order.targetLocation][targetLocationOrders].Count() - 1;

@@ -10,6 +10,7 @@ namespace diskretni_mapd_simulace
     {
         public List<Location> locations = new List<Location>();
         public List<Vehicle> vehicles = new List<Vehicle>();
+        //TODO: return only non delivered orders but keep all
         public List<Order> orders = new List<Order>();
         public int[] gridSize = new int[2]; // najit neco na praci se souradnicema
 
