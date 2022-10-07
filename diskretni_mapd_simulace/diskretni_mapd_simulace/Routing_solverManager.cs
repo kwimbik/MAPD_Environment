@@ -26,6 +26,7 @@ namespace diskretni_mapd_simulace
         public const int baseLocationVehicles = 2;
 
 
+        List<Order> ordersToProcess = new List<Order>();
 
         public Dictionary<int, Location> indexToLocationMap = new Dictionary<int, Location>();
 
@@ -113,10 +114,14 @@ namespace diskretni_mapd_simulace
         //get pickup and delivery pairs, assign each start and target location unique index for this problem
         public void getPickupsAndDeliveries()
         {
-            int[][] pickupsAndDeliveries = new int[db.orders.Count][];
-            for (int i = 0; i < db.orders.Count; i++)
+            //get all the orders to process
+            ordersToProcess = db.getOrdersToProcess();
+
+            int[][] pickupsAndDeliveries = new int[ordersToProcess.Count][];
+
+            for (int i = 0; i < ordersToProcess.Count; i++)
             {
-                Order order = db.orders[i];
+                Order order = ordersToProcess[i];
                 //adds map for current location 
                 indexToLocationMap.Add(locationToIndexCounter, order.currLocation);
 
@@ -154,8 +159,8 @@ namespace diskretni_mapd_simulace
         //gets time windows for orders to be delivered in
         public void getTimeWindows()
         {
-            long[][] tw = new long[db.orders.Count][];
-            for (int i = 0; i < db.orders.Count; i++)
+            long[][] tw = new long[ordersToProcess.Count][];
+            for (int i = 0; i < ordersToProcess.Count; i++)
             {
                 tw[i] = new long[] { 0, 30 };
             }
