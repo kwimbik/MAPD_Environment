@@ -12,13 +12,16 @@ namespace diskretni_mapd_simulace
     {
         RoutingSolverResults result;
 
-       
+        public string orderInfo { get; set; }
         /// <summary>
         /// For each vehicle, figures new location. If order was on vehicle, it moves as well
         /// </summary>
         public void setResultAndAct(RoutingSolverResults result)
         {
             this.result = result;
+
+            
+            orderInfo = ""; //reset updates from previous tick
             for (int i = 0; i < result.routingSolverManager.VehicleNumber; ++i)
             {
                 Vehicle vehicle = result.routingSolverManager.indexToVehicleMap[i];
@@ -27,7 +30,12 @@ namespace diskretni_mapd_simulace
                 //pridat objednavku na auto, pokud je na nextLocation (prozatim vsechny na tom poli, to se upravi) TODO
                 foreach (Order order in vehicle.baseLocation.orders)
                 {
-                    if (vehicle.orders.Contains(order) == false) vehicle.orders.Add(order);
+                    if (vehicle.orders.Contains(order) == false)
+                    {
+                        vehicle.orders.Add(order);
+                        Console.WriteLine($"objednavka {order.Id} nalozena na miste {order.currLocation.id}");
+                        orderInfo += $"objednavka {order.Id} nalozena na miste {order.currLocation.id} \n";
+                    }
                 }
 
 
@@ -38,7 +46,7 @@ namespace diskretni_mapd_simulace
                 Location nextLocation = result.routingSolverManager.indexToLocationMap[result.routingIndexManager.IndexToNode(index)];
 
                 //in case order is to be picked up, even though solver location differs, actual location is the same
-                if (nextLocation == vehicle.baseLocation)
+                if (nextLocation == vehicle.baseLocation && result.routingModel.IsEnd(index) == false)
                 {
                     index = result.solution.Value(result.routingModel.NextVar(index));
                     nextLocation = result.routingSolverManager.indexToLocationMap[result.routingIndexManager.IndexToNode(index)];
@@ -52,6 +60,7 @@ namespace diskretni_mapd_simulace
                     if (vehicle.baseLocation == order.targetLocation)
                     {
                         Console.WriteLine($"objednavka {order.Id} vylozena na miste {order.targetLocation.id}");
+                        orderInfo += $"objednavka {order.Id} vylozena na miste {order.targetLocation.id} \n";
                         delivered.Add(order);
                         vehicle.baseLocation.orders.Remove(order);
                         order.state = (int)Order.states.delivered;
@@ -72,6 +81,11 @@ namespace diskretni_mapd_simulace
                 vehicle.baseLocation = nextLocation;
                 nextLocation.vehicles.Add(vehicle);
             }
+        }
+
+        public string getOrderInfo()
+        {
+            return orderInfo;
         }
     }
 }

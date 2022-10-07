@@ -22,8 +22,12 @@ namespace diskretni_mapd_simulace
         Database db = new Database();
         Routing_solver rs;
         Routing_solverManager rsm;
+
+
+        //controls
         List<Button> location_buttons = new List<Button>();
         Dictionary<Button, Location> butt_loc_dict = new Dictionary<Button, Location>();
+        TextBox update_textbox;
 
         MovementManager movementManager = new MovementManager();
         public Simulation()
@@ -75,17 +79,39 @@ namespace diskretni_mapd_simulace
                     };
                 }
             }
+
+
+            //add textbox for updates on simulation
+            TextBox tb = new TextBox
+            {
+                Name = "updates_textbox",
+                Text = "Updates",
+                VerticalAlignment = VerticalAlignment.Stretch,
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+            };
+            Simulation_grid.Children.Add(tb);
+            Grid.SetColumn(tb, 2);
+            update_textbox = tb;
         }
-       
 
         private void solve_btn_Click(object sender, RoutedEventArgs e)
         {
             Routing_solverManager rsm = new Routing_solverManager(db);
             rsm.getSolutionData();
+            if (rsm.ordersToProcess.Count == 0)
+            {
+                //TODO: stop the simulation with zero orders
+                //TODO: result printer class
+            }
             Routing_solver rs = new Routing_solver(rsm);
             RoutingSolverResults result = rs.solveProblemAndPrintResults();
             movementManager.setResultAndAct(result);
+            
+            //Not important if I dont reuse components
             rsm.ResetSettings();
+
+            //post updates
+            update_textbox.Text = movementManager.orderInfo;
         }
     }
 }

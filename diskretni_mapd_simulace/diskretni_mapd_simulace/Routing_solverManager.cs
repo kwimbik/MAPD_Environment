@@ -26,7 +26,7 @@ namespace diskretni_mapd_simulace
         public const int baseLocationVehicles = 2;
 
 
-        List<Order> ordersToProcess = new List<Order>();
+        public List<Order> ordersToProcess = new List<Order>();
 
         public Dictionary<int, Location> indexToLocationMap = new Dictionary<int, Location>();
 
