@@ -10,17 +10,23 @@ namespace diskretni_mapd_simulace
 {
     public class MovementManager
     {
-        RoutingSolverResults result;
+        Database db;
 
         public string orderInfo { get; set; }
         /// <summary>
         /// For each vehicle, figures new location. If order was on vehicle, it moves as well
         /// </summary>
+        /// 
+
+        public MovementManager(Database db)
+        {
+            this.db = db;
+            orderInfo = "";
+        }
+
+
         public void setResultAndAct(RoutingSolverResults result)
         {
-            this.result = result;
-
-            
             orderInfo = ""; //reset updates from previous tick
             for (int i = 0; i < result.routingSolverManager.VehicleNumber; ++i)
             {
@@ -38,20 +44,20 @@ namespace diskretni_mapd_simulace
                     }
                 }
 
-
                 var index = result.routingModel.Start(i);
                 index = result.solution.Value(result.routingModel.NextVar(index));
 
-                //presun auta do nove lokace
-                Location nextLocation = result.routingSolverManager.indexToLocationMap[result.routingIndexManager.IndexToNode(index)];
+                //Problem je, kdyz auto jezdi mezi 2 zakazkama a nemuze si vybrat -> pouziti targetLocation u aut a resit pouze s autama a zakazkama, ktery nejsou commitnuty
+                Location nextLocation = getNewLocation(vehicle.baseLocation, result.routingSolverManager.indexToLocationMap[result.routingIndexManager.IndexToNode(index)]);
 
                 //in case order is to be picked up, even though solver location differs, actual location is the same
                 if (nextLocation == vehicle.baseLocation && result.routingModel.IsEnd(index) == false)
                 {
                     index = result.solution.Value(result.routingModel.NextVar(index));
-                    nextLocation = result.routingSolverManager.indexToLocationMap[result.routingIndexManager.IndexToNode(index)];
+                    nextLocation = getNewLocation(vehicle.baseLocation, result.routingSolverManager.indexToLocationMap[result.routingIndexManager.IndexToNode(index)]);
                 }
-                
+
+
                 vehicle.baseLocation.vehicles.Remove(vehicle);
 
                 List<Order> delivered = new List<Order>();
@@ -80,6 +86,38 @@ namespace diskretni_mapd_simulace
                 }
                 vehicle.baseLocation = nextLocation;
                 nextLocation.vehicles.Add(vehicle);
+            }
+        }
+
+        //return new Location for vehicle based on last location
+        public Location getNewLocation(Location baseLocation, Location targetLocation)
+        {
+            if (baseLocation == targetLocation) return baseLocation;
+            if (Math.Abs(baseLocation.coordination[0] - targetLocation.coordination[0]) > Math.Abs(baseLocation.coordination[1] - targetLocation.coordination[1]))
+            {
+                //if true, need to go up
+                if (baseLocation.coordination[0] > targetLocation.coordination[0])
+                {
+                    return db.locationMap[baseLocation.coordination[0]-1][baseLocation.coordination[1]];
+                }
+                //need to go down
+                else
+                {
+                    return db.locationMap[baseLocation.coordination[0] + 1][baseLocation.coordination[1]];
+                }
+            }
+            else
+            {
+                //if true, need to go left
+                if (baseLocation.coordination[1] > targetLocation.coordination[1])
+                {
+                    return db.locationMap[baseLocation.coordination[0]][baseLocation.coordination[1]-1];
+                }
+                //need to go right
+                else
+                {
+                    return db.locationMap[baseLocation.coordination[0]][baseLocation.coordination[1]+1];
+                }
             }
         }
 

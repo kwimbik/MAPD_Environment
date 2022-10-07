@@ -29,12 +29,15 @@ namespace diskretni_mapd_simulace
         Dictionary<Button, Location> butt_loc_dict = new Dictionary<Button, Location>();
         TextBox update_textbox;
 
-        MovementManager movementManager = new MovementManager();
+        MovementManager movementManager;
         public Simulation()
         {
             //grid 3 sloupce, simulace uprostred, data v levo, updaty (jaky vuz dokoncil jakou objednavku vlevo)
             InitializeComponent();
             generateGrid();
+            db.setLocationMap();
+            movementManager = new MovementManager(db);
+            db.setTestData(); //TODO: ruzne moznosti tesstovani, pro realny beh smazat
         }
 
         public void generateGrid()
@@ -58,10 +61,13 @@ namespace diskretni_mapd_simulace
                         Width = rectangleWidth,
                         Margin = new Thickness(i * blankSpace + blankSpace, j * blankSpace + blankSpace, 0, 0),
                         IsEnabled = true,
-                        Background = Brushes.Black,
+                        Background = Brushes.White,
+                        BorderBrush = Brushes.Black,
                         VerticalAlignment = VerticalAlignment.Top,
                         HorizontalAlignment = HorizontalAlignment.Left,
-                        Content = ' ',
+                        Content = locationCounter.ToString(),
+                        FontSize = 10,
+                        
                     };
                     Simulation_grid.Children.Add(button);
                     Grid.SetColumn(button, 1);
@@ -100,18 +106,21 @@ namespace diskretni_mapd_simulace
             rsm.getSolutionData();
             if (rsm.ordersToProcess.Count == 0)
             {
-                //TODO: stop the simulation with zero orders
-                //TODO: result printer class
+                //TODO: add some steps or meters -> store in resultManager
+                update_textbox.Text = "All Orders have been delivered";
             }
-            Routing_solver rs = new Routing_solver(rsm);
-            RoutingSolverResults result = rs.solveProblemAndPrintResults();
-            movementManager.setResultAndAct(result);
-            
-            //Not important if I dont reuse components
-            rsm.ResetSettings();
+            else
+            {
+                Routing_solver rs = new Routing_solver(rsm);
+                RoutingSolverResults result = rs.solveProblemAndPrintResults();
+                movementManager.setResultAndAct(result);
 
-            //post updates
-            update_textbox.Text = movementManager.orderInfo;
+                //Not important if I dont reuse components
+                rsm.ResetSettings();
+
+                //post updates
+                update_textbox.Text = movementManager.orderInfo;
+            }
         }
     }
 }
