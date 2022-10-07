@@ -15,8 +15,18 @@ namespace diskretni_mapd_simulace
             this.db = db;
         }
 
+        public List<Location> usedLocations = new List<Location>();
         //Map from location/order to index in solver
-        public Dictionary<Location, int> locationToIndexMap = new Dictionary<Location, int>();
+        //List of int to enable duplicate locations (more than one vehicle or order at one place)
+        //lists:
+        //1: baseLocationOrders, 2: targetLocationOrders 3:baseLocationVehicles
+        public Dictionary<Location, List<List<int>>> locationToIndexMap = new Dictionary<Location, List<List<int>>>();
+        public const int baseLocationOrders = 0;
+        public const int targetLocationOrders = 1;
+        public const int baseLocationVehicles = 2;
+
+
+
         public Dictionary<int, Location> indexToLocationMap = new Dictionary<int, Location>();
 
         //map from vehicle to index in solver
@@ -25,7 +35,9 @@ namespace diskretni_mapd_simulace
 
 
 
-
+        //TODO: zajistit, aby slo poznat ktere loakce jsou pro auta a ktere pro objednavky
+        //TJ podle inexu musi byt jasne jestli je to auto nebo objednavka v te lokaci
+        //jinak zlobi demans a depot
         int vehicleToIndexCounter = 0;
         int locationToIndexCounter = 0;
 
@@ -71,15 +83,26 @@ namespace diskretni_mapd_simulace
             getTimeMatrix();
         }
 
+        public void ResetSettings()
+        {
+            locationToIndexMap.Clear();
+            indexToLocationMap.Clear();
+            vehicleToIndexMap.Clear();
+            indexToVehicleMap.Clear();
+            vehicleToIndexCounter = 0;
+            locationToIndexCounter = 0;
+        }
+
         //TODO: vrati vzdalenosti v jednotkach
         public void getTimeMatrix()
         {
-            int numOfLocation = locationToIndexMap.Count;
+            
+            int numOfLocation = locationToIndexCounter;
             long[][] timeMatrix = new long[numOfLocation][];
-            for (int i = 0; i < numOfLocation; i++)
+            for (int i = 0; i < locationToIndexCounter; i++)
             {
-                timeMatrix[i] = new long[numOfLocation];
-                for (int j = 0; j < numOfLocation; j++)
+                timeMatrix[i] = new long[locationToIndexCounter];
+                for (int j = 0; j < locationToIndexCounter; j++)
                 {
                     timeMatrix[i][j] = Location.getDistance(indexToLocationMap[i], indexToLocationMap[j]);
                 }
@@ -94,13 +117,36 @@ namespace diskretni_mapd_simulace
             for (int i = 0; i < db.orders.Count; i++)
             {
                 Order order = db.orders[i];
-                //adds map for location and indexes for current problem
+                //adds map for current location 
                 indexToLocationMap.Add(locationToIndexCounter, order.currLocation);
-                locationToIndexMap.Add(order.currLocation, locationToIndexCounter++);
-                indexToLocationMap.Add(locationToIndexCounter, order.targetLocation);
-                locationToIndexMap.Add(order.targetLocation, locationToIndexCounter++);
 
-                pickupsAndDeliveries[i] = new int[] { locationToIndexMap[order.currLocation], locationToIndexMap[order.targetLocation]};
+                //adds location to used ones
+                if (usedLocations.Contains(order.currLocation ) == false) usedLocations.Add(order.currLocation);
+
+                if (locationToIndexMap.ContainsKey(order.currLocation) == false)
+                {
+                    locationToIndexMap.Add(order.currLocation, new List<List<int>> { new List<int> { locationToIndexCounter++ }, new List<int>(), new List<int>() } );
+
+                }
+                else locationToIndexMap[order.currLocation][baseLocationOrders].Append(locationToIndexCounter++);
+
+                //add map for target location
+                indexToLocationMap.Add(locationToIndexCounter, order.targetLocation);
+
+                //adds location to used ones
+                if (usedLocations.Contains(order.targetLocation) == false) usedLocations.Add(order.targetLocation);
+
+
+                if (locationToIndexMap.ContainsKey(order.targetLocation) == false)
+                {
+                    locationToIndexMap.Add(order.targetLocation, new List<List<int>> { new List<int>() , new List<int>  { locationToIndexCounter++ }, new List<int>() });
+
+                }
+                else locationToIndexMap[order.targetLocation][targetLocationOrders].Append(locationToIndexCounter++);
+
+                int baseIndex = locationToIndexMap[order.currLocation][baseLocationOrders].Count() - 1;
+                int targetIndex = locationToIndexMap[order.targetLocation][targetLocationOrders].Count() - 1;
+                pickupsAndDeliveries[i] = new int[] { locationToIndexMap[order.currLocation][baseLocationOrders][baseIndex], locationToIndexMap[order.targetLocation][targetLocationOrders][targetIndex] };
             }
             this.PickupsDeliveries = pickupsAndDeliveries;
         }
@@ -119,16 +165,27 @@ namespace diskretni_mapd_simulace
         //gets size of orders, base = 1, on target locations -1, on depots 0
         public void getDemands()
         {
-            long[] demands = new long[locationToIndexMap.Count];
-            for (int i = 0; i < db.orders.Count; i++)
-            {
-                demands[locationToIndexMap[db.orders[i].currLocation]] = 1;
-                demands[locationToIndexMap[db.orders[i].targetLocation]] = -1;
-            }
 
-            for (int i = 0; i < db.vehicles.Count; i++)
+            long[] demands = new long[locationToIndexCounter];
+            foreach (Location location in usedLocations)
             {
-                demands[locationToIndexMap[db.vehicles[i].baseLocation]] = 0;
+                //base locations -> value is one
+                foreach (int index in locationToIndexMap[location][baseLocationOrders])
+                {
+                    demands[index] = 1;
+                }
+
+                //target locations -> value is minus one
+                foreach (int index in locationToIndexMap[location][targetLocationOrders])
+                {
+                    demands[index] = -1;
+                }
+
+                //base locations  vehicles -> value is zero
+                foreach (int index in locationToIndexMap[location][baseLocationVehicles])
+                {
+                    demands[index] = 0;
+                }
             }
             this.Demands = demands;
         }
@@ -155,7 +212,18 @@ namespace diskretni_mapd_simulace
                 indexToVehicleMap.Add(vehicleToIndexCounter++, db.vehicles[i]);
 
                 indexToLocationMap.Add(locationToIndexCounter, db.vehicles[i].baseLocation);
-                locationToIndexMap.Add(db.vehicles[i].baseLocation, locationToIndexCounter++);
+
+                //add location to used ones
+                if (usedLocations.Contains(db.vehicles[i].baseLocation) == false) usedLocations.Add(db.vehicles[i].baseLocation);
+
+                //assign solver location index
+                db.vehicles[i].solverLocationIndex = locationToIndexCounter;
+
+                if (locationToIndexMap.ContainsKey(db.vehicles[i].baseLocation) == false)
+                {
+                    locationToIndexMap.Add(db.vehicles[i].baseLocation, new List<List<int>> { new List<int>(), new List<int>(), new List<int> { locationToIndexCounter++ } });
+                }
+                else locationToIndexMap[db.vehicles[i].baseLocation][baseLocationVehicles].Append(locationToIndexCounter++);
             }
 
         }
@@ -163,10 +231,17 @@ namespace diskretni_mapd_simulace
         //Gets starting position for all vehicles base on index of location for current problem
         public void getDepot()
         {
-            int[] depot = new int[db.vehicles.Count];
+            int depotLength = 0;
+            foreach (Vehicle vehicle in db.vehicles)
+            {
+                depotLength += 1;
+            }
+
+            int[] depot = new int[depotLength];
             for (int i = 0; i < depot.Length; i++)
             {
-                depot[i] = locationToIndexMap[db.vehicles[i].baseLocation];
+                //depot is selected as first index of location, distance to all other indexes will be zero
+                depot[i] = db.vehicles[i].solverLocationIndex;
             }
             this.Depot = depot;
         }

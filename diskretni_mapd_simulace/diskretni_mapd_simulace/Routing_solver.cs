@@ -45,7 +45,7 @@ namespace diskretni_mapd_simulace
         }
 
         //misto void vratit objekt vysledku, co pak poslu adekvatni komponente na zpracovani
-        public void solveProblemAndPrintResults()
+        public RoutingSolverResults solveProblemAndPrintResults()
         {
             // Create Routing Index Manager
             RoutingIndexManager manager = new RoutingIndexManager(
@@ -147,8 +147,7 @@ namespace diskretni_mapd_simulace
             RoutingSolverResults srs = new RoutingSolverResults(svm, routing, manager, solution);
 
             PrintSolution(srs);
-
-            //TODO: pripsat zmenu pozic vozidel a zakazek
+            return srs;
         }
     }
 }
