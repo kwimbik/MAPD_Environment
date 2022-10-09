@@ -28,10 +28,14 @@ namespace diskretni_mapd_simulace
 
         public void setTestData()
         {
-            orders.Add(new Order() { Id = "1", currLocation = locations[0], targetLocation = locations[20]  });
-            orders.Add(new Order() { Id = "2", currLocation = locations[5], targetLocation = locations[11] });
+            Order o1 = new Order() { Id = "1", currLocation = locations[0], targetLocation = locations[20] };
+            Order o2 = new Order() { Id = "2", currLocation = locations[5], targetLocation = locations[11] };
+            orders.Add(o1);
+            orders.Add(o2);
+            locations[0].orders.Add(o1);
+            locations[5].orders.Add(o2);
             //orders.Add(new Order() { Id = "3", currLocation = locations[48], targetLocation = locations[99] });
-            //vehicles.Add(new Vehicle() { Id ="1",  baseLocation = locations[32] });
+            vehicles.Add(new Vehicle() { Id ="1",  baseLocation = locations[32] });
             vehicles.Add(new Vehicle() { Id ="2", baseLocation = locations[32] });
         }
 

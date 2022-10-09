@@ -24,6 +24,68 @@ namespace diskretni_mapd_simulace
             orderInfo = "";
         }
 
+        /// <summary>
+        /// if all vehicles have target location, no need for optimization, set movement instead
+        /// </summary>
+        public void moveToTargetLocation()
+        {
+            orderInfo = ""; //reset updates from previous tick
+            foreach (Vehicle vehicle in db.vehicles)
+            {
+                Location nextLocation = getNewLocation(vehicle.baseLocation, vehicle.targetLocation);
+                if (vehicle.baseLocation.id == vehicle.targetLocation.id)
+                {
+                    vehicle.targetLocation = null;
+
+                    //pridat objednavku na auto, pokud je na nextLocation (prozatim vsechny na tom poli, to se upravi) TODO
+                    foreach (Order order in vehicle.baseLocation.orders)
+                    {
+                        if (vehicle.orders.Contains(order) == false)
+                        {
+                            vehicle.orders.Add(order);
+                            Console.WriteLine($"objednavka {order.Id} nalozena na miste {order.currLocation.id}");
+                            orderInfo += $"objednavka {order.Id} nalozena na miste {order.currLocation.id} \n";
+                        }
+                    }
+                }
+                else
+                {
+                    vehicle.baseLocation.vehicles.Remove(vehicle);
+
+                    vehicle.baseLocation = nextLocation;
+                    nextLocation.vehicles.Add(vehicle);
+                }
+               
+
+                List<Order> delivered = new List<Order>();
+                foreach (Order order in vehicle.orders)
+                {
+                    if (vehicle.baseLocation == order.targetLocation)
+                    {
+                        Console.WriteLine($"objednavka {order.Id} vylozena na miste {order.targetLocation.id} by vehicle {vehicle.Id}");
+                        orderInfo += $"objednavka {order.Id} vylozena na miste {order.targetLocation.id} by vehicle {vehicle.Id} \n";
+                        delivered.Add(order);
+                        vehicle.baseLocation.orders.Remove(order);
+                        order.state = (int)Order.states.delivered;
+                        vehicle.targetLocation = null;
+                    }
+                    else
+                    {
+                        order.currLocation.orders.Remove(order);
+                        order.currLocation = nextLocation;
+                        nextLocation.orders.Add(order);
+                    }
+                }
+
+                //remove delivered orders
+                foreach (Order order in delivered)
+                {
+                    vehicle.orders.Remove(order);
+                }
+               
+            }
+        }
+
 
         public void setResultAndAct(RoutingSolverResults result)
         {
@@ -39,8 +101,8 @@ namespace diskretni_mapd_simulace
                     if (vehicle.orders.Contains(order) == false)
                     {
                         vehicle.orders.Add(order);
-                        Console.WriteLine($"objednavka {order.Id} nalozena na miste {order.currLocation.id}");
-                        orderInfo += $"objednavka {order.Id} nalozena na miste {order.currLocation.id} \n";
+                        Console.WriteLine($"objednavka {order.Id} nalozena na miste {order.currLocation.id} by vehicle {vehicle.Id} ");
+                        orderInfo += $"objednavka {order.Id} nalozena na miste {order.currLocation.id} by vehicle {vehicle.Id} \n";
                     }
                 }
 
@@ -58,6 +120,8 @@ namespace diskretni_mapd_simulace
                 }
 
 
+                //sets target location for vehicle so that it is not disturbed by another solver step
+                vehicle.targetLocation = result.routingSolverManager.indexToLocationMap[result.routingIndexManager.IndexToNode(index)];
                 vehicle.baseLocation.vehicles.Remove(vehicle);
 
                 List<Order> delivered = new List<Order>();
@@ -65,8 +129,8 @@ namespace diskretni_mapd_simulace
                 {
                     if (vehicle.baseLocation == order.targetLocation)
                     {
-                        Console.WriteLine($"objednavka {order.Id} vylozena na miste {order.targetLocation.id}");
-                        orderInfo += $"objednavka {order.Id} vylozena na miste {order.targetLocation.id} \n";
+                        Console.WriteLine($"objednavka {order.Id} vylozena na miste {order.targetLocation.id} by vehicle {vehicle.Id} ");
+                        orderInfo += $"objednavka {order.Id} vylozena na miste {order.targetLocation.id} by vehicle {vehicle.Id}\n";
                         delivered.Add(order);
                         vehicle.baseLocation.orders.Remove(order);
                         order.state = (int)Order.states.delivered;

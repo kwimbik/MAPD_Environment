@@ -109,6 +109,12 @@ namespace diskretni_mapd_simulace
                 //TODO: add some steps or meters -> store in resultManager
                 update_textbox.Text = "All Orders have been delivered";
             }
+            else if (rsm.freeVehicles == false)
+            {
+                movementManager.moveToTargetLocation();
+                update_textbox.Text = movementManager.orderInfo;
+                rsm.ResetSettings();
+            }
             else
             {
                 Routing_solver rs = new Routing_solver(rsm);

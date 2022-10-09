@@ -27,6 +27,7 @@ namespace diskretni_mapd_simulace
 
 
         public List<Order> ordersToProcess = new List<Order>();
+        public bool freeVehicles = false;
 
         public Dictionary<int, Location> indexToLocationMap = new Dictionary<int, Location>();
 
@@ -82,6 +83,7 @@ namespace diskretni_mapd_simulace
             getDepot();
             getTimeWindows();
             getTimeMatrix();
+            freeVehiclesFind();
         }
 
         public void ResetSettings()
@@ -92,6 +94,18 @@ namespace diskretni_mapd_simulace
             indexToVehicleMap.Clear();
             vehicleToIndexCounter = 0;
             locationToIndexCounter = 0;
+        }
+
+        public void freeVehiclesFind()
+        {
+            foreach (Vehicle vehicle in db.vehicles)
+            {
+                if (vehicle.targetLocation == null)
+                {
+                    freeVehicles = true;
+                    return;
+                }
+            }
         }
 
         //TODO: vrati vzdalenosti v jednotkach
