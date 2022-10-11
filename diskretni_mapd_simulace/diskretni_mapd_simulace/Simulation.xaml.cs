@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -22,12 +23,15 @@ namespace diskretni_mapd_simulace
         Database db = new Database();
         Routing_solver rs;
         Routing_solverManager rsm;
+        Thread simulationThread;
+
 
 
         //controls
         List<Button> location_buttons = new List<Button>();
         Dictionary<Button, Location> butt_loc_dict = new Dictionary<Button, Location>();
         TextBox update_textbox;
+        TextBox vehicleOrderPosition_textbox;
 
         MovementManager movementManager;
         public Simulation()
@@ -39,6 +43,7 @@ namespace diskretni_mapd_simulace
             movementManager = new MovementManager(db);
             db.setTestData(); //TODO: ruzne moznosti tesstovani, pro realny beh smazat
         }
+       
 
         public void generateGrid()
         {
@@ -98,34 +103,70 @@ namespace diskretni_mapd_simulace
             Simulation_grid.Children.Add(tb);
             Grid.SetColumn(tb, 2);
             update_textbox = tb;
+
+            //add textbox for vehicle positions
+            TextBox tbv = new TextBox
+            {
+                Name = "vehiclePosition_textbox",
+                Text = "Vehicles",
+                VerticalAlignment = VerticalAlignment.Stretch,
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+            };
+            Simulation_grid.Children.Add(tbv);
+            Grid.SetColumn(tbv, 0);
+            vehicleOrderPosition_textbox = tbv;
         }
 
         private void solve_btn_Click(object sender, RoutedEventArgs e)
         {
-            Routing_solverManager rsm = new Routing_solverManager(db);
-            rsm.getSolutionData();
-            if (rsm.ordersToProcess.Count == 0)
-            {
-                //TODO: add some steps or meters -> store in resultManager
-                update_textbox.Text = "All Orders have been delivered";
-            }
-            else if (rsm.freeVehicles == false)
-            {
-                movementManager.moveToTargetLocation();
-                update_textbox.Text = movementManager.orderInfo;
-                rsm.ResetSettings();
-            }
-            else
-            {
-                Routing_solver rs = new Routing_solver(rsm);
-                RoutingSolverResults result = rs.solveProblemAndPrintResults();
-                movementManager.setResultAndAct(result);
 
-                //Not important if I dont reuse components
-                rsm.ResetSettings();
+            simulationThread = new Thread(new ThreadStart(runSimulation));
+            simulationThread.Start();
+        }
 
-                //post updates
-                update_textbox.Text = movementManager.orderInfo;
+        private void runSimulation()
+        {
+            int tickTime = 1000; //time for one step of simulation
+            for (int i = 0; i < 50; i++)
+            {
+                Routing_solverManager rsm = new Routing_solverManager(db);
+                rsm.getSolutionData();
+                if (rsm.ordersToProcess.Count == 0)
+                {
+                    //TODO: add some steps or meters -> store in resultManager
+                    this.Dispatcher.Invoke(() =>
+                    {
+                        update_textbox.Text = "All Orders have been delivered";
+                        vehicleOrderPosition_textbox.Text = movementManager.getVehiclePositions(i);
+                    });
+                }
+                else if (rsm.freeVehicles == false)
+                {
+                    movementManager.moveToTargetLocation();
+                    this.Dispatcher.Invoke(() =>
+                    {
+                        update_textbox.Text = movementManager.orderInfo;
+                        vehicleOrderPosition_textbox.Text = movementManager.getVehiclePositions(i);
+                    });
+                    rsm.ResetSettings();
+                }
+                else
+                {
+                    Routing_solver rs = new Routing_solver(rsm);
+                    RoutingSolverResults result = rs.solveProblemAndPrintResults();
+                    movementManager.setResultAndAct(result);
+
+                    //Not important if I dont reuse components
+                    rsm.ResetSettings();
+
+                    //post updates
+                    this.Dispatcher.Invoke(() =>
+                    {
+                        update_textbox.Text = movementManager.orderInfo;
+                        vehicleOrderPosition_textbox.Text = movementManager.getVehiclePositions(i);
+                    });
+                }
+                Thread.Sleep(tickTime);
             }
         }
     }

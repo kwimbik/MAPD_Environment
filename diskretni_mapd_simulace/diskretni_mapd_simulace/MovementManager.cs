@@ -189,5 +189,20 @@ namespace diskretni_mapd_simulace
         {
             return orderInfo;
         }
+
+        public string getVehiclePositions(int time)
+        {
+            string positions = "";
+            positions += $"Time of simulation: {time.ToString()}\n";
+            foreach (Vehicle vehicle in db.vehicles)
+            {
+                positions += $"vehicle {vehicle.Id} is at location {vehicle.baseLocation.id}\n";
+            }
+            foreach (Order order in db.orders)
+            {
+                positions += $"order {order.Id} is at location {order.currLocation.id}\n";
+            }
+            return positions;
+        }
     }
 }
