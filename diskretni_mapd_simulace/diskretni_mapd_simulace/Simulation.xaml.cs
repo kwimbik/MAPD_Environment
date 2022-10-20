@@ -33,7 +33,6 @@ namespace diskretni_mapd_simulace
         TextBox update_textbox;
         TextBox vehicleOrderPosition_textbox;
 
-        MovementManager movementManager;
         public Simulation()
         {
             //grid 3 sloupce, simulace uprostred, data v levo, updaty (jaky vuz dokoncil jakou objednavku vlevo)
@@ -44,7 +43,6 @@ namespace diskretni_mapd_simulace
             return;
 
             db.setLocationMap();
-            movementManager = new MovementManager(db);
             db.setTestData(); //TODO: ruzne moznosti tesstovani, pro realny beh smazat
         }
 
@@ -136,7 +134,6 @@ namespace diskretni_mapd_simulace
 
         private void runSimulation()
         {
-            int tickTime = 1000; //time for one step of simulation
             for (int i = 0; i < 100; i++)
             {
                 if (SimulationController.run == false) return;
@@ -148,36 +145,16 @@ namespace diskretni_mapd_simulace
                     this.Dispatcher.Invoke(() =>
                     {
                         update_textbox.Text = "All Orders have been delivered";
-                        vehicleOrderPosition_textbox.Text = movementManager.getVehiclePositions(i);
                     });
-                }
-                else if (rsm.freeVehicles == false)
-                {
-                    movementManager.moveToTargetLocation();
-                    this.Dispatcher.Invoke(() =>
-                    {
-                        update_textbox.Text = movementManager.orderInfo;
-                        vehicleOrderPosition_textbox.Text = movementManager.getVehiclePositions(i);
-                    });
-                    rsm.ResetSettings();
                 }
                 else
                 {
                     Routing_solver rs = new Routing_solver(rsm);
                     RoutingSolverResults result = rs.solveProblemAndPrintResults();
-                    movementManager.setResultAndAct(result);
 
                     //Not important if I dont reuse components
                     rsm.ResetSettings();
-
-                    //post updates
-                    this.Dispatcher.Invoke(() =>
-                    {
-                        update_textbox.Text = movementManager.orderInfo;
-                        vehicleOrderPosition_textbox.Text = movementManager.getVehiclePositions(i);
-                    });
                 }
-                Thread.Sleep(SimulationController.stepTime);
             }
         }
 
