@@ -39,9 +39,18 @@ namespace diskretni_mapd_simulace
             //grid 3 sloupce, simulace uprostred, data v levo, updaty (jaky vuz dokoncil jakou objednavku vlevo)
             InitializeComponent();
             generateGrid();
+            show_simulation_grid();
+            return;
+
             db.setLocationMap();
             movementManager = new MovementManager(db);
             db.setTestData(); //TODO: ruzne moznosti tesstovani, pro realny beh smazat
+        }
+
+        public void show_simulation_grid()
+        {
+            simulace_visual sv = new simulace_visual();
+            sv.Show();
         }
        
 
@@ -119,7 +128,7 @@ namespace diskretni_mapd_simulace
 
         private void solve_btn_Click(object sender, RoutedEventArgs e)
         {
-
+            SimulationController.run = true;
             simulationThread = new Thread(new ThreadStart(runSimulation));
             simulationThread.Start();
         }
@@ -127,8 +136,9 @@ namespace diskretni_mapd_simulace
         private void runSimulation()
         {
             int tickTime = 1000; //time for one step of simulation
-            for (int i = 0; i < 50; i++)
+            for (int i = 0; i < 100; i++)
             {
+                if (SimulationController.run == false) return;
                 Routing_solverManager rsm = new Routing_solverManager(db);
                 rsm.getSolutionData();
                 if (rsm.ordersToProcess.Count == 0)
@@ -166,8 +176,13 @@ namespace diskretni_mapd_simulace
                         vehicleOrderPosition_textbox.Text = movementManager.getVehiclePositions(i);
                     });
                 }
-                Thread.Sleep(tickTime);
+                Thread.Sleep(SimulationController.stepTime);
             }
+        }
+
+        private void stop_btn_Click(object sender, RoutedEventArgs e)
+        {
+            SimulationController.run = false;
         }
     }
 }

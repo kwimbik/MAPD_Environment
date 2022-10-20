@@ -200,7 +200,9 @@ namespace diskretni_mapd_simulace
             }
             foreach (Order order in db.orders)
             {
-                positions += $"order {order.Id} is at location {order.currLocation.id}\n";
+                string state = "Processed";
+                if (order.state == (int)Order.states.delivered) state = "Delivered";
+                positions += $"order {order.Id} is at location {order.currLocation.id} : {state}\n";
             }
             return positions;
         }
