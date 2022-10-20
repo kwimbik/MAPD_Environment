@@ -39,19 +39,16 @@ namespace diskretni_mapd_simulace
             InitializeComponent();
             generateGrid();
             mapParserIO mp = new mapParserIO("map.txt");
-            show_simulation_grid(mp.readMap());
+            simulace_visual sv = new simulace_visual(mp.readInputFile(), db);
+            sv.Show();
+            PlanReader pr = new PlanReader(sv);
             return;
 
             db.setLocationMap();
             db.setTestData(); //TODO: ruzne moznosti tesstovani, pro realny beh smazat
         }
 
-        public void show_simulation_grid(string[][] map)
-        {
-            simulace_visual sv = new simulace_visual(map);
-            sv.Show();
-        }
-       
+     
 
         public void generateGrid()
         {
