@@ -39,7 +39,8 @@ namespace diskretni_mapd_simulace
             //grid 3 sloupce, simulace uprostred, data v levo, updaty (jaky vuz dokoncil jakou objednavku vlevo)
             InitializeComponent();
             generateGrid();
-            show_simulation_grid();
+            mapParserIO mp = new mapParserIO("map.txt");
+            show_simulation_grid(mp.readMap());
             return;
 
             db.setLocationMap();
@@ -47,9 +48,9 @@ namespace diskretni_mapd_simulace
             db.setTestData(); //TODO: ruzne moznosti tesstovani, pro realny beh smazat
         }
 
-        public void show_simulation_grid()
+        public void show_simulation_grid(string[][] map)
         {
-            simulace_visual sv = new simulace_visual();
+            simulace_visual sv = new simulace_visual(map);
             sv.Show();
         }
        

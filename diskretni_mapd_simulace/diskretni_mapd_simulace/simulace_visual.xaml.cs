@@ -23,15 +23,16 @@ namespace diskretni_mapd_simulace
         List<int[]> orders_coord = new List<int[]>();
         List<int[]> vehicles_coord = new List<int[]>();
 
-        public int[,] map = new int[,] { { 1, 0, 0 }, { 0, 0, 1 }, { 1, 0, 0 } };
+        public string[][] map = new string[][] { new string[] { "1", "0", "0" }, new string[] { "0", "0", "1" }, new string[] { "1", "0", "0"} };
         private Rectangle[,] map_tiles;
 
         Grid simGrid = new Grid();
 
 
-        public simulace_visual()
+        public simulace_visual(string[][] map)
         {
-            map_tiles = new Rectangle[map.GetLength(0), map.GetLength(1)];
+            this.map = map;
+            map_tiles = new Rectangle[map.GetLength(0), map[1].Length];
             InitializeComponent();
             createMap();
             this.Content = simGrid;
@@ -58,7 +59,7 @@ namespace diskretni_mapd_simulace
                 
             }
 
-            for (int j = 0; j < map.GetLength(1); j++)
+            for (int j = 0; j < map[0].Length; j++)
             {
                 visual_grid.ColumnDefinitions.Add(new ColumnDefinition());
             }
@@ -66,11 +67,11 @@ namespace diskretni_mapd_simulace
 
             for (int i = 0; i < map.GetLength(0); i++)
             {
-                for (int j = 0; j < map.GetLength(1); j++)
+                for (int j = 0; j < map[0].Length; j++)
                 {
                     Rectangle b = new Rectangle
                     {
-                        Fill = map[i, j] == 1 ? Brushes.Black : Brushes.White,
+                        Fill = map[i][j] == "1" ? Brushes.Black : Brushes.White,
                         VerticalAlignment = VerticalAlignment.Stretch,
                         HorizontalAlignment = HorizontalAlignment.Stretch,
                     };
