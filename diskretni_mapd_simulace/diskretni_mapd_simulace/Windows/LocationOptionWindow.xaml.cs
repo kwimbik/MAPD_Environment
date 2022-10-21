@@ -28,26 +28,26 @@ namespace diskretni_mapd_simulace
             InitializeComponent();
             addControls();
             this.Title = $"Location {loc.id}";
-            //TODO: Displat current location -> id, curr orders, curr vehicles
+            //TODO: Displat current location -> id, curr orders, curr agents
         }
 
         private void addControls()
         {
-            addVehicleInfo();
+            addAgentsInfo();
             addOrderInfo();
         }
 
-        private void addVehicleInfo()
+        private void addAgentsInfo()
         {
             string tbText = "";
-            if (location.vehicles.Count != 0)
+            if (location.agents.Count != 0)
             {
-                foreach (Vehicle vehicle in location.vehicles)
+                foreach (Agent agent in location.agents)
                 {
-                    tbText += $"vehicle {vehicle.id} \n";
+                    tbText += $"agent {agent.id} \n";
                 }
             }
-            else tbText = "No vehicles";
+            else tbText = "No agents";
 
             TextBlock tb = new TextBlock
             {
@@ -63,7 +63,7 @@ namespace diskretni_mapd_simulace
 
             Button button = new Button
             {
-                Content = "Add new vehicle",
+                Content = "Add new agent",
                 Margin = new Thickness(0, 100, 0, 0),
                 HorizontalAlignment = HorizontalAlignment.Left,
                 VerticalAlignment = VerticalAlignment.Top,
@@ -78,8 +78,8 @@ namespace diskretni_mapd_simulace
 
             button.Click += (sender, e) =>
             {
-                NewVehicleWindow newVehicleWindow = new NewVehicleWindow(location, database);
-                newVehicleWindow.Show();
+                NewAgentWindow newAgentWindow = new NewAgentWindow(location, database);
+                newAgentWindow.Show();
             };
         }
 

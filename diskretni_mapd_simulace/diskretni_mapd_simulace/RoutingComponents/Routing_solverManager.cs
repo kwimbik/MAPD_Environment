@@ -23,24 +23,24 @@ namespace diskretni_mapd_simulace
         public Dictionary<Location, List<List<int>>> locationToIndexMap = new Dictionary<Location, List<List<int>>>();
         public const int baseLocationOrders = 0;
         public const int targetLocationOrders = 1;
-        public const int baseLocationVehicles = 2;
+        public const int baseLocationAgents = 2;
 
 
         public List<Order> ordersToProcess = new List<Order>();
-        public bool freeVehicles = false;
+        public bool freeAgents = false;
 
         public Dictionary<int, Location> indexToLocationMap = new Dictionary<int, Location>();
 
-        //map from vehicle to index in solver
-        public Dictionary<Vehicle, int> vehicleToIndexMap =  new Dictionary<Vehicle, int>();
-        public Dictionary<int, Vehicle> indexToVehicleMap = new Dictionary<int, Vehicle>();
+        //map from agent to index in solver
+        public Dictionary<Agent, int> agentToIndexMap =  new Dictionary<Agent, int>();
+        public Dictionary<int, Agent> indexToAgentMap = new Dictionary<int, Agent>();
 
 
 
         //TODO: zajistit, aby slo poznat ktere loakce jsou pro auta a ktere pro objednavky
         //TJ podle inexu musi byt jasne jestli je to auto nebo objednavka v te lokaci
         //jinak zlobi demans a depot
-        int vehicleToIndexCounter = 0;
+        int agentToIndexCounter = 0;
         int locationToIndexCounter = 0;
 
         public long[][] TimeMatrix = new long[][] {
@@ -67,8 +67,8 @@ namespace diskretni_mapd_simulace
             new long[]{ 0, 30 } }; //4;
 
         public long[] Demands = { 0, 8, -8, -8, 8, 5, -5 }; //default value
-        public long[] VehicleCapacities = { 12, 12, 12 }; //default value
-        public int VehicleNumber = 3; //default value
+        public long[] AgentCapacities = { 12, 12, 12 }; //default value
+        public int AgentNumber = 3; //default value
 
         //depot values must be different from any pickup or delivery location of an order
         public int[] Depot = { 0, 0 ,0}; //default value of depot will be all zeros
@@ -77,32 +77,32 @@ namespace diskretni_mapd_simulace
         {
             locationToIndexCounter = 0;
             getPickupsAndDeliveries();
-            getVehicleNumber();
+            getAgentNumber();
             getDemands();
             getCapacities();
             getDepot();
             getTimeWindows();
             getTimeMatrix();
-            freeVehiclesFind();
+            freeAgentssFind();
         }
 
         public void ResetSettings()
         {
             locationToIndexMap.Clear();
             indexToLocationMap.Clear();
-            vehicleToIndexMap.Clear();
-            indexToVehicleMap.Clear();
-            vehicleToIndexCounter = 0;
+            agentToIndexMap.Clear();
+            indexToAgentMap.Clear();
+            agentToIndexCounter = 0;
             locationToIndexCounter = 0;
         }
 
-        public void freeVehiclesFind()
+        public void freeAgentssFind()
         {
-            foreach (Vehicle vehicle in db.vehicles)
+            foreach (Agent agent in db.agents)
             {
-                if (vehicle.targetLocation == null)
+                if (agent.targetLocation == null)
                 {
-                    freeVehicles = true;
+                    freeAgents = true;
                     return;
                 }
             }
@@ -200,8 +200,8 @@ namespace diskretni_mapd_simulace
                     demands[index] = -1;
                 }
 
-                //base locations  vehicles -> value is zero
-                foreach (int index in locationToIndexMap[location][baseLocationVehicles])
+                //base locations  agent -> value is zero
+                foreach (int index in locationToIndexMap[location][baseLocationAgents])
                 {
                     demands[index] = 0;
                 }
@@ -209,49 +209,49 @@ namespace diskretni_mapd_simulace
             this.Demands = demands;
         }
 
-        //gets capacities of vehicle, base = 1
+        //gets capacities of agents, base = 1
         public void getCapacities()
         {
-            long[] vehicleCapacities = new long[db.vehicles.Count];
-            for (int i = 0; i < db.vehicles.Count; i++)
+            long[] agentCapacities = new long[db.agents.Count];
+            for (int i = 0; i < db.agents.Count; i++)
             {
-                vehicleCapacities[i] = 1;
+                agentCapacities[i] = 1;
             }
-            this.VehicleCapacities = vehicleCapacities;
+            this.AgentCapacities = agentCapacities;
         }
 
 
-        //get number of vehicle and assign each location of vehicle unique index for this problem and assign each vehicle unique number
-        public void getVehicleNumber()
+        //get number of agents and assign each location of agent unique index for this problem and assign each vehicle unique number
+        public void getAgentNumber()
         {
-            VehicleNumber =  db.vehicles.Count;
-            for (int i = 0; i < db.vehicles.Count; i++)
+            AgentNumber =  db.agents.Count;
+            for (int i = 0; i < db.agents.Count; i++)
             {
-                vehicleToIndexMap.Add(db.vehicles[i], vehicleToIndexCounter);
-                indexToVehicleMap.Add(vehicleToIndexCounter++, db.vehicles[i]);
+                agentToIndexMap.Add(db.agents[i], agentToIndexCounter);
+                indexToAgentMap.Add(agentToIndexCounter++, db.agents[i]);
 
-                indexToLocationMap.Add(locationToIndexCounter, db.vehicles[i].baseLocation);
+                indexToLocationMap.Add(locationToIndexCounter, db.agents[i].baseLocation);
 
                 //add location to used ones
-                if (usedLocations.Contains(db.vehicles[i].baseLocation) == false) usedLocations.Add(db.vehicles[i].baseLocation);
+                if (usedLocations.Contains(db.agents[i].baseLocation) == false) usedLocations.Add(db.agents[i].baseLocation);
 
                 //assign solver location index
-                db.vehicles[i].solverLocationIndex = locationToIndexCounter;
+                db.agents[i].solverLocationIndex = locationToIndexCounter;
 
-                if (locationToIndexMap.ContainsKey(db.vehicles[i].baseLocation) == false)
+                if (locationToIndexMap.ContainsKey(db.agents[i].baseLocation) == false)
                 {
-                    locationToIndexMap.Add(db.vehicles[i].baseLocation, new List<List<int>> { new List<int>(), new List<int>(), new List<int> { locationToIndexCounter++ } });
+                    locationToIndexMap.Add(db.agents[i].baseLocation, new List<List<int>> { new List<int>(), new List<int>(), new List<int> { locationToIndexCounter++ } });
                 }
-                else locationToIndexMap[db.vehicles[i].baseLocation][baseLocationVehicles].Append(locationToIndexCounter++);
+                else locationToIndexMap[db.agents[i].baseLocation][baseLocationAgents].Append(locationToIndexCounter++);
             }
 
         }
 
-        //Gets starting position for all vehicles base on index of location for current problem
+        //Gets starting position for all agents base on index of location for current problem
         public void getDepot()
         {
             int depotLength = 0;
-            foreach (Vehicle vehicle in db.vehicles)
+            foreach (Agent agent in db.agents)
             {
                 depotLength += 1;
             }
@@ -260,7 +260,7 @@ namespace diskretni_mapd_simulace
             for (int i = 0; i < depot.Length; i++)
             {
                 //depot is selected as first index of location, distance to all other indexes will be zero
-                depot[i] = db.vehicles[i].solverLocationIndex;
+                depot[i] = db.agents[i].solverLocationIndex;
             }
             this.Depot = depot;
         }

@@ -24,9 +24,9 @@ namespace diskretni_mapd_simulace
             // Inspect solution.
             RoutingDimension timeDimension = rsr.routingModel.GetMutableDimension("Time");
             long totalTime = 0;
-            for (int i = 0; i < rsr.routingSolverManager.VehicleNumber; ++i)
+            for (int i = 0; i < rsr.routingSolverManager.AgentNumber; ++i)
             {
-                Console.WriteLine("Route for Vehicle {0}:", i);
+                Console.WriteLine("Route for Agent {0}:", i);
                 var index = rsr.routingModel.Start(i);
                 while (rsr.routingModel.IsEnd(index) == false)
                 {
@@ -50,7 +50,7 @@ namespace diskretni_mapd_simulace
             // Create Routing Index Manager
             RoutingIndexManager manager = new RoutingIndexManager(
                 svm.TimeMatrix.GetLength(0),
-                svm.VehicleNumber,
+                svm.AgentNumber,
                 svm.Depot,
                 svm.Depot);
 
@@ -87,7 +87,7 @@ namespace diskretni_mapd_simulace
                 return svm.Demands[fromNode];
             });
             routing.AddDimensionWithVehicleCapacity(demandCallbackIndex, 0, // null capacity slack
-                                                    svm.VehicleCapacities, // vehicle maximum capacities
+                                                    svm.AgentCapacities, // vehicle maximum capacities
                                                     true,                   // start cumul to zero
                                                     "Capacity");
 
@@ -98,14 +98,14 @@ namespace diskretni_mapd_simulace
                 timeDimension.CumulVar(index).SetRange(svm.TimeWindows[i][0], svm.TimeWindows[i][1]);
             }
             // Add time window constraints for each vehicle start node.
-            for (int i = 0; i < svm.VehicleNumber; ++i)
+            for (int i = 0; i < svm.AgentNumber; ++i)
             {
                 long index = routing.Start(i);
                 timeDimension.CumulVar(index).SetRange(svm.TimeWindows[0][0], svm.TimeWindows[0][1]);
             }
 
             // Instantiate route start and end times to produce feasible times.
-            for (int i = 0; i < svm.VehicleNumber; ++i)
+            for (int i = 0; i < svm.AgentNumber; ++i)
             {
                 routing.AddVariableMinimizedByFinalizer(timeDimension.CumulVar(routing.Start(i)));
                 routing.AddVariableMinimizedByFinalizer(timeDimension.CumulVar(routing.End(i)));

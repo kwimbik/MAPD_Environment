@@ -12,7 +12,7 @@ namespace diskretni_mapd_simulace
         
         public int[] coordination = new int[2];
         public List<Order> orders = new List<Order>();
-        public List<Vehicle> vehicles = new List<Vehicle>();
+        public List<Agent> agents = new List<Agent>();
         public int type;
 
         public enum types

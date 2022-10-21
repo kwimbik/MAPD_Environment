@@ -18,7 +18,7 @@ namespace diskretni_mapd_simulace.Plan_Tools
 
         public void assignColors()
         {
-            int num_of_agents = db.vehicles.Count;
+            int num_of_agents = db.agents.Count;
         }
     }
 }

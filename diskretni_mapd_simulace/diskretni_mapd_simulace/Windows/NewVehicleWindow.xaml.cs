@@ -17,11 +17,11 @@ namespace diskretni_mapd_simulace
     /// <summary>
     /// Interaction logic for NewVehicleWindow.xaml
     /// </summary>
-    public partial class NewVehicleWindow : Window
+    public partial class NewAgentWindow : Window
     {
         Database database;
         Location location;
-        public NewVehicleWindow(Location location, Database db)
+        public NewAgentWindow(Location location, Database db)
         {
             this.location = location;
             database = db;
@@ -56,14 +56,14 @@ namespace diskretni_mapd_simulace
 
             bt.Click += (sender, e) =>
             {
-                Vehicle vehicle = new Vehicle
+                Agent vehicle = new Agent
                 {
                     id = tb.Text,
                     baseLocation = location,
                     targetLocation = location,
                 };
-                database.vehicles.Add(vehicle);
-                location.vehicles.Add(vehicle);
+                database.agents.Add(vehicle);
+                location.agents.Add(vehicle);
                 this.Close();
             };
         }

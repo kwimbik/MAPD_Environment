@@ -50,15 +50,15 @@ namespace diskretni_mapd_simulace
                 //Agent move: 'time'-A-'id'-'locationId'
                 if (row[1] == "A")
                 {
-                    Vehicle a = db.getVehicleById(row[2]);
+                    Agent a = db.getAgentById(row[2]);
                     Location l = db.getLocationByID(int.Parse(row[3]));
                     sv.changeColor(a.baseLocation.coordination, new byte[] { 255,255,255});
                     sv.changeColor(l.coordination, a.color);
 
                     //move the agent to new location in db
-                    a.baseLocation.vehicles.Remove(a);
+                    a.baseLocation.agents.Remove(a);
                     a.baseLocation = l;
-                    l.vehicles.Add(a);
+                    l.agents.Add(a);
                 }
             }
         }

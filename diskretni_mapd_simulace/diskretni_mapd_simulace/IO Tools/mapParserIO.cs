@@ -38,12 +38,12 @@ namespace diskretni_mapd_simulace
                 //Agent
                 else if (line[0] == 'A')
                 {
-                    Vehicle a = new Vehicle
+                    Agent a = new Agent
                     {
                         id = row[1],
                         baseLocation = db.getLocationByID(int.Parse(row[2])),
                     };
-                    db.vehicles.Add(a);
+                    db.agents.Add(a);
                 }
                 //Order
                 else if (line[0] == 'O')

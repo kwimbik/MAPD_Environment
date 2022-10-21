@@ -31,7 +31,7 @@ namespace diskretni_mapd_simulace
         List<Button> location_buttons = new List<Button>();
         Dictionary<Button, Location> butt_loc_dict = new Dictionary<Button, Location>();
         TextBox update_textbox;
-        TextBox vehicleOrderPosition_textbox;
+        TextBox agentOrderPosition_textbox;
 
         public Simulation()
         {
@@ -65,17 +65,17 @@ namespace diskretni_mapd_simulace
             Grid.SetColumn(tb, 2);
             update_textbox = tb;
 
-            //add textbox for vehicle positions
+            //add textbox for agent positions
             TextBox tbv = new TextBox
             {
-                Name = "vehiclePosition_textbox",
-                Text = "Vehicles",
+                Name = "agentPosition_textbox",
+                Text = "Agents",
                 VerticalAlignment = VerticalAlignment.Stretch,
                 HorizontalAlignment = HorizontalAlignment.Stretch,
             };
             Simulation_grid.Children.Add(tbv);
             Grid.SetColumn(tbv, 0);
-            vehicleOrderPosition_textbox = tbv;
+            agentOrderPosition_textbox = tbv;
         }
 
         private void solve_btn_Click(object sender, RoutedEventArgs e)

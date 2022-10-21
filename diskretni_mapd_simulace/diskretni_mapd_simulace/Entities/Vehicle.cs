@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace diskretni_mapd_simulace
 {
-    public class Vehicle
+    public class Agent
     {
         public string id;
         public byte[] color;

@@ -20,7 +20,7 @@ namespace diskretni_mapd_simulace
     public partial class simulace_visual : Window
     {
         List<int[]> orders_coord = new List<int[]>();
-        List<int[]> vehicles_coord = new List<int[]>();
+        List<int[]> agents_coord = new List<int[]>();
         Database db;
 
         public string[][] map = new string[][] { new string[] { "1", "0", "0" }, new string[] { "0", "0", "1" }, new string[] { "1", "0", "0"} };

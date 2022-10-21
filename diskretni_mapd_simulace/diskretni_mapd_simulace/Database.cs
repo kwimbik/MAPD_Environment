@@ -9,7 +9,7 @@ namespace diskretni_mapd_simulace
     public class Database
     {
         public List<Location> locations = new List<Location>();
-        public List<Vehicle> vehicles = new List<Vehicle>();
+        public List<Agent> agents = new List<Agent>();
 
         public Location[][] locationMap;
 
@@ -41,8 +41,8 @@ namespace diskretni_mapd_simulace
             locations[48].orders.Add(o3);
             locations[92].orders.Add(o4);
             locations[87].orders.Add(o5);
-            vehicles.Add(new Vehicle() { id ="1",  baseLocation = locations[32], color = pink });
-            vehicles.Add(new Vehicle() { id ="2", baseLocation = locations[32], color = blue });
+            agents.Add(new Agent() { id ="1",  baseLocation = locations[32], color = pink });
+            agents.Add(new Agent() { id ="2", baseLocation = locations[32], color = blue });
         }
 
         public void setLocationMap(int rows, int cols)
@@ -82,9 +82,9 @@ namespace diskretni_mapd_simulace
             return null;
         }
 
-        public Vehicle getVehicleById(string id)
+        public Agent getAgentById(string id)
         {
-            foreach (Vehicle v in vehicles)
+            foreach (Agent v in agents)
             {
                 if (v.id == id) return v;
             }
