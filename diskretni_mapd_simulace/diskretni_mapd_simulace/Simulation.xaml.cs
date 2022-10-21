@@ -25,6 +25,7 @@ namespace diskretni_mapd_simulace
         Routing_solverManager rsm;
         Thread simulationThread;
         Simulace_Visual sv;
+        private int grid_height = 6;
 
 
 
@@ -49,16 +50,71 @@ namespace diskretni_mapd_simulace
 
         public void generateGrid()
         {
-            Simulation_grid.RowDefinitions.Add(new RowDefinition());
-            Simulation_grid.RowDefinitions.Add(new RowDefinition());
-            Simulation_grid.RowDefinitions.Add(new RowDefinition());
-            Simulation_grid.RowDefinitions.Add(new RowDefinition());
-            Simulation_grid.RowDefinitions.Add(new RowDefinition());
+            for (int i = 0; i < grid_height; i++)
+            {
+                Simulation_grid.RowDefinitions.Add(new RowDefinition());
+            }
+            
 
             generateSetupPanel();
             generateMapPanel();
+            generatePlanPanel();
 
         }
+
+        private void generatePlanPanel()
+        {
+            //Button for new agent
+            Button addAgentBtn = new Button
+            {
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                VerticalAlignment = VerticalAlignment.Stretch,
+                Content = "Add new agent",
+            };
+            addAgentBtn.Click += (sender, e) =>
+            {
+                NewAgentWindow naw = new NewAgentWindow(db);
+                naw.Show();
+                
+            };
+            Simulation_grid.Children.Add(addAgentBtn);
+            Grid.SetColumn(addAgentBtn, 2);
+            Grid.SetRow(addAgentBtn, 0);
+
+
+            //Button for new Order
+            Button addOrderBtn = new Button
+            {
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                VerticalAlignment = VerticalAlignment.Stretch,
+                Content = "Add new order",
+            };
+
+            addOrderBtn.Click += (sender, e) =>
+            {
+                NewOrderWindow now = new NewOrderWindow(db);
+                now.Show();
+
+            };
+            Simulation_grid.Children.Add(addOrderBtn);
+            Grid.SetColumn(addOrderBtn, 2);
+            Grid.SetRow(addOrderBtn, 1);
+
+
+            //Textbox with color info
+            TextBlock colors_tb = new TextBlock
+            {
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                VerticalAlignment = VerticalAlignment.Stretch,
+                TextAlignment = TextAlignment.Center,
+                Text = "Here will be the colors info",
+            };
+            Simulation_grid.Children.Add(colors_tb);
+            Grid.SetColumn(colors_tb, 2);
+            Grid.SetRow(colors_tb, 2);
+        }
+
+
         private void generateMapPanel()
         {
             Button createPlanBtn = new Button
@@ -69,11 +125,29 @@ namespace diskretni_mapd_simulace
             };
             createPlanBtn.Click += (sender, e) =>
             {
-                //TODO: forms explorer with selection of file
+                //will generate actual plan
             };
             Simulation_grid.Children.Add(createPlanBtn);
             Grid.SetColumn(createPlanBtn, 1);
             Grid.SetRow(createPlanBtn, 4);
+
+
+            Button createPresolveBtn = new Button
+            {
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                VerticalAlignment = VerticalAlignment.Stretch,
+                Content = "Create plan",
+            };
+            createPresolveBtn.Click += (sender, e) =>
+            {
+                // runs tsp to presolve problem with TaskAssignment
+                SimulationController.run = true;
+                simulationThread = new Thread(new ThreadStart(runTSP));
+                simulationThread.Start();
+            };
+            Simulation_grid.Children.Add(createPresolveBtn);
+            Grid.SetColumn(createPresolveBtn, 1);
+            Grid.SetRow(createPresolveBtn, 3);
 
 
         }
@@ -89,9 +163,7 @@ namespace diskretni_mapd_simulace
             };
             fileButton.Click += (sender, e) =>
             {
-                SimulationController.run = true;
-                simulationThread = new Thread(new ThreadStart(runTSP));
-                simulationThread.Start();
+                //add explorer component 
             };
             Simulation_grid.Children.Add(fileButton);
             Grid.SetColumn(fileButton, 0);

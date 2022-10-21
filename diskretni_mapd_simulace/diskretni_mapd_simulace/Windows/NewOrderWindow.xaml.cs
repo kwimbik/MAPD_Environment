@@ -20,10 +20,8 @@ namespace diskretni_mapd_simulace
     public partial class NewOrderWindow : Window
     {
         Database database;
-        Location location;
-        public NewOrderWindow(Location location, Database db)
+        public NewOrderWindow(Database db)
         {
-            this.location = location;
             database = db;
             InitializeComponent();
             createControls();
@@ -31,54 +29,69 @@ namespace diskretni_mapd_simulace
 
        public void createControls()
         {
-            TextBox tb = new TextBox
+            newOrder_grid.RowDefinitions.Add(new RowDefinition());
+            newOrder_grid.RowDefinitions.Add(new RowDefinition());
+            newOrder_grid.RowDefinitions.Add(new RowDefinition());
+            TextBox id_tb = new TextBox
             {
                 Text = "Order ID",
-                Margin = new Thickness(0, 0, 0, 0),
-                HorizontalAlignment = HorizontalAlignment.Left,
-                VerticalAlignment = VerticalAlignment.Top,
-                Height = 20,
-                Width = 150,
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                VerticalAlignment = VerticalAlignment.Stretch,
             };
-            newOrder_grid.Children.Add(tb);
+            newOrder_grid.Children.Add(id_tb);
+            Grid.SetRow(id_tb, 0);
 
-            ComboBox cb = new ComboBox
+
+            ComboBox initPostition_cb = new ComboBox
             {
-                Text = "TargetLocation",
-                Margin = new Thickness(0, 40, 0, 0),
-                HorizontalAlignment = HorizontalAlignment.Left,
-                VerticalAlignment = VerticalAlignment.Top,
-                Height = 20,
-                Width = 150,
+                Text = "Initial location",
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                VerticalAlignment = VerticalAlignment.Stretch,
             };
             foreach (Location loc in database.locations)
             {
-                cb.Items.Add($"{loc.id}");
+                initPostition_cb.Items.Add($"{loc.id}");
             }
-            newOrder_grid.Children.Add(cb);
+            newOrder_grid.Children.Add(initPostition_cb);
+            Grid.SetRow(initPostition_cb, 1);
+
+
+
+            ComboBox tarhetPos_cb = new ComboBox
+            {
+                Text = "TargetLocation",
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                VerticalAlignment = VerticalAlignment.Stretch,
+            };
+            foreach (Location loc in database.locations)
+            {
+                tarhetPos_cb.Items.Add($"{loc.id}");
+            }
+            newOrder_grid.Children.Add(tarhetPos_cb);
+            Grid.SetRow(initPostition_cb, 2);
 
 
             Button bt = new Button
             {
                 Content = "Accept",
-                Margin = new Thickness(0, 80, 0, 0),
-                HorizontalAlignment = HorizontalAlignment.Left,
-                VerticalAlignment = VerticalAlignment.Top,
-                Height = 20,
-                Width = 150,
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                VerticalAlignment = VerticalAlignment.Stretch,
             };
             newOrder_grid.Children.Add(bt);
+            Grid.SetRow(bt, 3);
+
 
             bt.Click += (sender, e) =>
             {
+                Location init_location = database.getLocationByID(int.Parse(initPostition_cb.Text));
                 Order order = new Order
                 {
-                    id = tb.Text,
-                    currLocation = location,
-                    targetLocation = database.getLocationByID(int.Parse(cb.Text)),
+                    id = id_tb.Text,
+                    currLocation = init_location,
+                    targetLocation = database.getLocationByID(int.Parse(tarhetPos_cb.Text)),
                 };
                 database.orders.Add(order);
-                location.orders.Add(order);
+                init_location.orders.Add(order);
                 this.Close();
             };
         }

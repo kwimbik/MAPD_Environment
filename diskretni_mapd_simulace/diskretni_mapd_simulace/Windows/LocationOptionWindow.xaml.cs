@@ -78,8 +78,8 @@ namespace diskretni_mapd_simulace
 
             button.Click += (sender, e) =>
             {
-                NewAgentWindow newAgentWindow = new NewAgentWindow(location, database);
-                newAgentWindow.Show();
+                //NewAgentWindow newAgentWindow = new NewAgentWindow(location, database);
+                //newAgentWindow.Show();
             };
         }
 
@@ -124,8 +124,8 @@ namespace diskretni_mapd_simulace
 
             button.Click += (sender, e) =>
             {
-                NewOrderWindow nerOrderWIndow = new NewOrderWindow(location, database);
-                nerOrderWIndow.Show();
+                //NewOrderWindow nerOrderWIndow = new NewOrderWindow(location, database);
+                //nerOrderWIndow.Show();
             };
         }
     }

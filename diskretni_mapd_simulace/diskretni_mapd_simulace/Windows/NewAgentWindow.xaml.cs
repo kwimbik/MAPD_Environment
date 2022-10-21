@@ -20,10 +20,9 @@ namespace diskretni_mapd_simulace
     public partial class NewAgentWindow : Window
     {
         Database database;
-        Location location;
-        public NewAgentWindow(Location location, Database db)
+
+        public NewAgentWindow(Database db)
         {
-            this.location = location;
             database = db;
             InitializeComponent();
             createControls();
@@ -31,31 +30,47 @@ namespace diskretni_mapd_simulace
 
         public void createControls()
         {
+            NewAgent_grid.RowDefinitions.Add(new RowDefinition());
+            NewAgent_grid.RowDefinitions.Add(new RowDefinition());
             TextBox tb = new TextBox
             {
                 Text = "Vehicle ID",
                 Margin = new Thickness(0, 0, 0, 0),
-                HorizontalAlignment = HorizontalAlignment.Left,
-                VerticalAlignment = VerticalAlignment.Top,
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                VerticalAlignment = VerticalAlignment.Stretch,
                 Height = 20,
                 Width = 150,
             };
-            NewVehicle_grid.Children.Add(tb);
-            
+            NewAgent_grid.Children.Add(tb);
+            Grid.SetRow(tb,0);
+
+            TextBox loc_txb = new TextBox
+            {
+                Text = "Location",
+                Margin = new Thickness(0, 0, 0, 0),
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                VerticalAlignment = VerticalAlignment.Stretch,
+                Height = 20,
+                Width = 150,
+            };
+            NewAgent_grid.Children.Add(loc_txb);
+            Grid.SetRow(loc_txb, 1);
 
             Button bt = new Button
             {
                 Content = "Accept",
                 Margin = new Thickness(0, 40, 0, 0),
-                HorizontalAlignment = HorizontalAlignment.Left,
-                VerticalAlignment = VerticalAlignment.Top,
-                Height = 20,
-                Width = 150,
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                VerticalAlignment = VerticalAlignment.Stretch,
             };
-            NewVehicle_grid.Children.Add(bt);
+            NewAgent_grid.Children.Add(bt);
+            Grid.SetRow(bt, 2);
 
             bt.Click += (sender, e) =>
             {
+                Location location = database.getLocationByID(int.Parse(loc_txb.Text));
+
+                //TODO: location validator or smarter selector
                 Agent vehicle = new Agent
                 {
                     id = tb.Text,

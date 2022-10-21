@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:diskretni_mapd_simulace"
         mc:Ignorable="d"
         Title="NewVehicleWindow" Height="450" Width="800">
-    <Grid x:Name="NewVehicle_grid">
+    <Grid x:Name="NewAgent_grid">
         
     </Grid>
 </Window>
