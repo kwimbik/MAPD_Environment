@@ -12,8 +12,7 @@
 			<ColumnDefinition Width="2*" />
 			<ColumnDefinition Width="1*" />
 		</Grid.ColumnDefinitions>
-		<Button x:Name="solve_btn" Content="Solve" HorizontalAlignment="Left" Margin="196,0,0,10" Width="90" Click="solve_btn_Click" Grid.Column="1" VerticalAlignment="Bottom" Height="46"/>
-		<Button x:Name="stop_btn" Content="Stop" HorizontalAlignment="Left" Margin="50,0,0,10" Width="90" Grid.Column="1" VerticalAlignment="Bottom" Height="46" Click="stop_btn_Click"/>
+		<Button x:Name="stop_btn" Content="Stop" HorizontalAlignment="Left" Margin="0,0,0,124" Width="90" Grid.Column="2" VerticalAlignment="Bottom" Height="46" Click="stop_btn_Click"/>
 	</Grid>
 
 </Window>

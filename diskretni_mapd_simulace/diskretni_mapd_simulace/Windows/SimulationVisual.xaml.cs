@@ -17,7 +17,7 @@ namespace diskretni_mapd_simulace
     /// <summary>
     /// Interaction logic for simulace_visual.xaml
     /// </summary>
-    public partial class simulace_visual : Window
+    public partial class Simulace_Visual : Window
     {
         List<int[]> orders_coord = new List<int[]>();
         List<int[]> agents_coord = new List<int[]>();
@@ -26,10 +26,10 @@ namespace diskretni_mapd_simulace
         public string[][] map = new string[][] { new string[] { "1", "0", "0" }, new string[] { "0", "0", "1" }, new string[] { "1", "0", "0"} };
         private Rectangle[,] map_tiles;
 
-        Grid simGrid = new Grid();
+        public Grid simGrid = new Grid();
 
 
-        public simulace_visual(string[][] map, Database db)
+        public Simulace_Visual(string[][] map, Database db)
         {
             this.db = db;
             this.map = map;

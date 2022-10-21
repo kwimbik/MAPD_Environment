@@ -18,9 +18,9 @@ namespace diskretni_mapd_simulace
 
         string file = "plan.txt";
 
-        simulace_visual sv;
+        Simulace_Visual sv;
         Database db;
-        public PlanReader(simulace_visual sv, Database db)
+        public PlanReader(Simulace_Visual sv, Database db)
         {
             this.sv = sv;
             this.db = db;

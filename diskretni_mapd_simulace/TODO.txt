@@ -1,9 +1,9 @@
-Osetrit zadavani lokaci, tj je mozne vic objednavek v jedne lokaci
-Result solver - komponenta, ktera na zaklade vysledku je schopna priradit agentum a objednavkam jejich pristi lokaci
 Osetrit korekti zadavani, tj objednavka nemuze mit jako target lokaci svou vlastni
 
 -- Udelat visual komponentu co dostane vstup a zobrazi podle toho mapu. Zaroven kazde pole napasovat na lokace
 -- vyhazet zbytecny veci, vsechno je na gitu
 -- vyhodit komplet movement classu, zlikvidovat tlacitka a bindovani, vytvorit input parser doprostred co nahraje soubor
 -- pridat moznost jak nacist soubor jako argument
+-- plan validator
+-- validation of input
 https://www.youtube.com/watch?v=jezhAkxEYZM

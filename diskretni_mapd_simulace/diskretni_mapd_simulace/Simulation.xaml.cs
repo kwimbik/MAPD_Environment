@@ -24,65 +24,135 @@ namespace diskretni_mapd_simulace
         Routing_solver rs;
         Routing_solverManager rsm;
         Thread simulationThread;
+        Simulace_Visual sv;
 
 
 
         //controls
         List<Button> location_buttons = new List<Button>();
         Dictionary<Button, Location> butt_loc_dict = new Dictionary<Button, Location>();
-        TextBox update_textbox;
-        TextBox agentOrderPosition_textbox;
 
         public Simulation()
         {
             //grid 3 sloupce, simulace uprostred, data v levo, updaty (jaky vuz dokoncil jakou objednavku vlevo)
             InitializeComponent();
-            generateGrid();
             mapParserIO mp = new mapParserIO("map.txt", db);
-            simulace_visual sv = new simulace_visual(mp.readInputFile(), db);
+            sv = new Simulace_Visual(mp.readInputFile(), db);
             sv.Show();
             db.setLocationMap(sv.map.GetLength(0), sv.map[0].Length);
             db.setTestData(); //TODO: ruzne moznosti tesstovani, pro realny beh smazat
-
+            generateGrid();
             //testt plan exe
             PlanReader pr = new PlanReader(sv, db);
-            pr.readPlan();
+            //pr.readPlan();
         }
-
-
 
         public void generateGrid()
         {
-            //add textbox for updates on simulation
-            TextBox tb = new TextBox
-            {
-                Name = "updates_textbox",
-                Text = "Updates",
-                VerticalAlignment = VerticalAlignment.Stretch,
-                HorizontalAlignment = HorizontalAlignment.Stretch,
-            };
-            Simulation_grid.Children.Add(tb);
-            Grid.SetColumn(tb, 2);
-            update_textbox = tb;
+            Simulation_grid.RowDefinitions.Add(new RowDefinition());
+            Simulation_grid.RowDefinitions.Add(new RowDefinition());
+            Simulation_grid.RowDefinitions.Add(new RowDefinition());
+            Simulation_grid.RowDefinitions.Add(new RowDefinition());
+            Simulation_grid.RowDefinitions.Add(new RowDefinition());
 
-            //add textbox for agent positions
-            TextBox tbv = new TextBox
+            generateSetupPanel();
+            generateMapPanel();
+
+        }
+        private void generateMapPanel()
+        {
+            Button createPlanBtn = new Button
             {
-                Name = "agentPosition_textbox",
-                Text = "Agents",
-                VerticalAlignment = VerticalAlignment.Stretch,
                 HorizontalAlignment = HorizontalAlignment.Stretch,
+                VerticalAlignment = VerticalAlignment.Stretch,
+                Content = "Create plan",
             };
-            Simulation_grid.Children.Add(tbv);
-            Grid.SetColumn(tbv, 0);
-            agentOrderPosition_textbox = tbv;
+            createPlanBtn.Click += (sender, e) =>
+            {
+                //TODO: forms explorer with selection of file
+            };
+            Simulation_grid.Children.Add(createPlanBtn);
+            Grid.SetColumn(createPlanBtn, 1);
+            Grid.SetRow(createPlanBtn, 4);
+
+
         }
 
-        private void solve_btn_Click(object sender, RoutedEventArgs e)
+
+        private void generateSetupPanel()
         {
-            SimulationController.run = true;
-            simulationThread = new Thread(new ThreadStart(runTSP));
-            simulationThread.Start();
+            Button fileButton = new Button
+            {
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                VerticalAlignment = VerticalAlignment.Stretch,
+                Content = "Upload file",
+            };
+            fileButton.Click += (sender, e) =>
+            {
+                SimulationController.run = true;
+                simulationThread = new Thread(new ThreadStart(runTSP));
+                simulationThread.Start();
+            };
+            Simulation_grid.Children.Add(fileButton);
+            Grid.SetColumn(fileButton, 0);
+            Grid.SetRow(fileButton, 0);
+
+           
+
+            Button genMap = new Button
+            {
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                VerticalAlignment = VerticalAlignment.Stretch,
+                Content = "Generate map",
+            };
+            genMap.Click += (sender, e) =>
+            {
+                //TODO: generate map with specific parameters
+            };
+            Simulation_grid.Children.Add(genMap);
+            Grid.SetColumn(genMap, 0);
+            Grid.SetRow(genMap, 1);
+
+            Button chooseAlgo = new Button
+            {
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                VerticalAlignment = VerticalAlignment.Stretch,
+                Content = "Choose algorhitm",
+            };
+            chooseAlgo.Click += (sender, e) =>
+            {
+                //TODO: selects algorithm for plan
+            };
+            Simulation_grid.Children.Add(chooseAlgo);
+            Grid.SetColumn(chooseAlgo, 0);
+            Grid.SetRow(chooseAlgo, 2);
+
+            TextBlock tb = new TextBlock
+            {
+                Text = "Current output file: plan.txt",
+                TextAlignment = TextAlignment.Center,
+                
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                VerticalAlignment = VerticalAlignment.Stretch,
+            };
+            Simulation_grid.Children.Add(tb);
+            Grid.SetColumn(tb, 0);
+            Grid.SetRow(tb, 3);
+
+            Button outputFileBtn = new Button
+            {
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                VerticalAlignment = VerticalAlignment.Stretch,
+                Content = "Choose different outputFile",
+            };
+            outputFileBtn.Click += (sender, e) =>
+            {
+                //TODO: selects output file in explorer -> forms component
+            };
+            Simulation_grid.Children.Add(outputFileBtn);
+            Grid.SetColumn(outputFileBtn, 0);
+            Grid.SetRow(outputFileBtn, 4);
+
         }
 
         private void runTSP()
@@ -94,7 +164,7 @@ namespace diskretni_mapd_simulace
                 //TODO: add some steps or meters -> store in resultManager
                 this.Dispatcher.Invoke(() =>
                 {
-                    update_textbox.Text = "All Orders have been delivered";
+                    MessageBox.Show("All orders have been delivered");
                 });
             }
             else
