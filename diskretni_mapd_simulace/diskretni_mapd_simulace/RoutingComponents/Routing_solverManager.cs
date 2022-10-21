@@ -176,7 +176,7 @@ namespace diskretni_mapd_simulace
             long[][] tw = new long[ordersToProcess.Count][];
             for (int i = 0; i < ordersToProcess.Count; i++)
             {
-                tw[i] = new long[] { 0, 30 };
+                tw[i] = new long[] { 0, db.locations.Count }; //for now, time windows are arbitrary large
             }
             this.TimeWindows = tw;
         }

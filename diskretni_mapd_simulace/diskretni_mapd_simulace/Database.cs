@@ -47,16 +47,15 @@ namespace diskretni_mapd_simulace
             vehicles.Add(new Vehicle() { Id ="2", baseLocation = locations[32] });
         }
 
-        public void setLocationMap()
+        public void setLocationMap(int rows, int cols)
         {
-            //Only square gridns, might change later TODO
-            int mapSize = (int)Math.Round(Math.Sqrt(locations.Count()));
+            int mapSize = rows;
 
             //init the map
             locationMap = new Location[mapSize][];
             for (int i = 0; i < mapSize; i++)
             {
-                locationMap[i] = new Location[mapSize];
+                locationMap[i] = new Location[cols];
             }
 
             foreach (Location location in locations)

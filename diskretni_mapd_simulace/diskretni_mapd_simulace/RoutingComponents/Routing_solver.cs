@@ -119,7 +119,7 @@ namespace diskretni_mapd_simulace
                 true, // start cumul to zero
                 "Distance");
             RoutingDimension distanceDimension = routing.GetMutableDimension("Distance");
-            distanceDimension.SetGlobalSpanCostCoefficient(100);
+            distanceDimension.SetGlobalSpanCostCoefficient(200);
 
             // Define Transportation Requests.
             Solver solver = routing.solver();

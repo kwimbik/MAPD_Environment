@@ -38,65 +38,19 @@ namespace diskretni_mapd_simulace
             //grid 3 sloupce, simulace uprostred, data v levo, updaty (jaky vuz dokoncil jakou objednavku vlevo)
             InitializeComponent();
             generateGrid();
-            mapParserIO mp = new mapParserIO("map.txt");
+            mapParserIO mp = new mapParserIO("map.txt", db);
             simulace_visual sv = new simulace_visual(mp.readInputFile(), db);
             sv.Show();
-            PlanReader pr = new PlanReader(sv);
-            return;
+            //PlanReader pr = new PlanReader(sv);
 
-            db.setLocationMap();
+            db.setLocationMap(sv.map.GetLength(0), sv.map[0].Length);
             db.setTestData(); //TODO: ruzne moznosti tesstovani, pro realny beh smazat
         }
 
-     
+
 
         public void generateGrid()
         {
-            int gridWidth = 10;
-            int gridHeihght = 10;
-            int blankSpace = 40;
-            int locationCounter = 0;
-
-            int rectHeight = 20;
-            int rectangleWidth = 20;
-
-            for (int i = 0; i < gridWidth; i++)
-            {
-                for (int j = 0; j < gridHeihght; j++)
-                {
-                    
-                    Button button = new Button
-                    { 
-                        Height = rectHeight,
-                        Width = rectangleWidth,
-                        Margin = new Thickness(i * blankSpace + blankSpace, j * blankSpace + blankSpace, 0, 0),
-                        IsEnabled = true,
-                        Background = Brushes.White,
-                        BorderBrush = Brushes.Black,
-                        VerticalAlignment = VerticalAlignment.Top,
-                        HorizontalAlignment = HorizontalAlignment.Left,
-                        Content = locationCounter.ToString(),
-                        FontSize = 10,
-                        
-                    };
-                    Simulation_grid.Children.Add(button);
-                    Grid.SetColumn(button, 1);
-                    Location location = new Location { id = locationCounter++, coordination = new int[] { i, j } };
-                    db.locations.Add(location);
-                    location_buttons.Add(button);
-                    butt_loc_dict.Add(button, location);
-
-                    button.Click += (sender, e) =>
-                    {
-                        //TODO: proc locationOpetionWindow with button to add vehicle or Order
-                        // fill with function to proc correct window
-                        LocationOptionWindow locoptwindow = new LocationOptionWindow(butt_loc_dict[button], db);
-                        locoptwindow.Show();
-                    };
-                }
-            }
-
-
             //add textbox for updates on simulation
             TextBox tb = new TextBox
             {
@@ -131,27 +85,20 @@ namespace diskretni_mapd_simulace
 
         private void runSimulation()
         {
-            for (int i = 0; i < 100; i++)
+            Routing_solverManager rsm = new Routing_solverManager(db);
+            rsm.getSolutionData();
+            if (rsm.ordersToProcess.Count == 0)
             {
-                if (SimulationController.run == false) return;
-                Routing_solverManager rsm = new Routing_solverManager(db);
-                rsm.getSolutionData();
-                if (rsm.ordersToProcess.Count == 0)
+                //TODO: add some steps or meters -> store in resultManager
+                this.Dispatcher.Invoke(() =>
                 {
-                    //TODO: add some steps or meters -> store in resultManager
-                    this.Dispatcher.Invoke(() =>
-                    {
-                        update_textbox.Text = "All Orders have been delivered";
-                    });
-                }
-                else
-                {
-                    Routing_solver rs = new Routing_solver(rsm);
-                    RoutingSolverResults result = rs.solveProblemAndPrintResults();
-
-                    //Not important if I dont reuse components
-                    rsm.ResetSettings();
-                }
+                    update_textbox.Text = "All Orders have been delivered";
+                });
+            }
+            else
+            {
+                Routing_solver rs = new Routing_solver(rsm);
+                RoutingSolverResults result = rs.solveProblemAndPrintResults();
             }
         }
 

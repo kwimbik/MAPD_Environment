@@ -12,7 +12,8 @@ namespace diskretni_mapd_simulace
         public Location currLocation;
         public Location targetLocation;
         public int state;
-        
+        public int[] color;
+
 
         public enum states
         {

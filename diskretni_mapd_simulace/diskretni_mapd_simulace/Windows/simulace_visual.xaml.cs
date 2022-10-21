@@ -69,6 +69,8 @@ namespace diskretni_mapd_simulace
             }
             simGrid = visual_grid;
 
+
+            int id_counter = 0;
             for (int i = 0; i < map.GetLength(0); i++)
             {
                 for (int j = 0; j < map[0].Length; j++)
@@ -86,17 +88,5 @@ namespace diskretni_mapd_simulace
                 }
             }         
         }
-
-        private void createLocation(int id, int[] coord)
-        {
-            Location l = new Location();
-            l.id = id;
-            l.coordination = coord;
-            db.locations.Add(l);
-            
-            //add to map of location
-            db.locationMap[coord[0]][coord[1]] = l;
-        }
-
     }
 }
