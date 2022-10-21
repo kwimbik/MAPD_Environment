@@ -41,10 +41,12 @@ namespace diskretni_mapd_simulace
             mapParserIO mp = new mapParserIO("map.txt", db);
             simulace_visual sv = new simulace_visual(mp.readInputFile(), db);
             sv.Show();
-            //PlanReader pr = new PlanReader(sv);
-
             db.setLocationMap(sv.map.GetLength(0), sv.map[0].Length);
             db.setTestData(); //TODO: ruzne moznosti tesstovani, pro realny beh smazat
+
+            //testt plan exe
+            PlanReader pr = new PlanReader(sv, db);
+            pr.readPlan();
         }
 
 
@@ -79,11 +81,11 @@ namespace diskretni_mapd_simulace
         private void solve_btn_Click(object sender, RoutedEventArgs e)
         {
             SimulationController.run = true;
-            simulationThread = new Thread(new ThreadStart(runSimulation));
+            simulationThread = new Thread(new ThreadStart(runTSP));
             simulationThread.Start();
         }
 
-        private void runSimulation()
+        private void runTSP()
         {
             Routing_solverManager rsm = new Routing_solverManager(db);
             rsm.getSolutionData();

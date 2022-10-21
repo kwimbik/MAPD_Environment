@@ -32,7 +32,7 @@ namespace diskretni_mapd_simulace
                     map.Add(row);
                     for (int i = 0; i < row.Length; i++)
                     {
-                        createLocation(id_couter++, new int[] { line_counter, i});
+                        createLocation(id_couter++, new int[] { line_counter, i}, row[i]);
                     }
                 }
                 //Agent
@@ -40,7 +40,7 @@ namespace diskretni_mapd_simulace
                 {
                     Vehicle a = new Vehicle
                     {
-                        Id = row[1],
+                        id = row[1],
                         baseLocation = db.getLocationByID(int.Parse(row[2])),
                     };
                     db.vehicles.Add(a);
@@ -50,7 +50,7 @@ namespace diskretni_mapd_simulace
                 {
                     Order o = new Order
                     {
-                        Id = row[1],
+                        id = row[1],
                         currLocation = db.getLocationByID(int.Parse(row[2])),
                         targetLocation = db.getLocationByID(int.Parse(row[3])),
                         state = (int)Order.states.pending,
@@ -63,12 +63,13 @@ namespace diskretni_mapd_simulace
         }
 
         //Creates location corresponing to one tile
-        private void createLocation(int id, int[] coord)
+        private void createLocation(int id, int[] coord, string t)
         {
             Location l = new Location();
             l.id = id;
             l.coordination = coord;
             db.locations.Add(l);
+            l.type = (t == "0") ? (int)Location.types.free : (int)Location.types.wall;
         }
     }
 }

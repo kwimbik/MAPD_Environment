@@ -44,7 +44,7 @@ namespace diskretni_mapd_simulace
             {
                 foreach (Vehicle vehicle in location.vehicles)
                 {
-                    tbText += $"vehicle {vehicle.Id} \n";
+                    tbText += $"vehicle {vehicle.id} \n";
                 }
             }
             else tbText = "No vehicles";
@@ -90,7 +90,7 @@ namespace diskretni_mapd_simulace
             {
                 foreach (Order order in location.orders)
                 {
-                    tbText += $"order {order.Id} \n";
+                    tbText += $"order {order.id} \n";
                 }
             }
             else tbText = "No orders";

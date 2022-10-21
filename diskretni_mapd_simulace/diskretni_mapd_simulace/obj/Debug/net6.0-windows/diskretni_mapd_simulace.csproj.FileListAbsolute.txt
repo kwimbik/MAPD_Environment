@@ -34,8 +34,8 @@ C:\Users\kwimbik\Desktop\skolaa\LS202122\rocnikovej_projekt\rocnikova_prace_simu
 C:\Users\kwimbik\Desktop\skolaa\LS202122\rocnikovej_projekt\rocnikova_prace_simulace\diskretni_mapd_simulace\diskretni_mapd_simulace\obj\Debug\net6.0-windows\Windows\LocationOptionWindow.g.cs
 C:\Users\kwimbik\Desktop\skolaa\LS202122\rocnikovej_projekt\rocnikova_prace_simulace\diskretni_mapd_simulace\diskretni_mapd_simulace\obj\Debug\net6.0-windows\Windows\NewOrderWindow.g.cs
 C:\Users\kwimbik\Desktop\skolaa\LS202122\rocnikovej_projekt\rocnikova_prace_simulace\diskretni_mapd_simulace\diskretni_mapd_simulace\obj\Debug\net6.0-windows\Windows\NewVehicleWindow.g.cs
-C:\Users\kwimbik\Desktop\skolaa\LS202122\rocnikovej_projekt\rocnikova_prace_simulace\diskretni_mapd_simulace\diskretni_mapd_simulace\obj\Debug\net6.0-windows\Windows\simulace_visual.g.cs
 C:\Users\kwimbik\Desktop\skolaa\LS202122\rocnikovej_projekt\rocnikova_prace_simulace\diskretni_mapd_simulace\diskretni_mapd_simulace\obj\Debug\net6.0-windows\Windows\LocationOptionWindow.baml
 C:\Users\kwimbik\Desktop\skolaa\LS202122\rocnikovej_projekt\rocnikova_prace_simulace\diskretni_mapd_simulace\diskretni_mapd_simulace\obj\Debug\net6.0-windows\Windows\NewOrderWindow.baml
 C:\Users\kwimbik\Desktop\skolaa\LS202122\rocnikovej_projekt\rocnikova_prace_simulace\diskretni_mapd_simulace\diskretni_mapd_simulace\obj\Debug\net6.0-windows\Windows\NewVehicleWindow.baml
-C:\Users\kwimbik\Desktop\skolaa\LS202122\rocnikovej_projekt\rocnikova_prace_simulace\diskretni_mapd_simulace\diskretni_mapd_simulace\obj\Debug\net6.0-windows\Windows\simulace_visual.baml
+C:\Users\kwimbik\Desktop\skolaa\LS202122\rocnikovej_projekt\rocnikova_prace_simulace\diskretni_mapd_simulace\diskretni_mapd_simulace\obj\Debug\net6.0-windows\Windows\SimulationVisual.g.cs
+C:\Users\kwimbik\Desktop\skolaa\LS202122\rocnikovej_projekt\rocnikova_prace_simulace\diskretni_mapd_simulace\diskretni_mapd_simulace\obj\Debug\net6.0-windows\Windows\SimulationVisual.baml

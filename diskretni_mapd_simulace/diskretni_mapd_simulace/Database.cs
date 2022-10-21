@@ -17,22 +17,20 @@ namespace diskretni_mapd_simulace
         public List<Order> orders = new List<Order>();
         public int[] gridSize = new int[2]; // najit neco na praci se souradnicema
 
-        public Location getLocationByID(int Id)
-        {
-            foreach (Location loc in locations)
-            {
-                if (loc.id == Id) return loc;
-            }
-            return null;
-        }
+        
 
         public void setTestData()
         {
-            Order o1 = new Order() { Id = "1", currLocation = locations[0], targetLocation = locations[20] };
-            Order o2 = new Order() { Id = "2", currLocation = locations[5], targetLocation = locations[11] };
-            Order o3 = new Order { Id = "3", currLocation = locations[48], targetLocation = locations[99] };
-            Order o4 = new Order { Id = "4", currLocation = locations[92], targetLocation = locations[14] };
-            Order o5 = new Order { Id = "5", currLocation = locations[87], targetLocation = locations[12] };
+            // Colors definiton, TODO: color assigner with some clever heuristic
+            byte[] pink = new byte[] { 255, 192, 203 };
+            byte[] red = new byte[] { 255, 0, 0 };
+            byte[] green = new byte[] { 0, 255, 0 };
+            byte[] blue = new byte[] { 0, 0, 255 };
+            Order o1 = new Order() { id = "1", currLocation = locations[0], targetLocation = locations[20] };
+            Order o2 = new Order() { id = "2", currLocation = locations[5], targetLocation = locations[11] };
+            Order o3 = new Order { id = "3", currLocation = locations[48], targetLocation = locations[99] };
+            Order o4 = new Order { id = "4", currLocation = locations[92], targetLocation = locations[14] };
+            Order o5 = new Order { id = "5", currLocation = locations[87], targetLocation = locations[12] };
             orders.Add(o1);
             orders.Add(o2);
             orders.Add(o3);
@@ -43,8 +41,8 @@ namespace diskretni_mapd_simulace
             locations[48].orders.Add(o3);
             locations[92].orders.Add(o4);
             locations[87].orders.Add(o5);
-            vehicles.Add(new Vehicle() { Id ="1",  baseLocation = locations[32] });
-            vehicles.Add(new Vehicle() { Id ="2", baseLocation = locations[32] });
+            vehicles.Add(new Vehicle() { id ="1",  baseLocation = locations[32], color = pink });
+            vehicles.Add(new Vehicle() { id ="2", baseLocation = locations[32], color = blue });
         }
 
         public void setLocationMap(int rows, int cols)
@@ -73,6 +71,24 @@ namespace diskretni_mapd_simulace
                 if (order.state != (int)Order.states.delivered) ordersToProcess.Add(order);
             }
             return ordersToProcess;
+        }
+
+        public Location getLocationByID(int Id)
+        {
+            foreach (Location loc in locations)
+            {
+                if (loc.id == Id) return loc;
+            }
+            return null;
+        }
+
+        public Vehicle getVehicleById(string id)
+        {
+            foreach (Vehicle v in vehicles)
+            {
+                if (v.id == id) return v;
+            }
+            return null;
         }
     }
 }

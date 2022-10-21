@@ -8,8 +8,8 @@ namespace diskretni_mapd_simulace
 {
     public class Vehicle
     {
-        public string Id;
-        public int[] color;
+        public string id;
+        public byte[] color;
         public int solverLocationIndex;
         public Location baseLocation;
         public Location targetLocation;

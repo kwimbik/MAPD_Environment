@@ -18,22 +18,24 @@ namespace diskretni_mapd_simulace
 
         string file = "plan.txt";
 
-        // Colors definiton
-
-        private byte[] pink = new byte[] { 255, 192, 203 };
-        private byte[] red = new byte[] { 255, 0, 0 };
-        private byte[] green = new byte[] { 0, 255, 0 };
-        private byte[] blue = new byte[] { 0, 0, 255 };
-
         simulace_visual sv;
-        public PlanReader(simulace_visual sv)
+        Database db;
+        public PlanReader(simulace_visual sv, Database db)
         {
             this.sv = sv;
+            this.db = db;
+            
+        }
+
+        public void readPlan()
+        {
             planThread = new Thread(new ThreadStart(executePlan));
             planThread.Start();
         }
 
-        public void executePlan()
+
+        //IF iteration through databse and its ids is slow, I will make execute expliitely visual with raw coordinates
+        private void executePlan()
         {
             int time = 0;
             foreach (string line in File.ReadLines(file))
@@ -43,16 +45,20 @@ namespace diskretni_mapd_simulace
                 if (int.Parse(row[0]) > time) {
                     time++;
                     Thread.Sleep(1000);
-                    continue;
                 }
 
-                //Agent move
+                //Agent move: 'time'-A-'id'-'locationId'
                 if (row[1] == "A")
                 {
-                    sv.changeColor(new int[] { 3, 4 }, pink);
-                    sv.changeColor(new int[] { 7, 12 }, green);
-                    //TODO: get agent id, get new position, return agent by id, get his color, color new
-                    //field with his color, color his previous field with white
+                    Vehicle a = db.getVehicleById(row[2]);
+                    Location l = db.getLocationByID(int.Parse(row[3]));
+                    sv.changeColor(a.baseLocation.coordination, new byte[] { 255,255,255});
+                    sv.changeColor(l.coordination, a.color);
+
+                    //move the agent to new location in db
+                    a.baseLocation.vehicles.Remove(a);
+                    a.baseLocation = l;
+                    l.vehicles.Add(a);
                 }
             }
         }

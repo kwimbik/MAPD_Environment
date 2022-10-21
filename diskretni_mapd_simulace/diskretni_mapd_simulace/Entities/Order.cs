@@ -8,7 +8,7 @@ namespace diskretni_mapd_simulace
 {
     public class Order
     {
-        public string Id { get; set; }
+        public string id { get; set; }
         public Location currLocation;
         public Location targetLocation;
         public int state;

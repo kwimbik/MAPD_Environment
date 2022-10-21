@@ -73,7 +73,7 @@ namespace diskretni_mapd_simulace
             {
                 Order order = new Order
                 {
-                    Id = tb.Text,
+                    id = tb.Text,
                     currLocation = location,
                     targetLocation = database.getLocationByID(int.Parse(cb.Text)),
                 };

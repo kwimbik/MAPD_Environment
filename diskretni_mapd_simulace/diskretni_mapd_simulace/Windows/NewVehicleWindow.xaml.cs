@@ -58,7 +58,7 @@ namespace diskretni_mapd_simulace
             {
                 Vehicle vehicle = new Vehicle
                 {
-                    Id = tb.Text,
+                    id = tb.Text,
                     baseLocation = location,
                     targetLocation = location,
                 };
