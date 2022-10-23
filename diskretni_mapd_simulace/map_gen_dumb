@@ -1,0 +1,11 @@
+from random import randint
+import numpy
+
+for x in range(30):
+    s = ""
+    for y in range(40):
+        val = numpy.random.choice(numpy.arange(0, 2), p=[0.7,0.3])
+        s += str(val)
+        if y != 39:
+            s += " "
+    print(s)

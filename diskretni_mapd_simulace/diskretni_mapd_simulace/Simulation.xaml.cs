@@ -25,7 +25,7 @@ namespace diskretni_mapd_simulace
         Routing_solverManager rsm;
         Thread simulationThread;
         Simulace_Visual sv;
-        private int grid_height = 6;
+        private int grid_height = 5;
 
 
 
@@ -117,6 +117,17 @@ namespace diskretni_mapd_simulace
 
         private void generateMapPanel()
         {
+            TextBlock size_tb = new TextBlock
+            {
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                VerticalAlignment = VerticalAlignment.Stretch,
+                Text = $"Size of map: {db.locationMap.GetLength(0)}x{db.locationMap[0].Length}",
+                TextAlignment = TextAlignment.Center,  
+            };
+            Simulation_grid.Children.Add(size_tb);
+            Grid.SetColumn(size_tb, 1);
+            Grid.SetRow(size_tb, 0);
+
             Button createPlanBtn = new Button
             {
                 HorizontalAlignment = HorizontalAlignment.Stretch,
@@ -136,7 +147,7 @@ namespace diskretni_mapd_simulace
             {
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 VerticalAlignment = VerticalAlignment.Stretch,
-                Content = "Create plan",
+                Content = "Presolve Task assignment",
             };
             createPresolveBtn.Click += (sender, e) =>
             {

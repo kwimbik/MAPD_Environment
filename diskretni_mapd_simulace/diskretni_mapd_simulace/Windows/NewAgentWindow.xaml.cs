@@ -32,14 +32,13 @@ namespace diskretni_mapd_simulace
         {
             NewAgent_grid.RowDefinitions.Add(new RowDefinition());
             NewAgent_grid.RowDefinitions.Add(new RowDefinition());
+            NewAgent_grid.RowDefinitions.Add(new RowDefinition());
+
             TextBox tb = new TextBox
             {
-                Text = "Vehicle ID",
-                Margin = new Thickness(0, 0, 0, 0),
+                Text = "Agent ID",
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 VerticalAlignment = VerticalAlignment.Stretch,
-                Height = 20,
-                Width = 150,
             };
             NewAgent_grid.Children.Add(tb);
             Grid.SetRow(tb,0);
@@ -47,11 +46,8 @@ namespace diskretni_mapd_simulace
             TextBox loc_txb = new TextBox
             {
                 Text = "Location",
-                Margin = new Thickness(0, 0, 0, 0),
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 VerticalAlignment = VerticalAlignment.Stretch,
-                Height = 20,
-                Width = 150,
             };
             NewAgent_grid.Children.Add(loc_txb);
             Grid.SetRow(loc_txb, 1);
@@ -59,7 +55,6 @@ namespace diskretni_mapd_simulace
             Button bt = new Button
             {
                 Content = "Accept",
-                Margin = new Thickness(0, 40, 0, 0),
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 VerticalAlignment = VerticalAlignment.Stretch,
             };

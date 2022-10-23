@@ -6,4 +6,7 @@ Osetrit korekti zadavani, tj objednavka nemuze mit jako target lokaci svou vlast
 -- pridat moznost jak nacist soubor jako argument
 -- plan validator
 -- validation of input
+-- Generator mapy
+--Greedy algoritmus na jednoduchou vizualizaci
+
 https://www.youtube.com/watch?v=jezhAkxEYZM
