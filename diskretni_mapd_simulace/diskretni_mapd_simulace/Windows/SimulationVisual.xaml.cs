@@ -35,11 +35,36 @@ namespace diskretni_mapd_simulace
             this.map = map;
             map_tiles = new Rectangle[map.GetLength(0), map[1].Length];
             InitializeComponent();
+            createVisualization();
+        }
+
+       
+
+        public void createVisualization()
+        {
             createMap();
+            visualizeAgents();
+            visualizeOrders();
             this.Content = simGrid;
         }
 
-        
+        private void visualizeAgents()
+        {
+            foreach (Agent a in db.agents)
+            {
+                changeColor(a.baseLocation.coordination, a.color);
+            }
+        }
+
+        private void visualizeOrders()
+        {
+            foreach (Order o in db.orders)
+            {
+                changeColor(o.currLocation.coordination, o.color);
+            }
+        }
+
+
         public void changeColor(int[] coord, byte[] color)
         {
             this.Dispatcher.Invoke(() =>

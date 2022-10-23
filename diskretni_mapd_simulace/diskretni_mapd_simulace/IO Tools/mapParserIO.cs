@@ -44,6 +44,7 @@ namespace diskretni_mapd_simulace
                         baseLocation = db.getLocationByID(int.Parse(row[2])),
                     };
                     db.agents.Add(a);
+                    //TODO: add function to visualize agent
                 }
                 //Order
                 else if (line[0] == 'O')
@@ -56,6 +57,7 @@ namespace diskretni_mapd_simulace
                         state = (int)Order.states.pending,
                     };
                     db.orders.Add(o);
+                    //TODO: add function to visualize order
                 }
                 line_counter++;
             }

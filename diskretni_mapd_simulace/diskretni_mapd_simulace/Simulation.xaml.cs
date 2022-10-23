@@ -35,17 +35,18 @@ namespace diskretni_mapd_simulace
 
         public Simulation()
         {
-            //grid 3 sloupce, simulace uprostred, data v levo, updaty (jaky vuz dokoncil jakou objednavku vlevo)
             InitializeComponent();
             mapParserIO mp = new mapParserIO("map.txt", db);
             sv = new Simulace_Visual(mp.readInputFile(), db);
-            sv.Show();
-            db.setLocationMap(sv.map.GetLength(0), sv.map[0].Length);
             db.setTestData(); //TODO: ruzne moznosti tesstovani, pro realny beh smazat
+            db.setLocationMap(sv.map.GetLength(0), sv.map[0].Length);
             generateGrid();
-            //testt plan exe
-            PlanReader pr = new PlanReader(sv, db);
-            //pr.readPlan();
+
+            sv.createVisualization();
+            sv.Show();
+
+
+            //PlanReader pr = new PlanReader(sv, db);
         }
 
         public void generateGrid()
