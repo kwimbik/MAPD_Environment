@@ -14,6 +14,12 @@ namespace diskretni_mapd_simulace
         public List<Order> orders = new List<Order>();
         public List<Agent> agents = new List<Agent>();
         public int type;
+        public int g;
+        public int h;
+        public int f;
+
+        public Location Parent; //to easier backtrack algoriths
+
 
         public enum types
         {

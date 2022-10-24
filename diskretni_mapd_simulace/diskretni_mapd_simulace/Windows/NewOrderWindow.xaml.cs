@@ -68,7 +68,7 @@ namespace diskretni_mapd_simulace
                 tarhetPos_cb.Items.Add($"{loc.id}");
             }
             newOrder_grid.Children.Add(tarhetPos_cb);
-            Grid.SetRow(initPostition_cb, 2);
+            Grid.SetRow(tarhetPos_cb, 2);
 
 
             Button bt = new Button

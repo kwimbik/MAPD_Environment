@@ -17,6 +17,7 @@ namespace diskretni_mapd_simulace
         Thread planThread;
 
         string file = "plan.txt";
+        int StopInMs = 350;
 
         Simulace_Visual sv;
         Database db;
@@ -44,7 +45,7 @@ namespace diskretni_mapd_simulace
                 string[] row = line.Split('-');
                 if (int.Parse(row[0]) > time) {
                     time++;
-                    Thread.Sleep(1000);
+                    Thread.Sleep(StopInMs);
                 }
 
                 //Agent move: 'time'-A-'id'-'locationId'

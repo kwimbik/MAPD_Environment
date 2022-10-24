@@ -28,11 +28,7 @@ namespace diskretni_mapd_simulace
         private int grid_height = 5;
 
 
-
-        //controls
-        List<Button> location_buttons = new List<Button>();
-        Dictionary<Button, Location> butt_loc_dict = new Dictionary<Button, Location>();
-
+          
         public Simulation()
         {
             InitializeComponent();
@@ -45,8 +41,10 @@ namespace diskretni_mapd_simulace
             sv.createVisualization();
             sv.Show();
 
-
-            //PlanReader pr = new PlanReader(sv, db);
+            PlanCreator pc = new PlanCreator(db, "Greedy");
+            pc.Solve();
+            PlanReader pr = new PlanReader(sv, db);
+            pr.readPlan();
         }
 
         public void generateGrid()
