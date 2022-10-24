@@ -16,39 +16,46 @@ namespace diskretni_mapd_simulace.Algorithms
             {
                 foreach (Order o in a.orders)
                 {
-                    List<Location> loc = getPathForAgentAndOrder(a, o, db);
-                    plan.value = formatPlan(a, loc);
+                    List<Location> loc1 = getPathForAgentAndOrder(a.baseLocation, o.currLocation, db);
+                    List<Location> loc2 = getPathForAgentAndOrder(o.currLocation, o.targetLocation, db);
+                    plan.value += formatPlan(a, loc1, loc2);
                 }
             }
             return plan;
         }
 
-        private static string formatPlan(Agent a, List<Location> locations)
+        private static string formatPlan(Agent a, List<Location> locations1, List<Location> locations2)
         {
             string newPlan = "";
             string agent = "A";
             string agentId = a.id;
             int timeCounter = 0;
 
-            for (int i = locations.Count -1 ; i >= 0; i--)
+            for (int i = locations1.Count -1 ; i >= 0; i--)
             {
-                newPlan += $"{timeCounter++}-{agent}-{agentId}-{locations[i].id}\n";
+                newPlan += $"{timeCounter++}-{agent}-{agentId}-{locations1[i].id}\n";
+            }
+
+            for (int i = locations2.Count - 1; i >= 0; i--)
+            {
+                newPlan += $"{timeCounter++}-{agent}-{agentId}-{locations2[i].id}\n";
             }
             return newPlan;
         }
 
 
-        private static List<Location> getPathForAgentAndOrder(Agent a, Order o, Database db)
+        private static List<Location> getPathForAgentAndOrder(Location baseLocation, Location l, Database db)
         {
             int g = 0;
             int h = 0;
             var openList = new List<Location>();
             var closedList = new List<Location>();
-            Location start = a.baseLocation;
-            Location target1 = o.currLocation;
-            Location target2 = o.targetLocation;
+            Location start = baseLocation;
+            Location target = l;
             Location current = start;
-            List<Location> route = new List<Location>();    
+            List<Location> route = new List<Location>();
+
+            bool loaded = false;
 
             openList.Add(start);
 
@@ -64,11 +71,11 @@ namespace diskretni_mapd_simulace.Algorithms
                 // remove it from the open list
                 openList.Remove(current);
 
-                if (current.id == target1.id)
+                if (current.id == target.id)
                 {
-                    target1.id = current.id;
                     break;
                 }
+
                 var adjacentSquares = getAccessibleLocations(current, db);
                 g++;
 
@@ -83,7 +90,7 @@ namespace diskretni_mapd_simulace.Algorithms
                     {
                         // compute its score, set the parent
                         adjacentSquare.g = g;
-                        adjacentSquare.h = Location.getDistance(target1, adjacentSquare);
+                        adjacentSquare.h = Location.getDistance(target, adjacentSquare);
                         adjacentSquare.f = adjacentSquare.g + adjacentSquare.h;
                         adjacentSquare.Parent = current;
 

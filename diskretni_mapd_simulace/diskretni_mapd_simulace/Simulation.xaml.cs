@@ -38,12 +38,13 @@ namespace diskretni_mapd_simulace
             db.setLocationMap(sv.map.GetLength(0), sv.map[0].Length);
             generateGrid();
 
-            sv.createVisualization();
-            sv.Show();
+            
 
             PlanCreator pc = new PlanCreator(db, "Greedy");
             pc.Solve();
             PlanReader pr = new PlanReader(sv, db);
+            sv.createVisualization();
+            sv.Show();
             pr.readPlan();
         }
 

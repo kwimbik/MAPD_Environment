@@ -26,7 +26,7 @@ namespace diskretni_mapd_simulace
             byte[] red = new byte[] { 255, 0, 0 };
             byte[] green = new byte[] { 0, 255, 0 };
             byte[] blue = new byte[] { 0, 0, 255 };
-            Order o1 = new Order() { id = "1", currLocation = locations[0], targetLocation = locations[14], color = blue };
+            Order o1 = new Order() { id = "1", currLocation = locations[0], targetLocation = locations[6], color = blue };
             Order o2 = new Order() { id = "2", currLocation = locations[720], targetLocation = locations[1195], color = blue };
             Order o3 = new Order { id = "3", currLocation = locations[627], targetLocation = locations[321], color = blue };
             orders.Add(o1);

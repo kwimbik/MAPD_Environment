@@ -8,5 +8,6 @@ Osetrit korekti zadavani, tj objednavka nemuze mit jako target lokaci svou vlast
 -- validation of input
 -- Generator mapy
 --Greedy algoritmus na jednoduchou vizualizaci
+-Vizualizace objednavek, aby bylo poznat kdyz se nalozit. Pridat do planu cteni nalozeni a vylozeni.
 
 https://www.youtube.com/watch?v=jezhAkxEYZM
