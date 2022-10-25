@@ -14,6 +14,8 @@ namespace diskretni_mapd_simulace
         public int state;
         public byte[] color;
 
+        public int priority { get; set; }
+
 
         public enum states
         {

@@ -9,16 +9,20 @@ namespace diskretni_mapd_simulace.Algorithms
 {
     public static class GreedyAlg
     {
+
+        private static int timeCounter = 0;
         public static Plan run(Database db)
         {
             Plan plan = new Plan();
             foreach (Agent a in db.agents)
             {
+                Location current = a.baseLocation;
                 foreach (Order o in a.orders)
                 {
-                    List<Location> loc1 = getPathForAgentAndOrder(a.baseLocation, o.currLocation, db);
+                    List<Location> loc1 = getPathForAgentAndOrder(current, o.currLocation, db);
                     List<Location> loc2 = getPathForAgentAndOrder(o.currLocation, o.targetLocation, db);
                     plan.value += formatPlan(a, loc1, loc2);
+                    current = o.targetLocation;
                 }
             }
             return plan;
@@ -29,7 +33,6 @@ namespace diskretni_mapd_simulace.Algorithms
             string newPlan = "";
             string agent = "A";
             string agentId = a.id;
-            int timeCounter = 0;
 
             for (int i = locations1.Count -1 ; i >= 0; i--)
             {

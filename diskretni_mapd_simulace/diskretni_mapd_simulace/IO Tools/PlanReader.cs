@@ -17,7 +17,7 @@ namespace diskretni_mapd_simulace
         Thread planThread;
 
         string file = "plan.txt";
-        int StopInMs = 350;
+        int StopInMs = 250;
 
         Simulace_Visual sv;
         Database db;

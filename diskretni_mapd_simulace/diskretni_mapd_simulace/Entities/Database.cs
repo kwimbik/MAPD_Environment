@@ -35,7 +35,7 @@ namespace diskretni_mapd_simulace
             locations[0].orders.Add(o1);
             locations[5].orders.Add(o2);
             locations[48].orders.Add(o3);
-            agents.Add(new Agent() { id ="1",  baseLocation = locations[32], color = blue, orders = new List<Order>() { o1 } });
+            agents.Add(new Agent() { id ="1",  baseLocation = locations[32], color = blue, orders = new List<Order>() { o1, o2, o3 } });
         }
 
         public void setLocationMap(int rows, int cols)
