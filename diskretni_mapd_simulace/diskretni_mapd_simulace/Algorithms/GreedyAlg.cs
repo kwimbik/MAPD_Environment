@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using diskretni_mapd_simulace.Entities;
 
 namespace diskretni_mapd_simulace.Algorithms
 {
@@ -43,12 +44,16 @@ namespace diskretni_mapd_simulace.Algorithms
 
             for (int i = locations1.Count -1 ; i >= 0; i--)
             {
+                a.plan.steps.Add(new Entities.PlanStep { time = timeCounter++, locationId = locations1[i].id });
                 newPlan += $"{timeCounter++}-{agent}-{agentId}-{locations1[i].id}\n";
+                locations1[i].occupiedAt.Add(timeCounter);
             }
 
             for (int i = locations2.Count - 1; i >= 0; i--)
             {
+                a.plan.steps.Add(new Entities.PlanStep { time = timeCounter++, locationId = locations2[i].id });
                 newPlan += $"{timeCounter++}-{agent}-{agentId}-{locations2[i].id}\n";
+                locations2[i].occupiedAt.Add(timeCounter);
             }
             return newPlan;
         }
@@ -69,12 +74,13 @@ namespace diskretni_mapd_simulace.Algorithms
             bool loaded = false;
 
             openList.Add(start);
-
+            int simulationTime = -1;
             while (openList.Count > 0)
             {
                 // get the square with the lowest F score
                 var lowest = openList.Min(l => l.f);
                 current = openList.First(l => l.f == lowest);
+                simulationTime++;
 
                 // add the current square to the closed list
                 closedList.Add(current);
@@ -94,6 +100,8 @@ namespace diskretni_mapd_simulace.Algorithms
                 {
                     // if this adjacent square is already in the closed list, ignore it
                     if ( closedList.Contains(adjacentSquare)) continue;
+                    //this space has been taken by different agent at this time
+                    if (adjacentSquare.occupiedAt.Contains(simulationTime)) continue;
 
 
                     // if it's not in the open list...

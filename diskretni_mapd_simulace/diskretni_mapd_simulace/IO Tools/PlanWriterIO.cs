@@ -9,6 +9,7 @@ namespace diskretni_mapd_simulace.IO_Tools
 {
     public static class PlanWriterIO
     {
+        //TODO: take all agents, their plan and write them chronologically
         public static void writePlan(string fileName, Plan plan)
         {
             File.WriteAllText(fileName, plan.value);

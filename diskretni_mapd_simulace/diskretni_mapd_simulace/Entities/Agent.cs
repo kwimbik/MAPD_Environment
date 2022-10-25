@@ -15,8 +15,8 @@ namespace diskretni_mapd_simulace
         public Location targetLocation;
         public List<Order> orders = new List<Order>();
         public List<Order> assignedOrders = new List<Order>();
-        
-        public Plan plan { get; set; }
+
+        public Plan plan = new Plan();
 
         public void display()
         {
