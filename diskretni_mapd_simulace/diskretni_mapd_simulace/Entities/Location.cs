@@ -13,6 +13,7 @@ namespace diskretni_mapd_simulace
         public int[] coordination = new int[2];
         public List<Order> orders = new List<Order>();
         public List<Agent> agents = new List<Agent>();
+        public List<Location> accessibleLocations = new List<Location>(); 
         public int type;
         public int g;
         public int h;

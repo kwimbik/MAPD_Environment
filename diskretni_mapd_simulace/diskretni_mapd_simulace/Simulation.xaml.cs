@@ -54,8 +54,6 @@ namespace diskretni_mapd_simulace
             {
                 Simulation_grid.RowDefinitions.Add(new RowDefinition());
             }
-            
-
             generateSetupPanel();
             generateMapPanel();
             generatePlanPanel();
@@ -64,7 +62,7 @@ namespace diskretni_mapd_simulace
 
         private void generatePlanPanel()
         {
-            //Button for new agent
+            //Button for new agent TODO: validate location
             Button addAgentBtn = new Button
             {
                 HorizontalAlignment = HorizontalAlignment.Stretch,
@@ -82,7 +80,7 @@ namespace diskretni_mapd_simulace
             Grid.SetRow(addAgentBtn, 0);
 
 
-            //Button for new Order
+            //Button for new Order-. TODO: validate location
             Button addOrderBtn = new Button
             {
                 HorizontalAlignment = HorizontalAlignment.Stretch,
@@ -121,7 +119,9 @@ namespace diskretni_mapd_simulace
             {
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 VerticalAlignment = VerticalAlignment.Stretch,
-                Text = $"Size of map: {db.locationMap.GetLength(0)}x{db.locationMap[0].Length}",
+                Text = $@"Size of map: {db.locationMap.GetLength(0)}x{db.locationMap[0].Length}
+                Agents: {db.agents.Count}
+                Orders: {db.orders.Count}",
                 TextAlignment = TextAlignment.Center,  
             };
             Simulation_grid.Children.Add(size_tb);

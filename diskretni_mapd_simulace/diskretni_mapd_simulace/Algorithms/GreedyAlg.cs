@@ -14,6 +14,13 @@ namespace diskretni_mapd_simulace.Algorithms
         public static Plan run(Database db)
         {
             Plan plan = new Plan();
+            
+            //finds all neighbours of all locations
+            foreach (Location l in db.locations)
+            {
+                if (l.type == (int)Location.types.free) getAccessibleLocations(l, db);
+            }
+
             foreach (Agent a in db.agents)
             {
                 Location current = a.baseLocation;
@@ -58,6 +65,7 @@ namespace diskretni_mapd_simulace.Algorithms
             Location current = start;
             List<Location> route = new List<Location>();
 
+            
             bool loaded = false;
 
             openList.Add(start);
@@ -79,7 +87,7 @@ namespace diskretni_mapd_simulace.Algorithms
                     break;
                 }
 
-                var adjacentSquares = getAccessibleLocations(current, db);
+                var adjacentSquares = current.accessibleLocations;
                 g++;
 
                 foreach (var adjacentSquare in adjacentSquares)
@@ -122,7 +130,8 @@ namespace diskretni_mapd_simulace.Algorithms
             return route;
         }
 
-        private static List<Location> getAccessibleLocations(Location l, Database db)
+        //TODO: move to some generic Solver class, so all algorithms have access to this fction
+        private static void getAccessibleLocations(Location l, Database db)
         {
             //TODO: more elegant way of returning access. positions
             List<Location> locations = new List<Location>();
@@ -133,7 +142,7 @@ namespace diskretni_mapd_simulace.Algorithms
             {
                 if (db.locationMap[coordinates[0]][coordinates[1] + 1] != null && db.locationMap[coordinates[0]][coordinates[1] + 1].type == (int)Location.types.free)
                 {
-                    locations.Add(db.locationMap[coordinates[0]][coordinates[1] + 1]);
+                    l.accessibleLocations.Add(db.locationMap[coordinates[0]][coordinates[1] + 1]);
                 }
             }
 
@@ -141,7 +150,7 @@ namespace diskretni_mapd_simulace.Algorithms
             {
                 if (db.locationMap[coordinates[0]][coordinates[1] - 1] != null && db.locationMap[coordinates[0]][coordinates[1] - 1].type == (int)Location.types.free)
                 {
-                    locations.Add(db.locationMap[coordinates[0]][coordinates[1] - 1]);
+                    l.accessibleLocations.Add(db.locationMap[coordinates[0]][coordinates[1] - 1]);
                 }
             }
 
@@ -149,7 +158,7 @@ namespace diskretni_mapd_simulace.Algorithms
             {
                 if (db.locationMap[coordinates[0] + 1][coordinates[1]] != null && db.locationMap[coordinates[0] + 1][coordinates[1]].type == (int)Location.types.free)
                 {
-                    locations.Add(db.locationMap[coordinates[0] + 1][coordinates[1]]);
+                    l.accessibleLocations.Add(db.locationMap[coordinates[0] + 1][coordinates[1]]);
                 }
             }
 
@@ -157,11 +166,10 @@ namespace diskretni_mapd_simulace.Algorithms
             {
                 if (db.locationMap[coordinates[0] - 1][coordinates[1]] != null && db.locationMap[coordinates[0] - 1][coordinates[1]].type == (int)Location.types.free)
                 {
-                    locations.Add(db.locationMap[coordinates[0] - 1][coordinates[1]]);
+                    l.accessibleLocations.Add(db.locationMap[coordinates[0] - 1][coordinates[1]]);
                 }
 
             }
-            return locations;
         }
     }
 }

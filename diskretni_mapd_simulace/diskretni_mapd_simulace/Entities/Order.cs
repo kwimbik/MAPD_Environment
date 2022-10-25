@@ -24,9 +24,5 @@ namespace diskretni_mapd_simulace
             delivered
         }
 
-        public void display()
-        {
-
-        }
     }
 }
