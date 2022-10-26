@@ -9,5 +9,6 @@ Osetrit korekti zadavani, tj objednavka nemuze mit jako target lokaci svou vlast
 -- Generator mapy
 --Greedy algoritmus na jednoduchou vizualizaci
 -Vizualizace objednavek, aby bylo poznat kdyz se nalozit. Pridat do planu cteni nalozeni a vylozeni.
+--reassign color button  v pravem panelu, color wheel componenta? Important agent stress
 
 https://www.youtube.com/watch?v=jezhAkxEYZM

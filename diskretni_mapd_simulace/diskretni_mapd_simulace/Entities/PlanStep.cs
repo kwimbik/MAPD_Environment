@@ -11,6 +11,7 @@ namespace diskretni_mapd_simulace.Entities
         public int time;
         public int locationId;
         public int type;
+        public string agentId;
 
         public enum types
         {

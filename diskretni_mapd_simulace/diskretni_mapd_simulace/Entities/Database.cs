@@ -29,13 +29,27 @@ namespace diskretni_mapd_simulace
             Order o1 = new Order() { id = "1", currLocation = locations[0], targetLocation = locations[6], color = blue };
             Order o2 = new Order() { id = "2", currLocation = locations[720], targetLocation = locations[1195], color = blue };
             Order o3 = new Order { id = "3", currLocation = locations[627], targetLocation = locations[321], color = blue };
+            
+            
+            Order o4 = new Order() { id = "4", currLocation = locations[2], targetLocation = locations[32], color = pink};
+            Order o5 = new Order() { id = "5", currLocation = locations[1161], targetLocation = locations[1199], color = pink };
+            Order o6 = new Order { id = "6", currLocation = locations[361], targetLocation = locations[686], color = pink };
+
             orders.Add(o1);
             orders.Add(o2);
             orders.Add(o3);
             locations[0].orders.Add(o1);
-            locations[5].orders.Add(o2);
-            locations[48].orders.Add(o3);
-            agents.Add(new Agent() { id ="1",  baseLocation = locations[32], color = blue, orders = new List<Order>() { o1, o2, o3 } });
+            locations[720].orders.Add(o2);
+            locations[627].orders.Add(o3);
+            orders.Add(o4);
+            orders.Add(o5);
+            orders.Add(o6);
+            locations[2].orders.Add(o4);
+            locations[1161].orders.Add(o5);
+            locations[361].orders.Add(o6);
+            //agents.Add(new Agent() { id ="1",  baseLocation = locations[32], color = blue, orders = new List<Order>() { o1, o2, o3 } });
+            agents.Add(new Agent() { id = "2", baseLocation = locations[31], color = pink, orders = new List<Order>() { o4, o5, o6 } });
+
         }
 
         public void setLocationMap(int rows, int cols)

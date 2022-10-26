@@ -22,6 +22,9 @@ namespace diskretni_mapd_simulace.Algorithms
                 if (l.type == (int)Location.types.free) getAccessibleLocations(l, db);
             }
 
+            //creates passages for each locations
+            createPassages(db);
+
             foreach (Agent a in db.agents)
             {
                 Location current = a.baseLocation;
@@ -29,30 +32,44 @@ namespace diskretni_mapd_simulace.Algorithms
                 {
                     List<Location> loc1 = getPathForAgentAndOrder(current, o.currLocation, db);
                     List<Location> loc2 = getPathForAgentAndOrder(o.currLocation, o.targetLocation, db);
-                    plan.value += formatPlan(a, loc1, loc2);
+                    plan.value += formatPlan(a,current, loc1, loc2);
                     current = o.targetLocation;
                 }
             }
             return plan;
         }
 
-        private static string formatPlan(Agent a, List<Location> locations1, List<Location> locations2)
+        private static string formatPlan(Agent a,Location curr,  List<Location> locations1, List<Location> locations2)
         {
             string newPlan = "";
             string agent = "A";
             string agentId = a.id;
 
+            Location prev = curr;
+
             for (int i = locations1.Count -1 ; i >= 0; i--)
             {
                 a.plan.steps.Add(new Entities.PlanStep { time = timeCounter++, locationId = locations1[i].id });
+
+                //TODO: delete this once planWriter supports multiagentPlan, dont forget to move ++
                 newPlan += $"{timeCounter++}-{agent}-{agentId}-{locations1[i].id}\n";
+                a.plan.steps.Add(new PlanStep { agentId = a.id, locationId = locations1[i].id, time = timeCounter, type = (int)PlanStep.types.movement });
+                Passage p = prev.getPassage(locations1[i]);
+                p.occupied.Add(timeCounter);
+                prev = locations1[i];
                 locations1[i].occupiedAt.Add(timeCounter);
             }
 
             for (int i = locations2.Count - 1; i >= 0; i--)
             {
                 a.plan.steps.Add(new Entities.PlanStep { time = timeCounter++, locationId = locations2[i].id });
+
+                //TODO: delete this once planWriter supports multiagentPlan
+                a.plan.steps.Add(new PlanStep { agentId = a.id, locationId = locations2[i].id, time = timeCounter, type = (int)PlanStep.types.movement });
                 newPlan += $"{timeCounter++}-{agent}-{agentId}-{locations2[i].id}\n";
+                Passage p = prev.getPassage(locations2[i]);
+                p.occupied.Add(timeCounter);
+                prev = locations2[i];
                 locations2[i].occupiedAt.Add(timeCounter);
             }
             return newPlan;
@@ -70,17 +87,17 @@ namespace diskretni_mapd_simulace.Algorithms
             Location current = start;
             List<Location> route = new List<Location>();
 
-            
-            bool loaded = false;
-
+           
             openList.Add(start);
             int simulationTime = -1;
             while (openList.Count > 0)
             {
-                // get the square with the lowest F score
-                var lowest = openList.Min(l => l.f);
-                current = openList.First(l => l.f == lowest);
-                simulationTime++;
+                openList = openList.OrderBy(l => l.f).ToList();
+                current = openList[0];
+                
+
+
+                simulationTime = current.entranceTime + 1;
 
                 // add the current square to the closed list
                 closedList.Add(current);
@@ -100,8 +117,6 @@ namespace diskretni_mapd_simulace.Algorithms
                 {
                     // if this adjacent square is already in the closed list, ignore it
                     if ( closedList.Contains(adjacentSquare)) continue;
-                    //this space has been taken by different agent at this time
-                    if (adjacentSquare.occupiedAt.Contains(simulationTime)) continue;
 
 
                     // if it's not in the open list...
@@ -115,6 +130,7 @@ namespace diskretni_mapd_simulace.Algorithms
 
                         // and add it to the open list
                         openList.Insert(0, adjacentSquare);
+                        adjacentSquare.entranceTime = simulationTime;
                     }
                     else
                     {
@@ -134,6 +150,11 @@ namespace diskretni_mapd_simulace.Algorithms
                 route.Add(current);
                 current = current.Parent;
                 if (current != null && current.id == start.id) current = null;
+            }
+
+            foreach (Location k in db.locations)
+            {
+                k.entranceTime = -1;
             }
             return route;
         }
@@ -177,6 +198,28 @@ namespace diskretni_mapd_simulace.Algorithms
                     l.accessibleLocations.Add(db.locationMap[coordinates[0] - 1][coordinates[1]]);
                 }
 
+            }
+        }
+
+        public static void createPassages(Database db)
+        {
+            foreach (Location l in db.locations)
+            {
+                foreach (Location neighbour in l.accessibleLocations)
+                {
+                    bool exists = false;
+                    foreach (Passage p in l.passages)
+                    {
+                        //TODO: assign 
+                        if (p.a == neighbour || p.b == neighbour) exists = true;
+                    }
+                    if (!exists)
+                    {
+                        Passage p = new Passage {a = l, b = neighbour };
+                        l.passages.Add(p);
+                        neighbour.passages.Add(p);
+                    }
+                }
             }
         }
     }
