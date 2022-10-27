@@ -42,9 +42,10 @@ namespace diskretni_mapd_simulace
             foreach (string line in File.ReadLines(file))
             {
                 //Next iteration
+                //TODO: while, nabrat vse v jednom casovem tiku a udelat to pro to, at se mi neprebarvuji agenti zpet
                 string[] row = line.Split('-');
-                if (int.Parse(row[0]) > time) {
-                    time++;
+                if (int.Parse(row[0]) != time) {
+                    time = int.Parse(row[0]);
                     Thread.Sleep(StopInMs);
                 }
 

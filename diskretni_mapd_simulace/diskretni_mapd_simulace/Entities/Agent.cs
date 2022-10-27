@@ -16,6 +16,8 @@ namespace diskretni_mapd_simulace
         public List<Order> orders = new List<Order>();
         public List<Order> assignedOrders = new List<Order>();
 
+        public int movesMade = 0;
+
         public Plan plan = new Plan();
 
         public void display()

@@ -12,5 +12,6 @@ namespace diskretni_mapd_simulace
         public string value;
         //TODO: rather than value in string, I will hold for each agent Plan, consisting of PlanSteps
         public List<PlanStep> steps = new List<PlanStep>();
+        public Agent agent;
     }
 }

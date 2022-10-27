@@ -32,10 +32,7 @@ namespace diskretni_mapd_simulace
             }
 
             this.SimPlan = plan;
-            PlanWriterIO.writePlan(db.outputFile ,plan);
+            PlanWriterIO.writePlan(db.outputFile,db);
         }
-
     }
-
-
 }

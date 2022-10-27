@@ -41,19 +41,19 @@ namespace diskretni_mapd_simulace.Algorithms
 
         private static string formatPlan(Agent a,Location curr,  List<Location> locations1, List<Location> locations2)
         {
+            timeCounter = a.movesMade;
             string newPlan = "";
             string agent = "A";
             string agentId = a.id;
+            a.plan.agent = a;
 
             Location prev = curr;
 
             for (int i = locations1.Count -1 ; i >= 0; i--)
             {
-                a.plan.steps.Add(new Entities.PlanStep { time = timeCounter++, locationId = locations1[i].id });
-
                 //TODO: delete this once planWriter supports multiagentPlan, dont forget to move ++
-                newPlan += $"{timeCounter++}-{agent}-{agentId}-{locations1[i].id}\n";
                 a.plan.steps.Add(new PlanStep { agentId = a.id, locationId = locations1[i].id, time = timeCounter, type = (int)PlanStep.types.movement });
+                newPlan += $"{timeCounter++}-{agent}-{agentId}-{locations1[i].id}\n";
                 Passage p = prev.getPassage(locations1[i]);
                 p.occupied.Add(timeCounter);
                 prev = locations1[i];
@@ -62,8 +62,6 @@ namespace diskretni_mapd_simulace.Algorithms
 
             for (int i = locations2.Count - 1; i >= 0; i--)
             {
-                a.plan.steps.Add(new Entities.PlanStep { time = timeCounter++, locationId = locations2[i].id });
-
                 //TODO: delete this once planWriter supports multiagentPlan
                 a.plan.steps.Add(new PlanStep { agentId = a.id, locationId = locations2[i].id, time = timeCounter, type = (int)PlanStep.types.movement });
                 newPlan += $"{timeCounter++}-{agent}-{agentId}-{locations2[i].id}\n";
@@ -72,6 +70,7 @@ namespace diskretni_mapd_simulace.Algorithms
                 prev = locations2[i];
                 locations2[i].occupiedAt.Add(timeCounter);
             }
+            a.movesMade = timeCounter;
             return newPlan;
         }
 
@@ -92,8 +91,16 @@ namespace diskretni_mapd_simulace.Algorithms
             int simulationTime = -1;
             while (openList.Count > 0)
             {
+                //TODO: wont be needed if occupied tiles wont be opened at all at time k
                 openList = openList.OrderBy(l => l.f).ToList();
-                current = openList[0];
+                foreach (var loc in openList)
+                {
+                    if (loc.occupiedAt.Contains(loc.entranceTime + 1) == false)
+                    {
+                        current = loc;
+                        break;
+                    }
+                }
                 
 
 
@@ -118,6 +125,8 @@ namespace diskretni_mapd_simulace.Algorithms
                     // if this adjacent square is already in the closed list, ignore it
                     if ( closedList.Contains(adjacentSquare)) continue;
 
+                    //square not to be opened if its occupied by different agent at time sim + 1
+                    if (adjacentSquare.occupiedAt.Contains(simulationTime + 1)) continue;
 
                     // if it's not in the open list...
                     if (openList.Contains(adjacentSquare) == false)
