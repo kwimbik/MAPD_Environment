@@ -31,19 +31,23 @@ namespace diskretni_mapd_simulace.Algorithms
                 foreach (Order o in a.orders)
                 {
                     List<Location> loc1 = getPathForAgentAndOrder(current, o.currLocation, db);
+                    formatPlan(a, current, loc1);
                     List<Location> loc2 = getPathForAgentAndOrder(o.currLocation, o.targetLocation, db);
-                    plan.value += formatPlan(a,current, loc1, loc2);
+                    formatPlan(a, o.currLocation, loc2);
                     current = o.targetLocation;
+                }
+                //reset entrance time after each agent
+                foreach (var loc in db.locations)
+                {
+                    loc.entranceTime = 0;
                 }
             }
             return plan;
         }
 
-        private static string formatPlan(Agent a,Location curr,  List<Location> locations1, List<Location> locations2)
+        private static void formatPlan(Agent a,Location curr,  List<Location> locations1)
         {
             timeCounter = a.movesMade;
-            string newPlan = "";
-            string agent = "A";
             string agentId = a.id;
             a.plan.agent = a;
 
@@ -51,27 +55,12 @@ namespace diskretni_mapd_simulace.Algorithms
 
             for (int i = locations1.Count -1 ; i >= 0; i--)
             {
-                //TODO: delete this once planWriter supports multiagentPlan, dont forget to move ++
-                a.plan.steps.Add(new PlanStep { agentId = a.id, locationId = locations1[i].id, time = timeCounter, type = (int)PlanStep.types.movement });
-                newPlan += $"{timeCounter++}-{agent}-{agentId}-{locations1[i].id}\n";
+                locations1[i].occupiedAt.Add(locations1[i].entranceTime);
+                a.plan.steps.Add(new PlanStep { agentId = a.id, locationId = locations1[i].id, time = locations1[i].entranceTime, type = (int)PlanStep.types.movement });
                 Passage p = prev.getPassage(locations1[i]);
-                p.occupied.Add(timeCounter);
+                p.occupied.Add(locations1[i].entranceTime);
                 prev = locations1[i];
-                locations1[i].occupiedAt.Add(timeCounter);
             }
-
-            for (int i = locations2.Count - 1; i >= 0; i--)
-            {
-                //TODO: delete this once planWriter supports multiagentPlan
-                a.plan.steps.Add(new PlanStep { agentId = a.id, locationId = locations2[i].id, time = timeCounter, type = (int)PlanStep.types.movement });
-                newPlan += $"{timeCounter++}-{agent}-{agentId}-{locations2[i].id}\n";
-                Passage p = prev.getPassage(locations2[i]);
-                p.occupied.Add(timeCounter);
-                prev = locations2[i];
-                locations2[i].occupiedAt.Add(timeCounter);
-            }
-            a.movesMade = timeCounter;
-            return newPlan;
         }
 
 
@@ -88,26 +77,36 @@ namespace diskretni_mapd_simulace.Algorithms
 
            
             openList.Add(start);
-            int simulationTime = -1;
+            int simulationTime = baseLocation.entranceTime;
             while (openList.Count > 0)
             {
                 //TODO: wont be needed if occupied tiles wont be opened at all at time k
                 openList = openList.OrderBy(l => l.f).ToList();
-                foreach (var loc in openList)
+                foreach (var location in openList)
                 {
-                    if (loc.occupiedAt.Contains(loc.entranceTime + 1) == false)
+                    if (location.entranceTime <= simulationTime)
                     {
-                        current = loc;
+                        current = location;
                         break;
                     }
                 }
-                
 
-
-                simulationTime = current.entranceTime + 1;
+                if (current.id == 115)
+                {
+                    Console.WriteLine("help");
+                }
 
                 // add the current square to the closed list
-                closedList.Add(current);
+                if (closedList.Contains(current))
+                {
+                    simulationTime++;
+                }
+                else
+                {
+                    closedList.Add(current);
+                    simulationTime = current.entranceTime + 1;
+                }
+
 
                 // remove it from the open list
                 openList.Remove(current);
@@ -125,8 +124,6 @@ namespace diskretni_mapd_simulace.Algorithms
                     // if this adjacent square is already in the closed list, ignore it
                     if ( closedList.Contains(adjacentSquare)) continue;
 
-                    //square not to be opened if its occupied by different agent at time sim + 1
-                    if (adjacentSquare.occupiedAt.Contains(simulationTime + 1)) continue;
 
                     // if it's not in the open list...
                     if (openList.Contains(adjacentSquare) == false)
@@ -139,7 +136,7 @@ namespace diskretni_mapd_simulace.Algorithms
 
                         // and add it to the open list
                         openList.Insert(0, adjacentSquare);
-                        adjacentSquare.entranceTime = simulationTime;
+                        adjacentSquare.entranceTime = getEntranceTime(adjacentSquare, simulationTime);
                     }
                     else
                     {
@@ -159,11 +156,6 @@ namespace diskretni_mapd_simulace.Algorithms
                 route.Add(current);
                 current = current.Parent;
                 if (current != null && current.id == start.id) current = null;
-            }
-
-            foreach (Location k in db.locations)
-            {
-                k.entranceTime = -1;
             }
             return route;
         }
@@ -208,6 +200,15 @@ namespace diskretni_mapd_simulace.Algorithms
                 }
 
             }
+        }
+
+        private static int getEntranceTime(Location l, int time)
+        {
+            while (l.occupiedAt.Contains(time))
+            {
+                time++;
+            }
+            return time;
         }
 
         public static void createPassages(Database db)

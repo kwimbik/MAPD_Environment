@@ -25,7 +25,7 @@ namespace diskretni_mapd_simulace
         public int g;
         public int h;
         public int f;
-        public int entranceTime = -1;
+        public int entranceTime = 0;
         public Location Parent; //to easier backtrack algoriths
 
 
