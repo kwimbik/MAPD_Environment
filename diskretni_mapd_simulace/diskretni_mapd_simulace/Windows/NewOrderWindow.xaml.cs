@@ -20,9 +20,11 @@ namespace diskretni_mapd_simulace
     public partial class NewOrderWindow : Window
     {
         Database database;
-        public NewOrderWindow(Database db)
+        Simulace_Visual sv;
+        public NewOrderWindow(Database db, Simulace_Visual sv)
         {
             database = db;
+            this.sv = sv;
             InitializeComponent();
             createControls();
         }
@@ -100,6 +102,7 @@ namespace diskretni_mapd_simulace
                     database.orders.Add(order);
                     init_location.orders.Add(order);
                     this.Close();
+                    sv.visualizeOrders();
                 }
                 else
                 {

@@ -65,7 +65,7 @@ namespace diskretni_mapd_simulace
             };
             addAgentBtn.Click += (sender, e) =>
             {
-                NewAgentWindow naw = new NewAgentWindow(db);
+                NewAgentWindow naw = new NewAgentWindow(db, sv);
                 naw.Show();
                 
             };
@@ -84,7 +84,7 @@ namespace diskretni_mapd_simulace
 
             addOrderBtn.Click += (sender, e) =>
             {
-                NewOrderWindow now = new NewOrderWindow(db);
+                NewOrderWindow now = new NewOrderWindow(db, sv);
                 now.Show();
 
             };

@@ -59,7 +59,7 @@ namespace diskretni_mapd_simulace
             this.Content = simGrid;
         }
 
-        private void visualizeAgents()
+        public void visualizeAgents()
         {
             //default color for agents is blue
             byte[] agentColor = new byte[] { 0, 0, 255 };
@@ -69,7 +69,7 @@ namespace diskretni_mapd_simulace
             }
         }
 
-        private void visualizeOrders()
+        public void visualizeOrders()
         {
             //default color for order is red
             byte[] orderColor = new byte[] { 255, 0, 0 };

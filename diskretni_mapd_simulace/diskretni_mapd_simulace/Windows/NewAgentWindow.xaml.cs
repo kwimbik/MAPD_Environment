@@ -20,9 +20,10 @@ namespace diskretni_mapd_simulace
     public partial class NewAgentWindow : Window
     {
         Database database;
-
-        public NewAgentWindow(Database db)
+        Simulace_Visual sv;
+        public NewAgentWindow(Database db, Simulace_Visual sv)
         {
+            this.sv = sv;
             database = db;
             InitializeComponent();
             createControls();
@@ -43,14 +44,19 @@ namespace diskretni_mapd_simulace
             NewAgent_grid.Children.Add(tb);
             Grid.SetRow(tb,0);
 
-            TextBox loc_txb = new TextBox
+            ComboBox loc_cb = new ComboBox
             {
                 Text = "Location",
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 VerticalAlignment = VerticalAlignment.Stretch,
             };
-            NewAgent_grid.Children.Add(loc_txb);
-            Grid.SetRow(loc_txb, 1);
+            foreach (Location loc in database.locations)
+            {
+                if (loc.type == (int)Location.types.free) loc_cb.Items.Add($"{loc.id}");
+
+            }
+            NewAgent_grid.Children.Add(loc_cb);
+            Grid.SetRow(loc_cb, 1);
 
             Button bt = new Button
             {
@@ -63,7 +69,7 @@ namespace diskretni_mapd_simulace
 
             bt.Click += (sender, e) =>
             {
-                Location location = database.getLocationByID(int.Parse(loc_txb.Text));
+                Location location = database.getLocationByID(int.Parse(loc_cb.Text));
 
                 if (location.type == (int)Location.types.free)
                 {
@@ -76,6 +82,7 @@ namespace diskretni_mapd_simulace
                     database.agents.Add(vehicle);
                     location.agents.Add(vehicle);
                     this.Close();
+                    sv.visualizeAgents();
                 }
                 else
                 {
