@@ -65,16 +65,22 @@ namespace diskretni_mapd_simulace
             {
                 Location location = database.getLocationByID(int.Parse(loc_txb.Text));
 
-                //TODO: location validator or smarter selector
-                Agent vehicle = new Agent
+                if (location.type == (int)Location.types.free)
                 {
-                    id = tb.Text,
-                    baseLocation = location,
-                    targetLocation = location,
-                };
-                database.agents.Add(vehicle);
-                location.agents.Add(vehicle);
-                this.Close();
+                    Agent vehicle = new Agent
+                    {
+                        id = tb.Text,
+                        baseLocation = location,
+                        targetLocation = location,
+                    };
+                    database.agents.Add(vehicle);
+                    location.agents.Add(vehicle);
+                    this.Close();
+                }
+                else
+                {
+                    MessageBox.Show("Invalid location, free location must be selected");
+                }                
             };
         }
     }

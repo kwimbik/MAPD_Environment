@@ -32,6 +32,7 @@ namespace diskretni_mapd_simulace
             newOrder_grid.RowDefinitions.Add(new RowDefinition());
             newOrder_grid.RowDefinitions.Add(new RowDefinition());
             newOrder_grid.RowDefinitions.Add(new RowDefinition());
+            newOrder_grid.RowDefinitions.Add(new RowDefinition());
             TextBox id_tb = new TextBox
             {
                 Text = "Order ID",
@@ -50,7 +51,7 @@ namespace diskretni_mapd_simulace
             };
             foreach (Location loc in database.locations)
             {
-                initPostition_cb.Items.Add($"{loc.id}");
+                if (loc.type == (int)Location.types.free)  initPostition_cb.Items.Add($"{loc.id}");
             }
             newOrder_grid.Children.Add(initPostition_cb);
             Grid.SetRow(initPostition_cb, 1);
@@ -65,7 +66,8 @@ namespace diskretni_mapd_simulace
             };
             foreach (Location loc in database.locations)
             {
-                tarhetPos_cb.Items.Add($"{loc.id}");
+                if (loc.type == (int)Location.types.free) tarhetPos_cb.Items.Add($"{loc.id}");
+
             }
             newOrder_grid.Children.Add(tarhetPos_cb);
             Grid.SetRow(tarhetPos_cb, 2);
@@ -81,18 +83,28 @@ namespace diskretni_mapd_simulace
             Grid.SetRow(bt, 3);
 
 
+            //TODO: check na validitu lokace
             bt.Click += (sender, e) =>
             {
                 Location init_location = database.getLocationByID(int.Parse(initPostition_cb.Text));
-                Order order = new Order
+                Location targetLocation = database.getLocationByID(int.Parse(tarhetPos_cb.Text));
+
+                if (init_location.type == (int) Location.types.free && targetLocation.type == (int)Location.types.free)
                 {
-                    id = id_tb.Text,
-                    currLocation = init_location,
-                    targetLocation = database.getLocationByID(int.Parse(tarhetPos_cb.Text)),
-                };
-                database.orders.Add(order);
-                init_location.orders.Add(order);
-                this.Close();
+                    Order order = new Order
+                    {
+                        id = id_tb.Text,
+                        currLocation = init_location,
+                        targetLocation = targetLocation,
+                    };
+                    database.orders.Add(order);
+                    init_location.orders.Add(order);
+                    this.Close();
+                }
+                else
+                {
+                    MessageBox.Show("Invalid location, non wall location must be selected");
+                }
             };
         }
     }

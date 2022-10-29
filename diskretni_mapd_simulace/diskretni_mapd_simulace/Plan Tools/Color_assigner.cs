@@ -30,7 +30,6 @@ namespace diskretni_mapd_simulace.Plan_Tools
             Agent a;
             for (int i = 0; i < rsr.routingSolverManager.AgentNumber; ++i)
             {
-                List<Order> orders = new List<Order>();
                 a = rsr.routingSolverManager.indexToAgentMap[i];
 
                 var index = rsr.routingModel.Start(i);
@@ -40,7 +39,7 @@ namespace diskretni_mapd_simulace.Plan_Tools
                     index = rsr.solution.Value(rsr.routingModel.NextVar(index));
                     foreach (var o in l.orders)
                     {
-                        orders.Add(o);
+                        a.orders.Add(o);
                     }
                 }
             }
