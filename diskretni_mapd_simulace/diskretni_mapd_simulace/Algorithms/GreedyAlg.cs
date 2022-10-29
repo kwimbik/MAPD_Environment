@@ -32,10 +32,12 @@ namespace diskretni_mapd_simulace.Algorithms
                 {
                     List<Location> loc1 = getPathForAgentAndOrder(current, o.currLocation, db);
                     formatPlan(a, current, loc1);
-                    List<Location> loc2 = getPathForAgentAndOrder(o.currLocation, o.targetLocation, db);
+                    current = o.currLocation;
+                    List<Location> loc2 = getPathForAgentAndOrder(current, o.targetLocation, db);
                     formatPlan(a, o.currLocation, loc2);
                     current = o.targetLocation;
                 }
+
                 //reset entrance time after each agent
                 foreach (var loc in db.locations)
                 {
@@ -91,15 +93,12 @@ namespace diskretni_mapd_simulace.Algorithms
                     }
                 }
 
-                if (current.id == 115)
-                {
-                    Console.WriteLine("help");
-                }
 
-                // add the current square to the closed list
+                // if no avalible tile is found, wait, else continue;
                 if (closedList.Contains(current))
                 {
                     simulationTime++;
+                    continue;
                 }
                 else
                 {
@@ -132,6 +131,10 @@ namespace diskretni_mapd_simulace.Algorithms
                         adjacentSquare.g = g;
                         adjacentSquare.h = Location.getDistance(target, adjacentSquare);
                         adjacentSquare.f = adjacentSquare.g + adjacentSquare.h;
+
+                        //TODO:  dont stop if its in open list, add Parent if different. add another entrance time.
+                        //for each parent check entrance time and passage validity
+                        //then select passage + parent with lowest entrance time
                         adjacentSquare.Parent = current;
 
                         // and add it to the open list
@@ -163,7 +166,6 @@ namespace diskretni_mapd_simulace.Algorithms
         //TODO: move to some generic Solver class, so all algorithms have access to this fction
         private static void getAccessibleLocations(Location l, Database db)
         {
-            //TODO: more elegant way of returning access. positions
             List<Location> locations = new List<Location>();
             int[] coordinates = l.coordination;
 

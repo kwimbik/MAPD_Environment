@@ -37,15 +37,8 @@ namespace diskretni_mapd_simulace
             db.setTestData(); //TODO: ruzne moznosti tesstovani, pro realny beh smazat
             db.setLocationMap(sv.map.GetLength(0), sv.map[0].Length);
             generateGrid();
-
-            
-
-            PlanCreator pc = new PlanCreator(db, "Greedy");
-            pc.Solve();
-            PlanReader pr = new PlanReader(sv, db);
             sv.createVisualization();
             sv.Show();
-            pr.readPlan();
         }
 
         public void generateGrid()
@@ -57,7 +50,6 @@ namespace diskretni_mapd_simulace
             generateSetupPanel();
             generateMapPanel();
             generatePlanPanel();
-
         }
 
         private void generatePlanPanel()
@@ -136,7 +128,10 @@ namespace diskretni_mapd_simulace
             };
             createPlanBtn.Click += (sender, e) =>
             {
-                //will generate actual plan
+                PlanCreator pc = new PlanCreator(db, "Greedy");
+                pc.Solve();
+                PlanReader pr = new PlanReader(sv, db);
+                pr.readPlan();
             };
             Simulation_grid.Children.Add(createPlanBtn);
             Grid.SetColumn(createPlanBtn, 1);

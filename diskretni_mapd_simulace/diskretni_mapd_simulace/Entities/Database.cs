@@ -26,7 +26,7 @@ namespace diskretni_mapd_simulace
             byte[] red = new byte[] { 255, 0, 0 };
             byte[] green = new byte[] { 0, 255, 0 };
             byte[] blue = new byte[] { 0, 0, 255 };
-            Order o1 = new Order() { id = "1", currLocation = locations[0], targetLocation = locations[6], color = blue };
+            Order o1 = new Order() { id = "1", currLocation = locations[1], targetLocation = locations[6], color = blue };
             Order o2 = new Order() { id = "2", currLocation = locations[720], targetLocation = locations[1195], color = blue };
             Order o3 = new Order { id = "3", currLocation = locations[627], targetLocation = locations[321], color = blue };
             
@@ -38,7 +38,7 @@ namespace diskretni_mapd_simulace
             orders.Add(o1);
             orders.Add(o2);
             orders.Add(o3);
-            locations[0].orders.Add(o1);
+            locations[1].orders.Add(o1);
             locations[720].orders.Add(o2);
             locations[627].orders.Add(o3);
             orders.Add(o4);
@@ -47,8 +47,8 @@ namespace diskretni_mapd_simulace
             locations[2].orders.Add(o4);
             locations[1161].orders.Add(o5);
             locations[361].orders.Add(o6);
-            agents.Add(new Agent() { id = "1",  baseLocation = locations[32], color = blue, orders = new List<Order>() { o1, o2, o3 } });
-            agents.Add(new Agent() { id = "2", baseLocation = locations[37], color = pink, orders = new List<Order>() { o4, o5, o6 } });
+            agents.Add(new Agent() { id = "1",  baseLocation = locations[121], color = blue, orders = new List<Order>() { o1, o2, o3 } });
+            agents.Add(new Agent() { id = "2", baseLocation = locations[82], color = pink, orders = new List<Order>() { o4, o5, o6 } });
 
         }
 
