@@ -20,10 +20,10 @@ namespace diskretni_mapd_simulace
     public partial class NewAgentWindow : Window
     {
         Database database;
-        Simulace_Visual sv;
-        public NewAgentWindow(Database db, Simulace_Visual sv)
+        Simulation sim;
+        public NewAgentWindow(Database db, Simulation simulationUI)
         {
-            this.sv = sv;
+            sim = simulationUI;
             database = db;
             InitializeComponent();
             createControls();
@@ -82,7 +82,7 @@ namespace diskretni_mapd_simulace
                     database.agents.Add(vehicle);
                     location.agents.Add(vehicle);
                     this.Close();
-                    sv.visualizeAgents();
+                    sim.updateUI();
                 }
                 else
                 {

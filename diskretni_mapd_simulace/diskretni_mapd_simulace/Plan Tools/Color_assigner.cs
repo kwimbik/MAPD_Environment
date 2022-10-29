@@ -31,7 +31,7 @@ namespace diskretni_mapd_simulace.Plan_Tools
             for (int i = 0; i < rsr.routingSolverManager.AgentNumber; ++i)
             {
                 a = rsr.routingSolverManager.indexToAgentMap[i];
-
+                a.orders.Clear();
                 var index = rsr.routingModel.Start(i);
                 while (rsr.routingModel.IsEnd(index) == false)
                 {

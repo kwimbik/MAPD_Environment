@@ -5,9 +5,15 @@
     <Compile Update="Simulation.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="Windows\selectAlgo.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Page Update="Simulation.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Windows\selectAlgo.xaml">
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>

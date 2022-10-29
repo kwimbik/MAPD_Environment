@@ -10,11 +10,11 @@ none
 false
 TRACE;DEBUG;NET;NET6_0;NETCOREAPP
 C:\Users\kwimbik\Desktop\skolaa\LS202122\rocnikovej_projekt\rocnikova_prace_simulace\diskretni_mapd_simulace\diskretni_mapd_simulace\App.xaml
-5-1419038440
+6-2019877937
 
-25-139308960
+27-258385270
 196-1024596267
-Simulation.xaml;Windows\LocationOptionWindow.xaml;Windows\NewAgentWindow.xaml;Windows\NewOrderWindow.xaml;Windows\SimulationVisual.xaml;
+Simulation.xaml;Windows\LocationOptionWindow.xaml;Windows\NewAgentWindow.xaml;Windows\NewOrderWindow.xaml;Windows\selectAlgo.xaml;Windows\SimulationVisual.xaml;
 
 False
 

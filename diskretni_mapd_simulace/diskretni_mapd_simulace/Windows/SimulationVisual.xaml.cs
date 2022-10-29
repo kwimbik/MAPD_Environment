@@ -57,6 +57,7 @@ namespace diskretni_mapd_simulace
             visualizeAgents();
             visualizeOrders();
             this.Content = simGrid;
+            
         }
 
         public void visualizeAgents()
@@ -95,7 +96,6 @@ namespace diskretni_mapd_simulace
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 VerticalAlignment = VerticalAlignment.Stretch,
             };
-            simGrid = visual_grid;
 
             for (int i = 0; i < map.GetLength(0); i++)
             {
@@ -105,10 +105,12 @@ namespace diskretni_mapd_simulace
 
             for (int j = 0; j < map[0].Length; j++)
             {
-                visual_grid.ColumnDefinitions.Add(new ColumnDefinition());
+                visual_grid.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(1, GridUnitType.Star)});
             }
-            simGrid = visual_grid;
 
+            //this is going to be the control panel with pause button etc
+            visual_grid.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(10, GridUnitType.Star) });
+            simGrid = visual_grid;
 
             int id_counter = 0;
             for (int i = 0; i < map.GetLength(0); i++)

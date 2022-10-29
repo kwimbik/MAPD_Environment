@@ -13,6 +13,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using diskretni_mapd_simulace.Plan_Tools;
+using diskretni_mapd_simulace.Windows;
 
 namespace diskretni_mapd_simulace
 {
@@ -29,8 +30,10 @@ namespace diskretni_mapd_simulace
         Simulace_Visual sv;
         private int grid_height = 5;
 
+        TextBlock info;
 
-          
+
+
         public Simulation()
         {
             InitializeComponent();
@@ -65,7 +68,7 @@ namespace diskretni_mapd_simulace
             };
             addAgentBtn.Click += (sender, e) =>
             {
-                NewAgentWindow naw = new NewAgentWindow(db, sv);
+                NewAgentWindow naw = new NewAgentWindow(db, this);
                 naw.Show();
                 
             };
@@ -84,7 +87,7 @@ namespace diskretni_mapd_simulace
 
             addOrderBtn.Click += (sender, e) =>
             {
-                NewOrderWindow now = new NewOrderWindow(db, sv);
+                NewOrderWindow now = new NewOrderWindow(db, this);
                 now.Show();
 
             };
@@ -121,6 +124,7 @@ namespace diskretni_mapd_simulace
             Simulation_grid.Children.Add(size_tb);
             Grid.SetColumn(size_tb, 1);
             Grid.SetRow(size_tb, 0);
+            info = size_tb;
 
             Button createPlanBtn = new Button
             {
@@ -130,7 +134,7 @@ namespace diskretni_mapd_simulace
             };
             createPlanBtn.Click += (sender, e) =>
             {
-                PlanCreator pc = new PlanCreator(db, "Greedy");
+                PlanCreator pc = new PlanCreator(db, db.selectedAlgo);
                 pc.Solve();
                 PlanReader pr = new PlanReader(sv, db);
                 pr.readPlan();
@@ -215,7 +219,8 @@ namespace diskretni_mapd_simulace
             };
             chooseAlgo.Click += (sender, e) =>
             {
-                //TODO: selects algorithm for plan
+                SelectAlgo sa = new SelectAlgo(db, this);
+                sa.Show();
             };
             Simulation_grid.Children.Add(chooseAlgo);
             Grid.SetColumn(chooseAlgo, 0);
@@ -270,6 +275,16 @@ namespace diskretni_mapd_simulace
         private void stop_btn_Click(object sender, RoutedEventArgs e)
         {
             SimulationController.run = false;
+        }
+
+        public void updateUI()
+        {
+            sv.visualizeAgents();
+            sv.visualizeOrders();
+            string Text = $@"Size of map: {db.locationMap.GetLength(0)}x{db.locationMap[0].Length}
+                Agents: {db.agents.Count}
+                Orders: {db.orders.Count}";
+            info.Text = Text;
         }
     }
 }

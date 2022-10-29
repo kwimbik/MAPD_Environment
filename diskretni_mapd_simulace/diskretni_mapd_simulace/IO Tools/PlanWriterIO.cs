@@ -22,7 +22,7 @@ namespace diskretni_mapd_simulace.IO_Tools
 
             foreach (Agent a in db.agents)
             {
-                plans.Add(a.plan);
+                if (a.plan.steps.Count > 0) plans.Add(a.plan);
             }
 
 

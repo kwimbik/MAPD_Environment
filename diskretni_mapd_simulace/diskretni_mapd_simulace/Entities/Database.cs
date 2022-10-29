@@ -13,6 +13,9 @@ namespace diskretni_mapd_simulace
 
         public Location[][] locationMap;
 
+        public string selectedAlgo = "Greedy"; // default
+        public List<string> algorithms = new List<string> { "Greedy" };
+
         //TODO: return only non delivered orders but keep all in db
         public List<Order> orders = new List<Order>();
         public int[] gridSize = new int[2]; // najit neco na praci se souradnicema
