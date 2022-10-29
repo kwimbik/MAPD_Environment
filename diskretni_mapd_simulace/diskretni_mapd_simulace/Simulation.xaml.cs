@@ -12,6 +12,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using diskretni_mapd_simulace.Plan_Tools;
 
 namespace diskretni_mapd_simulace
 {
@@ -23,7 +24,8 @@ namespace diskretni_mapd_simulace
         Database db = new Database();
         Routing_solver rs;
         Routing_solverManager rsm;
-        Thread simulationThread;
+        RoutingSolverResults results;
+        Thread assignThread;
         Simulace_Visual sv;
         private int grid_height = 5;
 
@@ -146,18 +148,32 @@ namespace diskretni_mapd_simulace
             };
             createPresolveBtn.Click += (sender, e) =>
             {
-                // runs tsp to presolve problem with TaskAssignment
-                SimulationController.run = true;
-                simulationThread = new Thread(new ThreadStart(runTSP));
-                simulationThread.Start();
+                assignOrders();
             };
             Simulation_grid.Children.Add(createPresolveBtn);
             Grid.SetColumn(createPresolveBtn, 1);
             Grid.SetRow(createPresolveBtn, 3);
-
-
         }
 
+        private void assignOrders()
+        {
+            Color_assigner ca = new Color_assigner(db);
+            //TSP task
+            Task TSP = new Task(runTSP);
+
+            //Color assign task
+            Task colorAssign = new Task(() => ca.assignColors(results));
+
+            //Visualize Colors tasl
+            Task visual = new Task(sv.colorAssignments);
+
+            TSP.Start();
+            TSP.Wait();
+            colorAssign.Start();
+            colorAssign.Wait();
+
+            visual.Start();
+        }
 
         private void generateSetupPanel()
         {
@@ -239,7 +255,6 @@ namespace diskretni_mapd_simulace
             rsm.getSolutionData();
             if (rsm.ordersToProcess.Count == 0)
             {
-                //TODO: add some steps or meters -> store in resultManager
                 this.Dispatcher.Invoke(() =>
                 {
                     MessageBox.Show("All orders have been delivered");
@@ -248,7 +263,7 @@ namespace diskretni_mapd_simulace
             else
             {
                 Routing_solver rs = new Routing_solver(rsm);
-                RoutingSolverResults result = rs.solveProblemAndPrintResults();
+                 results = rs.solveProblemAndPrintResults();
             }
         }
 

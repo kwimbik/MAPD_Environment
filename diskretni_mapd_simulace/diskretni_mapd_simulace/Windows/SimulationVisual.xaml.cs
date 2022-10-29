@@ -37,8 +37,19 @@ namespace diskretni_mapd_simulace
             InitializeComponent();
             createVisualization();
         }
+        
 
-       
+        public void colorAssignments()
+        {
+            foreach (var agent in db.agents)
+            {
+                changeColor(agent.baseLocation.coordination, agent.color);
+            }
+            foreach (var order in db.orders)
+            {
+                changeColor(order.currLocation.coordination, order.color);
+            }
+        }
 
         public void createVisualization()
         {
@@ -50,17 +61,21 @@ namespace diskretni_mapd_simulace
 
         private void visualizeAgents()
         {
+            //default color for agents is blue
+            byte[] agentColor = new byte[] { 0, 0, 255 };
             foreach (Agent a in db.agents)
             {
-                changeColor(a.baseLocation.coordination, a.color);
+                changeColor(a.baseLocation.coordination, agentColor);
             }
         }
 
         private void visualizeOrders()
         {
+            //default color for order is red
+            byte[] orderColor = new byte[] { 255, 0, 0 };
             foreach (Order o in db.orders)
             {
-                changeColor(o.currLocation.coordination, o.color);
+                changeColor(o.currLocation.coordination, orderColor);
             }
         }
 
