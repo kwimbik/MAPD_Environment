@@ -13,6 +13,9 @@
     <Page Update="Simulation.xaml">
       <SubType>Designer</SubType>
     </Page>
+    <Page Update="theme\menuButtonThm.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="Windows\selectAlgo.xaml">
       <SubType>Designer</SubType>
     </Page>

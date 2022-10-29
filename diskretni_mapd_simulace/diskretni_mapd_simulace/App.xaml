@@ -4,6 +4,10 @@
              xmlns:local="clr-namespace:diskretni_mapd_simulace"
              StartupUri="Simulation.xaml">
     <Application.Resources>
-         
-    </Application.Resources>
+		<ResourceDictionary>
+			<ResourceDictionary.MergedDictionaries>
+				<ResourceDictionary Source="theme/menuButtonThm.xaml"/>
+			</ResourceDictionary.MergedDictionaries>
+		</ResourceDictionary>
+	</Application.Resources>
 </Application>

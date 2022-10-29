@@ -37,7 +37,35 @@ namespace diskretni_mapd_simulace
             InitializeComponent();
             createVisualization();
         }
-        
+
+        private void testStackPannel()
+        {
+            StackPanel sp = new StackPanel();
+
+            RadioButton rb1 = new RadioButton
+            {
+                Content = "Pause",
+                Foreground = Brushes.Black,
+                Height = 60,
+                Style = (Style)FindResource("MenuButonTheme"),
+            };
+            sp.Children.Add(rb1);
+
+            RadioButton rb2 = new RadioButton
+            {
+                Content = "Get plan pdf",
+                Foreground = Brushes.Black,
+                Height = 60,
+                Style = (Style)FindResource("MenuButonTheme"),
+            };
+            sp.Children.Add(rb2);
+            
+            simGrid.Children.Add(sp);
+            Grid.SetColumn(sp, simGrid.ColumnDefinitions.Count - 1);
+            //TODO: add one more control under it
+            Grid.SetRowSpan(sp, simGrid.RowDefinitions.Count);
+
+        }
 
         public void colorAssignments()
         {
@@ -56,6 +84,7 @@ namespace diskretni_mapd_simulace
             createMap();
             visualizeAgents();
             visualizeOrders();
+            testStackPannel();
             this.Content = simGrid;
             
         }
