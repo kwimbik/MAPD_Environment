@@ -54,7 +54,7 @@ namespace diskretni_mapd_simulace
                 {
                     Agent a = db.getAgentById(row[2]);
                     Location l = db.getLocationByID(int.Parse(row[3]));
-                    sv.changeColor(a.baseLocation.coordination, new byte[] { 255,255,255});
+                    sv.changeColor(a.baseLocation.coordination, new byte[] { 255, 240, 245 });
                     sv.changeColor(l.coordination, a.color);
 
                     //move the agent to new location in db

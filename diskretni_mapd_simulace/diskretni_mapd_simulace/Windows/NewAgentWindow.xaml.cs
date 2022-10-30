@@ -31,41 +31,43 @@ namespace diskretni_mapd_simulace
 
         public void createControls()
         {
-            NewAgent_grid.RowDefinitions.Add(new RowDefinition());
-            NewAgent_grid.RowDefinitions.Add(new RowDefinition());
-            NewAgent_grid.RowDefinitions.Add(new RowDefinition());
+            this.ResizeMode = ResizeMode.NoResize;
+            newAgent_grid.Style = (Style)FindResource("GridTheme");
+            StackPanel sp = new StackPanel();
+            newAgent_grid.Children.Add(sp);
 
             TextBox tb = new TextBox
             {
                 Text = "Agent ID",
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 VerticalAlignment = VerticalAlignment.Stretch,
+                Height = 25,
             };
-            NewAgent_grid.Children.Add(tb);
-            Grid.SetRow(tb,0);
+            sp.Children.Add(tb);
 
             ComboBox loc_cb = new ComboBox
             {
                 Text = "Location",
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 VerticalAlignment = VerticalAlignment.Stretch,
+                Height = 40,
             };
             foreach (Location loc in database.locations)
             {
                 if (loc.type == (int)Location.types.free) loc_cb.Items.Add($"{loc.id}");
 
             }
-            NewAgent_grid.Children.Add(loc_cb);
-            Grid.SetRow(loc_cb, 1);
+            sp.Children.Add(loc_cb);
 
             Button bt = new Button
             {
                 Content = "Accept",
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 VerticalAlignment = VerticalAlignment.Stretch,
+                Style = (Style)FindResource("MenuButonTheme"),
+                Height = 60,
             };
-            NewAgent_grid.Children.Add(bt);
-            Grid.SetRow(bt, 2);
+            sp.Children.Add(bt);
 
             bt.Click += (sender, e) =>
             {

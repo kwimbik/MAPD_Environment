@@ -34,17 +34,22 @@ namespace diskretni_mapd_simulace.Windows
 
         public void createControls()
         {
-            g.RowDefinitions.Add(new RowDefinition());
-            g.RowDefinitions.Add(new RowDefinition());
-            g.RowDefinitions.Add(new RowDefinition());
+            this.ResizeMode = ResizeMode.NoResize;
+            g.Style = (Style)FindResource("GridTheme");
+            StackPanel sp = new StackPanel();
+            g.Children.Add(sp);
+            
+
+
             TextBlock id_tbl = new TextBlock
             {
                 Text = "Select algorithm",
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 VerticalAlignment = VerticalAlignment.Stretch,
+                Height = 60,
+                TextAlignment = TextAlignment.Center,
             };
-            g.Children.Add(id_tbl);
-            Grid.SetRow(id_tbl, 0);
+            sp.Children.Add(id_tbl);
 
 
             ComboBox algo_cb = new ComboBox
@@ -52,25 +57,24 @@ namespace diskretni_mapd_simulace.Windows
                 Text = "Initial location",
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 VerticalAlignment = VerticalAlignment.Stretch,
+                Height = 40,
             };
             foreach (string algo in database.algorithms)
             {
                 algo_cb.Items.Add(algo);
             }
-            g.Children.Add(algo_cb);
-            Grid.SetRow(algo_cb, 1);
+            sp.Children.Add(algo_cb);
 
             Button bt = new Button
             {
                 Content = "Accept",
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 VerticalAlignment = VerticalAlignment.Stretch,
+                Height= 70,
+                Style = (Style)FindResource("MenuButonTheme"),
             };
-            g.Children.Add(bt);
-            Grid.SetRow(bt, 3);
+            sp.Children.Add(bt);
 
-
-            //TODO: check na validitu lokace
             bt.Click += (sender, e) =>
             {
                 database.selectedAlgo = algo_cb.Text;

@@ -2,6 +2,6 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 	<Style TargetType="{x:Type Grid}"
 		  x:Key="GridTheme">
-		<Setter Property="Background" Value="#bdffe9"/>
+		<Setter Property="Background" Value="#d7fff2"/>
 	</Style>
 </ResourceDictionary>

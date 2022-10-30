@@ -5,8 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:diskretni_mapd_simulace"
         mc:Ignorable="d"
-        Title="NewVehicleWindow" Height="450" Width="800">
-    <Grid x:Name="NewAgent_grid">
+        Title="NewVehicleWindow" Height="200" Width="400">
+    <Grid x:Name="newAgent_grid">
         
     </Grid>
 </Window>

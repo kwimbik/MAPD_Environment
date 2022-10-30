@@ -31,6 +31,7 @@ namespace diskretni_mapd_simulace
 
         public Simulace_Visual(string[][] map, Database db)
         {
+            this.WindowState = WindowState.Maximized;
             this.db = db;
             this.map = map;
             map_tiles = new Rectangle[map.GetLength(0), map[1].Length];

@@ -5,6 +5,6 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:diskretni_mapd_simulace"
         mc:Ignorable="d"
-        Title="NewOrderWindow" Height="450" Width="800">
+        Title="NewOrderWindow" Height="200" Width="400">
     <Grid x:Name="newOrder_grid"/>
 </Window>

@@ -31,18 +31,20 @@ namespace diskretni_mapd_simulace
 
        public void createControls()
         {
-            newOrder_grid.RowDefinitions.Add(new RowDefinition());
-            newOrder_grid.RowDefinitions.Add(new RowDefinition());
-            newOrder_grid.RowDefinitions.Add(new RowDefinition());
-            newOrder_grid.RowDefinitions.Add(new RowDefinition());
+            newOrder_grid.Style = (Style)FindResource("GridTheme");
+            this.ResizeMode = ResizeMode.NoResize;
+
+            StackPanel sp = new StackPanel();
+            newOrder_grid.Children.Add(sp);
+
             TextBox id_tb = new TextBox
             {
                 Text = "Order ID",
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 VerticalAlignment = VerticalAlignment.Stretch,
+                Height = 25,
             };
-            newOrder_grid.Children.Add(id_tb);
-            Grid.SetRow(id_tb, 0);
+            sp.Children.Add(id_tb);
 
 
             ComboBox initPostition_cb = new ComboBox
@@ -50,29 +52,27 @@ namespace diskretni_mapd_simulace
                 Text = "Initial location",
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 VerticalAlignment = VerticalAlignment.Stretch,
+                Height = 40,
             };
             foreach (Location loc in database.locations)
             {
                 if (loc.type == (int)Location.types.free)  initPostition_cb.Items.Add($"{loc.id}");
             }
-            newOrder_grid.Children.Add(initPostition_cb);
-            Grid.SetRow(initPostition_cb, 1);
-
-
+            sp.Children.Add(initPostition_cb);
 
             ComboBox tarhetPos_cb = new ComboBox
             {
                 Text = "TargetLocation",
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 VerticalAlignment = VerticalAlignment.Stretch,
+                Height = 40,
             };
             foreach (Location loc in database.locations)
             {
                 if (loc.type == (int)Location.types.free) tarhetPos_cb.Items.Add($"{loc.id}");
 
             }
-            newOrder_grid.Children.Add(tarhetPos_cb);
-            Grid.SetRow(tarhetPos_cb, 2);
+            sp.Children.Add(tarhetPos_cb);
 
 
             Button bt = new Button
@@ -80,12 +80,12 @@ namespace diskretni_mapd_simulace
                 Content = "Accept",
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 VerticalAlignment = VerticalAlignment.Stretch,
+                Style = (Style)FindResource("MenuButonTheme"),
+                Height = 60,
             };
-            newOrder_grid.Children.Add(bt);
-            Grid.SetRow(bt, 3);
+            sp.Children.Add(bt);
 
 
-            //TODO: check na validitu lokace
             bt.Click += (sender, e) =>
             {
                 Location init_location = database.getLocationByID(int.Parse(initPostition_cb.Text));

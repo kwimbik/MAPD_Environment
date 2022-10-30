@@ -29,7 +29,7 @@ namespace diskretni_mapd_simulace
         Thread assignThread;
         Simulace_Visual sv;
         private int grid_height = 5;
-        private int buttonHeight = 80; 
+        private int buttonHeight = 90; 
 
         TextBlock info;
 
@@ -37,6 +37,8 @@ namespace diskretni_mapd_simulace
 
         public Simulation()
         {
+            this.WindowState = WindowState.Normal;
+            this.ResizeMode = ResizeMode.NoResize; 
             InitializeComponent();
             mapParserIO mp = new mapParserIO("map.txt", db);
             sv = new Simulace_Visual(mp.readInputFile(), db);
@@ -134,8 +136,8 @@ namespace diskretni_mapd_simulace
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 VerticalAlignment = VerticalAlignment.Stretch,
                 Text = $@"Size of map: {db.locationMap.GetLength(0)}x{db.locationMap[0].Length}
-                Agents: {db.agents.Count}
-                Orders: {db.orders.Count}",
+Agents: {db.agents.Count}
+Orders: {db.orders.Count}",
                 TextAlignment = TextAlignment.Center,  
             };
             sp.Children.Add(size_tb);
@@ -256,17 +258,6 @@ namespace diskretni_mapd_simulace
             };
             sp.Children.Add(chooseAlgo);
 
-            TextBlock tb = new TextBlock
-            {
-                Text = "Current output file: plan.txt",
-                TextAlignment = TextAlignment.Center,
-                HorizontalAlignment = HorizontalAlignment.Stretch,
-                VerticalAlignment = VerticalAlignment.Stretch,
-                Height = buttonHeight,
-            };
-            sp.Children.Add(tb);
-
-
             Button outputFileBtn = new Button
             {
                 HorizontalAlignment = HorizontalAlignment.Stretch,
@@ -280,6 +271,17 @@ namespace diskretni_mapd_simulace
                 //TODO: selects output file in explorer -> forms component
             };
             sp.Children.Add(outputFileBtn);
+
+            TextBlock tb = new TextBlock
+            {
+                Text = "Current output file: plan.txt",
+                TextAlignment = TextAlignment.Center,
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                VerticalAlignment = VerticalAlignment.Stretch,
+                Height = buttonHeight,
+            };
+            sp.Children.Add(tb);
+
 
         }
 
