@@ -38,28 +38,74 @@ namespace diskretni_mapd_simulace
             createVisualization();
         }
 
-        private void testStackPannel()
+        private void createStackPannel()
         {
-            StackPanel sp = new StackPanel();
+            StackPanel sp = new StackPanel
+            {
+                
+            };
 
-            RadioButton rb1 = new RadioButton
+            Border tb_bor = new Border
+            {
+                BorderThickness = new Thickness(1,1,1,1),
+                BorderBrush = Brushes.Black,
+            };
+
+            TextBlock tb = new TextBlock
+            {
+                Text = @"Time: 0 
+Cost: 0 moves
+Delivered: 0
+Remaining: 0",
+                Height = 70,
+                TextAlignment = TextAlignment.Left,
+                Margin = new (10,0,0,0),
+            };
+            tb_bor.Child = tb;
+            sp.Children.Add(tb_bor);
+
+            Button b1 = new Button
             {
                 Content = "Pause",
                 Foreground = Brushes.Black,
                 Height = 60,
                 Style = (Style)FindResource("MenuButonTheme"),
             };
-            sp.Children.Add(rb1);
 
-            RadioButton rb2 = new RadioButton
+            b1.Click += (sender, e) =>
+            {
+                //TODO: implement pause function
+            };
+            sp.Children.Add(b1);
+
+            Button b2 = new Button
             {
                 Content = "Get plan pdf",
                 Foreground = Brushes.Black,
                 Height = 60,
                 Style = (Style)FindResource("MenuButonTheme"),
             };
-            sp.Children.Add(rb2);
-            
+            b2.Click += (sender, e) =>
+            {
+                //TODO: implement plan pdf export or some other visualisation of plan via safe routes per time windows
+            };
+            sp.Children.Add(b2);
+
+            Button b3 = new Button
+            {
+                Content = "Settings",
+                Foreground = Brushes.Black,
+                Height = 60,
+                Style = (Style)FindResource("MenuButonTheme"),
+            };
+            b1.Click += (sender, e) =>
+            {
+                //TODO: in bar below, display settings -> filter agents, filter orders, focus on specific agent
+            };
+            sp.Children.Add(b3);
+
+
+
             simGrid.Children.Add(sp);
             Grid.SetColumn(sp, simGrid.ColumnDefinitions.Count - 1);
             //TODO: add one more control under it
@@ -84,7 +130,7 @@ namespace diskretni_mapd_simulace
             createMap();
             visualizeAgents();
             visualizeOrders();
-            testStackPannel();
+            createStackPannel();
             this.Content = simGrid;
             
         }
@@ -124,6 +170,7 @@ namespace diskretni_mapd_simulace
             {
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 VerticalAlignment = VerticalAlignment.Stretch,
+                Style = (Style)FindResource("GridTheme"),
             };
 
             for (int i = 0; i < map.GetLength(0); i++)
@@ -148,7 +195,7 @@ namespace diskretni_mapd_simulace
                 {
                     Rectangle b = new Rectangle
                     {
-                        Fill = map[i][j] == "1" ? Brushes.Black : Brushes.White,
+                        Fill = map[i][j] == "1" ? Brushes.Black : Brushes.LavenderBlush,
                         VerticalAlignment = VerticalAlignment.Stretch,
                         HorizontalAlignment = HorizontalAlignment.Stretch,
                     };

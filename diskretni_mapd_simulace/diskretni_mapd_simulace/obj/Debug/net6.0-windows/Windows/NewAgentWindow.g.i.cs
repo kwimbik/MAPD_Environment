@@ -61,7 +61,7 @@ namespace diskretni_mapd_simulace {
                 return;
             }
             _contentLoaded = true;
-            System.Uri resourceLocater = new System.Uri("/diskretni_mapd_simulace;V1.0.0.0;component/windows/newagentwindow.xaml", System.UriKind.Relative);
+            System.Uri resourceLocater = new System.Uri("/diskretni_mapd_simulace;component/windows/newagentwindow.xaml", System.UriKind.Relative);
             
             #line 1 "..\..\..\..\Windows\NewAgentWindow.xaml"
             System.Windows.Application.LoadComponent(this, resourceLocater);

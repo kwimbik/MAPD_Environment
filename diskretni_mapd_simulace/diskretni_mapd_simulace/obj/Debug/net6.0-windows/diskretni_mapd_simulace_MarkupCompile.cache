@@ -10,11 +10,11 @@ none
 false
 TRACE;DEBUG;NET;NET6_0;NETCOREAPP
 C:\Users\kwimbik\Desktop\skolaa\LS202122\rocnikovej_projekt\rocnikova_prace_simulace\diskretni_mapd_simulace\diskretni_mapd_simulace\App.xaml
-7-1607799328
+82064749460
 
 27-258385270
 196-1024596267
-Simulation.xaml;theme\menuButtonThm.xaml;Windows\LocationOptionWindow.xaml;Windows\NewAgentWindow.xaml;Windows\NewOrderWindow.xaml;Windows\selectAlgo.xaml;Windows\SimulationVisual.xaml;
+Simulation.xaml;theme\GridBackgroundThm.xaml;theme\menuButtonThm.xaml;Windows\LocationOptionWindow.xaml;Windows\NewAgentWindow.xaml;Windows\NewOrderWindow.xaml;Windows\selectAlgo.xaml;Windows\SimulationVisual.xaml;
 
 False
 

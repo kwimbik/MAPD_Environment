@@ -29,6 +29,7 @@ namespace diskretni_mapd_simulace
         Thread assignThread;
         Simulace_Visual sv;
         private int grid_height = 5;
+        private int buttonHeight = 80; 
 
         TextBlock info;
 
@@ -52,6 +53,8 @@ namespace diskretni_mapd_simulace
             {
                 Simulation_grid.RowDefinitions.Add(new RowDefinition());
             }
+
+            Simulation_grid.Style = (Style)FindResource("GridTheme");
             generateSetupPanel();
             generateMapPanel();
             generatePlanPanel();
@@ -59,30 +62,34 @@ namespace diskretni_mapd_simulace
 
         private void generatePlanPanel()
         {
-            //Button for new agent TODO: validate location
+            StackPanel sp = new StackPanel();
+            Simulation_grid.Children.Add(sp);
+            Grid.SetColumn(sp, 2);
+            Grid.SetRowSpan(sp, grid_height);
+
             Button addAgentBtn = new Button
             {
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 VerticalAlignment = VerticalAlignment.Stretch,
                 Content = "Add new agent",
+                Style  = (Style)FindResource("MenuButonTheme"),
+                Height = buttonHeight,
             };
             addAgentBtn.Click += (sender, e) =>
             {
                 NewAgentWindow naw = new NewAgentWindow(db, this);
                 naw.Show();
-                
+
             };
-            Simulation_grid.Children.Add(addAgentBtn);
-            Grid.SetColumn(addAgentBtn, 2);
-            Grid.SetRow(addAgentBtn, 0);
+            sp.Children.Add(addAgentBtn);
 
-
-            //Button for new Order-. TODO: validate location
             Button addOrderBtn = new Button
             {
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 VerticalAlignment = VerticalAlignment.Stretch,
                 Content = "Add new order",
+                Style = (Style)FindResource("MenuButonTheme"),
+                Height = buttonHeight,
             };
 
             addOrderBtn.Click += (sender, e) =>
@@ -91,9 +98,8 @@ namespace diskretni_mapd_simulace
                 now.Show();
 
             };
-            Simulation_grid.Children.Add(addOrderBtn);
-            Grid.SetColumn(addOrderBtn, 2);
-            Grid.SetRow(addOrderBtn, 1);
+            sp.Children.Add(addOrderBtn);
+
 
 
             //Textbox with color info
@@ -103,15 +109,26 @@ namespace diskretni_mapd_simulace
                 VerticalAlignment = VerticalAlignment.Stretch,
                 TextAlignment = TextAlignment.Center,
                 Text = "Here will be the colors info",
+                Height = buttonHeight,
             };
-            Simulation_grid.Children.Add(colors_tb);
-            Grid.SetColumn(colors_tb, 2);
-            Grid.SetRow(colors_tb, 2);
-        }
+            sp.Children.Add(colors_tb);
 
+        }
 
         private void generateMapPanel()
         {
+            Border sp_bod = new Border
+            {
+                BorderBrush = Brushes.Black,
+                BorderThickness = new Thickness(1,0,1,0),
+            };
+            StackPanel sp = new StackPanel();
+
+            sp_bod.Child = sp;
+            Simulation_grid.Children.Add(sp_bod);
+            Grid.SetColumn(sp_bod, 1);
+            Grid.SetRowSpan(sp_bod, grid_height);
+
             TextBlock size_tb = new TextBlock
             {
                 HorizontalAlignment = HorizontalAlignment.Stretch,
@@ -121,9 +138,7 @@ namespace diskretni_mapd_simulace
                 Orders: {db.orders.Count}",
                 TextAlignment = TextAlignment.Center,  
             };
-            Simulation_grid.Children.Add(size_tb);
-            Grid.SetColumn(size_tb, 1);
-            Grid.SetRow(size_tb, 0);
+            sp.Children.Add(size_tb);
             info = size_tb;
 
             Button createPlanBtn = new Button
@@ -131,6 +146,8 @@ namespace diskretni_mapd_simulace
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 VerticalAlignment = VerticalAlignment.Stretch,
                 Content = "Create plan",
+                Style = (Style)FindResource("MenuButonTheme"),
+                Height = buttonHeight,
             };
             createPlanBtn.Click += (sender, e) =>
             {
@@ -139,9 +156,8 @@ namespace diskretni_mapd_simulace
                 PlanReader pr = new PlanReader(sv, db);
                 pr.readPlan();
             };
-            Simulation_grid.Children.Add(createPlanBtn);
-            Grid.SetColumn(createPlanBtn, 1);
-            Grid.SetRow(createPlanBtn, 4);
+            sp.Children.Add(createPlanBtn);
+
 
 
             Button createPresolveBtn = new Button
@@ -149,14 +165,15 @@ namespace diskretni_mapd_simulace
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 VerticalAlignment = VerticalAlignment.Stretch,
                 Content = "Presolve Task assignment",
+                Style = (Style)FindResource("MenuButonTheme"),
+                Height = buttonHeight,
             };
             createPresolveBtn.Click += (sender, e) =>
             {
                 assignOrders();
             };
-            Simulation_grid.Children.Add(createPresolveBtn);
-            Grid.SetColumn(createPresolveBtn, 1);
-            Grid.SetRow(createPresolveBtn, 3);
+            sp.Children.Add(createPresolveBtn);
+
         }
 
         private void assignOrders()
@@ -181,19 +198,31 @@ namespace diskretni_mapd_simulace
 
         private void generateSetupPanel()
         {
+            Border sp_bod = new Border
+            {
+                BorderBrush = Brushes.Black,
+                BorderThickness = new Thickness(1, 0, 1, 0),
+            };
+            StackPanel sp = new StackPanel();
+
+            sp_bod.Child = sp;
+            Simulation_grid.Children.Add(sp_bod);
+            Grid.SetColumn(sp_bod, 0);
+            Grid.SetRowSpan(sp_bod, grid_height);
+
             Button fileButton = new Button
             {
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 VerticalAlignment = VerticalAlignment.Stretch,
                 Content = "Upload file",
+                Style = (Style)FindResource("MenuButonTheme"),
+                Height = buttonHeight,
             };
             fileButton.Click += (sender, e) =>
             {
                 //add explorer component 
             };
-            Simulation_grid.Children.Add(fileButton);
-            Grid.SetColumn(fileButton, 0);
-            Grid.SetRow(fileButton, 0);
+            sp.Children.Add(fileButton);
 
            
 
@@ -202,55 +231,55 @@ namespace diskretni_mapd_simulace
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 VerticalAlignment = VerticalAlignment.Stretch,
                 Content = "Generate map",
+                Style = (Style)FindResource("MenuButonTheme"),
+                Height = buttonHeight,
             };
             genMap.Click += (sender, e) =>
             {
                 //TODO: generate map with specific parameters
             };
-            Simulation_grid.Children.Add(genMap);
-            Grid.SetColumn(genMap, 0);
-            Grid.SetRow(genMap, 1);
+            sp.Children.Add(genMap);
+
 
             Button chooseAlgo = new Button
             {
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 VerticalAlignment = VerticalAlignment.Stretch,
                 Content = "Choose algorhitm",
+                Style = (Style)FindResource("MenuButonTheme"),
+                Height = buttonHeight,
             };
             chooseAlgo.Click += (sender, e) =>
             {
                 SelectAlgo sa = new SelectAlgo(db, this);
                 sa.Show();
             };
-            Simulation_grid.Children.Add(chooseAlgo);
-            Grid.SetColumn(chooseAlgo, 0);
-            Grid.SetRow(chooseAlgo, 2);
+            sp.Children.Add(chooseAlgo);
 
             TextBlock tb = new TextBlock
             {
                 Text = "Current output file: plan.txt",
                 TextAlignment = TextAlignment.Center,
-                
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 VerticalAlignment = VerticalAlignment.Stretch,
+                Height = buttonHeight,
             };
-            Simulation_grid.Children.Add(tb);
-            Grid.SetColumn(tb, 0);
-            Grid.SetRow(tb, 3);
+            sp.Children.Add(tb);
+
 
             Button outputFileBtn = new Button
             {
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 VerticalAlignment = VerticalAlignment.Stretch,
                 Content = "Choose different outputFile",
+                Style = (Style)FindResource("MenuButonTheme"),
+                Height = buttonHeight,
             };
             outputFileBtn.Click += (sender, e) =>
             {
                 //TODO: selects output file in explorer -> forms component
             };
-            Simulation_grid.Children.Add(outputFileBtn);
-            Grid.SetColumn(outputFileBtn, 0);
-            Grid.SetRow(outputFileBtn, 4);
+            sp.Children.Add(outputFileBtn);
 
         }
 
