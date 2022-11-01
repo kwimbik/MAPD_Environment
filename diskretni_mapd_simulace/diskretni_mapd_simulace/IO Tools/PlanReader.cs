@@ -39,13 +39,36 @@ namespace diskretni_mapd_simulace
         private void executePlan()
         {
             int time = 0;
+            List<Location> agentLocations = new List<Location>();
+            List<Location> toBlend = new List<Location>();
+            List <string[]> agentLocId = new List<string[]>();
+
             foreach (string line in File.ReadLines(file))
             {
                 //Next iteration
                 //TODO: while, nabrat vse v jednom casovem tiku a udelat to pro to, at se mi neprebarvuji agenti zpet
                 string[] row = line.Split('-');
                 if (int.Parse(row[0]) != time) {
+
+                    //clean white spaces for vehicles
+                    foreach (var loc in toBlend)
+                    {
+                        if (agentLocations.Contains(loc) == false)
+                        {
+                            sv.changeColor(loc.coordination, new byte[] { 255, 240, 245 });
+                        }
+                    }
+                    foreach (var alID in agentLocId)
+                    {
+                        Agent a = db.getAgentById(alID[0]);
+                        Location l = db.getLocationByID(int.Parse(alID[1]));
+                        sv.changeColor(l.coordination, a.color);
+                    }
+
                     time = int.Parse(row[0]);
+                    agentLocations.Clear();
+                    toBlend.Clear();
+                    agentLocId.Clear();
                     Thread.Sleep(StopInMs);
                 }
 
@@ -54,8 +77,10 @@ namespace diskretni_mapd_simulace
                 {
                     Agent a = db.getAgentById(row[2]);
                     Location l = db.getLocationByID(int.Parse(row[3]));
-                    sv.changeColor(a.baseLocation.coordination, new byte[] { 255, 240, 245 });
-                    sv.changeColor(l.coordination, a.color);
+
+                    toBlend.Add(a.baseLocation);
+                    agentLocations.Add(l);
+                    agentLocId.Add(new string[] { row[2], row[3] });
 
                     //move the agent to new location in db
                     a.baseLocation.agents.Remove(a);

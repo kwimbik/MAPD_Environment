@@ -101,20 +101,6 @@ namespace diskretni_mapd_simulace
 
             };
             sp.Children.Add(addOrderBtn);
-
-
-
-            //Textbox with color info
-            TextBlock colors_tb = new TextBlock
-            {
-                HorizontalAlignment = HorizontalAlignment.Stretch,
-                VerticalAlignment = VerticalAlignment.Stretch,
-                TextAlignment = TextAlignment.Center,
-                Text = "Here will be the colors info",
-                Height = buttonHeight,
-            };
-            sp.Children.Add(colors_tb);
-
         }
 
         private void generateMapPanel()
@@ -276,6 +262,7 @@ Orders: {db.orders.Count}",
             {
                 Text = "Current output file: plan.txt",
                 TextAlignment = TextAlignment.Center,
+                Background = Brushes.White,
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 VerticalAlignment = VerticalAlignment.Stretch,
                 Height = buttonHeight,
