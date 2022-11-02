@@ -31,10 +31,10 @@ namespace diskretni_mapd_simulace.Algorithms
                 foreach (Order o in a.orders)
                 {
                     List<Location> loc1 = getPathForAgentAndOrder(current, o.currLocation, db);
-                    formatPlan(a, current, loc1);
+                    formatPlan(a, current, loc1, o);
                     current = o.currLocation;
                     List<Location> loc2 = getPathForAgentAndOrder(current, o.targetLocation, db);
-                    formatPlan(a, o.currLocation, loc2);
+                    formatPlan(a, o.currLocation, loc2, o);
                     current = o.targetLocation;
                 }
 
@@ -47,7 +47,7 @@ namespace diskretni_mapd_simulace.Algorithms
             return plan;
         }
 
-        private static void formatPlan(Agent a,Location curr,  List<Location> locations1)
+        private static void formatPlan(Agent a,Location curr,  List<Location> locations1, Order o)
         {
             timeCounter = a.movesMade;
             string agentId = a.id;
@@ -63,6 +63,18 @@ namespace diskretni_mapd_simulace.Algorithms
                 p.occupied.Add(locations1[i].entranceTime);
                 prev = locations1[i];
             }
+
+            if (locations1[0] == o.currLocation)
+            {
+                a.plan.steps.Add(new PlanStep { agentId = a.id, locationId = o.currLocation.id, time = ++o.currLocation.entranceTime, type = (int)PlanStep.types.pickup, orderId = o.id});
+                o.currLocation.occupiedAt.Add(o.currLocation.entranceTime);
+            };
+
+            if (locations1[0] == o.targetLocation)
+            {
+                a.plan.steps.Add(new PlanStep { agentId = a.id, locationId = o.targetLocation.id, time = ++o.targetLocation.entranceTime, type = (int)PlanStep.types.deliver, orderId = o.id });
+                o.targetLocation.occupiedAt.Add(o.currLocation.entranceTime);
+            };
         }
 
 

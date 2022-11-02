@@ -92,6 +92,15 @@ namespace diskretni_mapd_simulace
             return null;
         }
 
+        public Order getOrderById(string Id)
+        {
+            foreach (Order o in orders)
+            {
+                if (o.id == Id) return o;
+            }
+            return null;
+        }
+
         public Agent getAgentById(string id)
         {
             foreach (Agent v in agents)
@@ -99,6 +108,26 @@ namespace diskretni_mapd_simulace
                 if (v.id == id) return v;
             }
             return null;
+        }
+
+        public int getNumOfDeliveredOrders()
+        {
+            int count = 0;
+            foreach (var o in orders)
+            {
+                if (o.state == (int)Order.states.delivered) count++; 
+            }
+            return count;
+        }
+
+        public int getNumOfNonDeliveredOrders()
+        {
+            int count = 0;
+            foreach (var o in orders)
+            {
+                if (o.state != (int)Order.states.delivered) count++;
+            }
+            return count;
         }
     }
 }

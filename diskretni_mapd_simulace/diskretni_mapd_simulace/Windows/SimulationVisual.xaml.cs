@@ -22,6 +22,7 @@ namespace diskretni_mapd_simulace
         List<int[]> orders_coord = new List<int[]>();
         List<int[]> agents_coord = new List<int[]>();
         Database db;
+        public TextBlock info = new TextBlock();
 
         public string[][] map = new string[][] { new string[] { "1", "0", "0" }, new string[] { "0", "0", "1" }, new string[] { "1", "0", "0"} };
         private Rectangle[,] map_tiles;
@@ -64,6 +65,7 @@ Remaining: 0",
             };
             tb_bor.Child = tb;
             sp.Children.Add(tb_bor);
+            info = tb;
 
             Button b1 = new Button
             {
@@ -162,6 +164,14 @@ Remaining: 0",
             this.Dispatcher.Invoke(() =>
             {
                 map_tiles[coord[0], coord[1]].Fill = new SolidColorBrush(Color.FromRgb(color[0], color[1], color[2])); ;
+            });
+        }
+
+        public void changeInfoText(string value)
+        {
+            this.Dispatcher.Invoke(() =>
+            {
+                info.Text = value;
             });
         }
 

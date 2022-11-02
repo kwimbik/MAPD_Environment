@@ -18,6 +18,7 @@ namespace diskretni_mapd_simulace
 
         string file = "plan.txt";
         int StopInMs = 250;
+        private int cost = 0;
 
         Simulace_Visual sv;
         Database db;
@@ -25,7 +26,6 @@ namespace diskretni_mapd_simulace
         {
             this.sv = sv;
             this.db = db;
-            
         }
 
         public void readPlan()
@@ -56,6 +56,12 @@ namespace diskretni_mapd_simulace
                         if (agentLocations.Contains(loc) == false)
                         {
                             sv.changeColor(loc.coordination, new byte[] { 255, 240, 245 });
+
+                            //if there is order that has not been processed yet, dont overdraw it
+                            foreach (var o in loc.orders)
+                            {
+                                if (o.state == (int)Order.states.pending) sv.changeColor(loc.coordination, o.color);
+                            }
                         }
                     }
                     foreach (var alID in agentLocId)
@@ -66,30 +72,81 @@ namespace diskretni_mapd_simulace
                     }
 
                     time = int.Parse(row[0]);
+
+                    cost += agentLocations.Count();
+
                     agentLocations.Clear();
                     toBlend.Clear();
                     agentLocId.Clear();
+                    updateSimInfo(time);
                     Thread.Sleep(StopInMs);
                 }
 
                 //Agent move: 'time'-A-'id'-'locationId'
                 if (row[1] == "A")
                 {
-                    Agent a = db.getAgentById(row[2]);
-                    Location l = db.getLocationByID(int.Parse(row[3]));
+                    //movement
+                    if (row[2] == "0" )
+                    {
+                        Agent a = db.getAgentById(row[3]);
+                        Location l = db.getLocationByID(int.Parse(row[4]));
 
-                    toBlend.Add(a.baseLocation);
-                    agentLocations.Add(l);
-                    agentLocId.Add(new string[] { row[2], row[3] });
+                        toBlend.Add(a.baseLocation);
+                        agentLocations.Add(l);
+                        agentLocId.Add(new string[] { row[3], row[4] });
 
-                    //move the agent to new location in db
-                    a.baseLocation.agents.Remove(a);
-                    a.baseLocation = l;
-                    l.agents.Add(a);
+                        //move the agent to new location in db
+                        a.baseLocation.agents.Remove(a);
+                        a.baseLocation = l;
+                        l.agents.Add(a);
+                    }
+
+                    //deliver order
+                    if (row[2] == "1")
+                    {
+                        Agent a = db.getAgentById(row[3]);
+                        Location l = db.getLocationByID(int.Parse(row[4]));
+                        Order o = db.getOrderById(row[5]);
+
+                        o.state = (int)Order.states.delivered;
+                        a.orders.Remove(o);
+                        l.orders.Add(o);
+
+                        a.baseLocation.agents.Remove(a);
+                        a.baseLocation = l;
+                        l.agents.Add(a);
+                    }
+
+                    //pickup order
+                    if (row[2] == "2")
+                    {
+                        Agent a = db.getAgentById(row[3]);
+                        Location l = db.getLocationByID(int.Parse(row[4]));
+                        Order o = db.getOrderById(row[5]);
+
+                        o.state = (int)Order.states.processed;
+                        a.orders.Add(o);
+                        l.orders.Remove(o);
+
+                        a.baseLocation.agents.Remove(a);
+                        a.baseLocation = l;
+                        l.agents.Add(a);
+                    }
+
                 }
             }
         }
 
-    
+        //TODO: delivered orders # seem sus, fix it
+        private void updateSimInfo(int time)
+        {
+            int delivered = db.getNumOfDeliveredOrders();
+            int remaining = db.getNumOfNonDeliveredOrders();
+            string text =  @$"Time: {time} 
+Cost: {cost} moves
+Delivered: {delivered}
+Remaining: {remaining}";
+            sv.changeInfoText(text);
+        }
     }
 }

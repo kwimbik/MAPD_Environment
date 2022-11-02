@@ -37,7 +37,21 @@ namespace diskretni_mapd_simulace.IO_Tools
                         currPlan = p;
                     }
                 }
-                sw.WriteLine($"{currPlan.steps[0].time}-A-{currPlan.agent.id}-{currPlan.steps[0].locationId}");
+                PlanStep ps = currPlan.steps[0];
+                if (ps.type == (int)PlanStep.types.movement)
+                {
+                    sw.WriteLine($"{ps.time}-A-{ps.type}-{currPlan.agent.id}-{ps.locationId}");
+
+                }
+                if (ps.type == (int)PlanStep.types.pickup)
+                {
+                    sw.WriteLine($"{ps.time}-A-{ps.type}-{currPlan.agent.id}-{ps.locationId}-{ps.orderId}");
+
+                }
+                if (ps.type == (int)PlanStep.types.deliver)
+                {
+                    sw.WriteLine($"{ps.time}-A-{ps.type}-{currPlan.agent.id}-{ps.locationId}-{ps.orderId}");
+                }
                 currPlan.steps.RemoveAt(0);
                 if (currPlan.steps.Count <= 0) plans.Remove(currPlan);
             }
