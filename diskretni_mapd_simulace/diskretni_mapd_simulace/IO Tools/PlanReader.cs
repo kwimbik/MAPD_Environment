@@ -17,7 +17,7 @@ namespace diskretni_mapd_simulace
         Thread planThread;
 
         string file = "plan.txt";
-        int StopInMs = 250;
+        int StopInMs = 450;
         private int cost = 0;
 
         Simulace_Visual sv;
@@ -102,7 +102,7 @@ namespace diskretni_mapd_simulace
                     }
 
                     //deliver order
-                    if (row[2] == "1")
+                    if (row[2] == "2")
                     {
                         Agent a = db.getAgentById(row[3]);
                         Location l = db.getLocationByID(int.Parse(row[4]));
@@ -118,7 +118,7 @@ namespace diskretni_mapd_simulace
                     }
 
                     //pickup order
-                    if (row[2] == "2")
+                    if (row[2] == "1")
                     {
                         Agent a = db.getAgentById(row[3]);
                         Location l = db.getLocationByID(int.Parse(row[4]));
