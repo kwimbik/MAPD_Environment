@@ -19,9 +19,12 @@ namespace diskretni_mapd_simulace
         string file = "plan.txt";
         int StopInMs = 450;
         private int cost = 0;
+        byte[] targetColor = new byte[] { 255, 215, 0 };
 
         Simulace_Visual sv;
         Database db;
+        List<Agent> agentsToPlan = new List<Agent>();
+
         public PlanReader(Simulace_Visual sv, Database db)
         {
             this.sv = sv;
@@ -34,10 +37,36 @@ namespace diskretni_mapd_simulace
             planThread.Start();
         }
 
+        public void addAgentsToPlan(Agent a)
+        {
+
+        }
+
+        public void removeAgentsToPlan(Agent a)
+        {
+
+        }
+
+        public void HighlightAgent(Agent a)
+        {
+
+        }
+
+        public void removeHighlightFromAgent(Agent a)
+        {
+
+        }
+
 
         //IF iteration through databse and its ids is slow, I will make execute expliitely visual with raw coordinates
         private void executePlan()
         {
+            //Originally, we want to plan all the agents, this might change
+            foreach (var a in db.agents)
+            {
+                agentsToPlan.Add(a);
+            }
+
             int time = 0;
             List<Location> agentLocations = new List<Location>();
             List<Location> toBlend = new List<Location>();
@@ -124,6 +153,9 @@ namespace diskretni_mapd_simulace
                         Location l = db.getLocationByID(int.Parse(row[4]));
                         Order o = db.getOrderById(row[5]);
 
+                        //color the target location
+                        sv.changeColor(o.targetLocation.coordination, targetColor);
+
                         o.state = (int)Order.states.processed;
                         a.orders.Add(o);
                         l.orders.Remove(o);
@@ -137,7 +169,7 @@ namespace diskretni_mapd_simulace
             }
         }
 
-        //TODO: delivered orders # seem sus, fix it
+
         private void updateSimInfo(int time)
         {
             int delivered = db.getNumOfDeliveredOrders();

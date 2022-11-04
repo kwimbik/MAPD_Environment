@@ -11,6 +11,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using diskretni_mapd_simulace.Windows;
 
 namespace diskretni_mapd_simulace
 {
@@ -22,7 +23,9 @@ namespace diskretni_mapd_simulace
         List<int[]> orders_coord = new List<int[]>();
         List<int[]> agents_coord = new List<int[]>();
         Database db;
+        public PlanReader pr;
         public TextBlock info = new TextBlock();
+
 
         public string[][] map = new string[][] { new string[] { "1", "0", "0" }, new string[] { "0", "0", "1" }, new string[] { "1", "0", "0"} };
         private Rectangle[,] map_tiles;
@@ -101,9 +104,11 @@ Remaining: 0",
                 Height = 60,
                 Style = (Style)FindResource("MenuButonTheme"),
             };
-            b1.Click += (sender, e) =>
+
+            b3.Click += (sender, e) =>
             {
-                //TODO: in bar below, display settings -> filter agents, filter orders, focus on specific agent
+                SImulationSettingsWindow ssw = new SImulationSettingsWindow(db, pr);
+                ssw.Show();
             };
             sp.Children.Add(b3);
 

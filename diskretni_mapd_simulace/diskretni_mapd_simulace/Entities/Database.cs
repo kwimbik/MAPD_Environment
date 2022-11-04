@@ -50,7 +50,7 @@ namespace diskretni_mapd_simulace
             locations[2].orders.Add(o4);
             locations[1161].orders.Add(o5);
             locations[361].orders.Add(o6);
-            agents.Add(new Agent() { id = "1", baseLocation = locations[122] } );
+            agents.Add(new Agent() { id = "1", baseLocation = locations[817] } );
             agents.Add(new Agent() { id = "2", baseLocation = locations[82] } );
 
         }

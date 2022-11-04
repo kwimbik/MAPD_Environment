@@ -28,12 +28,11 @@ namespace diskretni_mapd_simulace
         RoutingSolverResults results;
         Thread assignThread;
         Simulace_Visual sv;
+        PlanReader pr;
         private int grid_height = 5;
         private int buttonHeight = 90; 
 
         TextBlock info;
-
-
 
         public Simulation()
         {
@@ -141,7 +140,8 @@ Orders: {db.orders.Count}",
             {
                 PlanCreator pc = new PlanCreator(db, db.selectedAlgo);
                 pc.Solve();
-                PlanReader pr = new PlanReader(sv, db);
+                pr = new PlanReader(sv, db);
+                sv.pr = pr;
                 pr.readPlan();
             };
             sp.Children.Add(createPlanBtn);
