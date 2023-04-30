@@ -70,10 +70,10 @@ namespace diskretni_mapd_simulace
             // Define cost of each arc.
             routing.SetArcCostEvaluatorOfAllVehicles(transitCallbackIndex);
 
-            // Add Time constraint.
+            // Add Time constraint, for #orders > 100 set to maybe 3000-4000 time per agent
             routing.AddDimension(transitCallbackIndex, // transit callback
-                                 30,                   // allow waiting time
-                                 1000,                 // capacities are solved in different dimension
+                                 100,                   // allow waiting time
+                                 2000,                 // capacities are solved in different dimension
                                  false,                // start cumul to zero
                                  "Time");
             RoutingDimension timeDimension = routing.GetMutableDimension("Time");

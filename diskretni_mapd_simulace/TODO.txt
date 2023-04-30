@@ -1,14 +1,17 @@
 Osetrit korekti zadavani, tj objednavka nemuze mit jako target lokaci svou vlastni
 
--- Udelat visual komponentu co dostane vstup a zobrazi podle toho mapu. Zaroven kazde pole napasovat na lokace
--- vyhazet zbytecny veci, vsechno je na gitu
--- vyhodit komplet movement classu, zlikvidovat tlacitka a bindovani, vytvorit input parser doprostred co nahraje soubor
--- pridat moznost jak nacist soubor jako argument
+
+--reassign color button  v pravem panelu, color wheel componenta? Important agent stress
+
+-graph ktery:   -> orders, agents -> cas, steps
+		-> ktery algorimus to resil
+		-> jaka mapa to byla
+    
+
+-- Vyresit objednavky v case (base case vsechny jsou zname aby fungoval ten mapf benchmark)
+-- generovani agentu
 -- plan validator
 -- validation of input
--- Generator mapy
---Greedy algoritmus na jednoduchou vizualizaci
--Vizualizace objednavek, aby bylo poznat kdyz se nalozit. Pridat do planu cteni nalozeni a vylozeni.
---reassign color button  v pravem panelu, color wheel componenta? Important agent stress
+
 
 https://www.youtube.com/watch?v=jezhAkxEYZM

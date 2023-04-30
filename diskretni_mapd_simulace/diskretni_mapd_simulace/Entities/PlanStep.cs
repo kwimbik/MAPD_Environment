@@ -20,6 +20,7 @@ namespace diskretni_mapd_simulace.Entities
             pickup,
             deliver,
             auction,
+            waiting,
         }
     }
 }

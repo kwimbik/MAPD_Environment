@@ -10,6 +10,7 @@ namespace diskretni_mapd_simulace
     public class Location
     {
         public int id;
+        public static int mockLocationId = -1;
         
         public int[] coordination = new int[2];
         public List<Order> orders = new List<Order>();
@@ -18,6 +19,9 @@ namespace diskretni_mapd_simulace
         public List<int> occupiedAt = new List<int>();
         public List<Passage> passages = new List<Passage>();
 
+        public Agent validationAgent;
+
+        public Dictionary<Location, int> locationDistanceValue = new Dictionary<Location, int>();
 
 
         //Features for the algorithms, heuristic etc
@@ -35,16 +39,20 @@ namespace diskretni_mapd_simulace
             wall,
         }
 
-        public static int getDistance(Location loc1, Location loc2)
-        {
-            return Math.Abs((loc1.coordination[0] - loc2.coordination[0]) + (loc1.coordination[1] - loc2.coordination[1]));
-        }
-
         public Passage getPassage(Location l)
         {
             foreach (Passage passage in passages)
             {
                 if (passage.a.id == l.id || passage.b.id == l.id) return passage;
+            }
+            return null;
+        }
+
+        public static Passage getPassageFromLocation(Location l1, Location l2)
+        {
+            foreach (var p in l1.passages)
+            {
+                if (p.getEnd(l1).id == l2.id) return p;
             }
             return null;
         }

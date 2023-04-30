@@ -20,8 +20,5 @@ namespace diskretni_mapd_simulace.Entities
             if (l.id == b.id) return a;
             else throw (new Exception("no location connected to this passage found"));
         }
-
     }
-
-   
 }

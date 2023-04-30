@@ -21,6 +21,7 @@ namespace diskretni_mapd_simulace
     {
         Location location;
         Database database;
+
         public LocationOptionWindow(Location loc, Database db)
         {
             location = loc;
@@ -28,7 +29,6 @@ namespace diskretni_mapd_simulace
             InitializeComponent();
             addControls();
             this.Title = $"Location {loc.id}";
-            //TODO: Displat current location -> id, curr orders, curr agents
         }
 
         private void addControls()

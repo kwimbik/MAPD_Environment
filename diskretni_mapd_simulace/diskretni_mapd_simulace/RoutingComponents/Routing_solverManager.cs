@@ -35,11 +35,7 @@ namespace diskretni_mapd_simulace
         public Dictionary<Agent, int> agentToIndexMap =  new Dictionary<Agent, int>();
         public Dictionary<int, Agent> indexToAgentMap = new Dictionary<int, Agent>();
 
-
-
-        //TODO: zajistit, aby slo poznat ktere loakce jsou pro auta a ktere pro objednavky
-        //TJ podle inexu musi byt jasne jestli je to auto nebo objednavka v te lokaci
-        //jinak zlobi demans a depot
+        
         int agentToIndexCounter = 0;
         int locationToIndexCounter = 0;
 
@@ -100,18 +96,15 @@ namespace diskretni_mapd_simulace
         {
             foreach (Agent agent in db.agents)
             {
-                if (agent.targetLocation == null)
+                if (agent.currentLocation == null)
                 {
                     freeAgents = true;
                     return;
                 }
             }
         }
-
-        //TODO: vrati vzdalenosti v jednotkach
         public void getTimeMatrix()
         {
-            
             int numOfLocation = locationToIndexCounter;
             long[][] timeMatrix = new long[numOfLocation][];
             for (int i = 0; i < locationToIndexCounter; i++)
@@ -119,7 +112,7 @@ namespace diskretni_mapd_simulace
                 timeMatrix[i] = new long[locationToIndexCounter];
                 for (int j = 0; j < locationToIndexCounter; j++)
                 {
-                    timeMatrix[i][j] = Location.getDistance(indexToLocationMap[i], indexToLocationMap[j]);
+                    timeMatrix[i][j] = Database.getDistance(indexToLocationMap[i], indexToLocationMap[j]);
                 }
             }
             this.TimeMatrix = timeMatrix;
@@ -145,7 +138,6 @@ namespace diskretni_mapd_simulace
                 if (locationToIndexMap.ContainsKey(order.currLocation) == false)
                 {
                     locationToIndexMap.Add(order.currLocation, new List<List<int>> { new List<int> { locationToIndexCounter++ }, new List<int>(), new List<int>() } );
-
                 }
                 else locationToIndexMap[order.currLocation][baseLocationOrders].Add(locationToIndexCounter++);
 
@@ -173,10 +165,11 @@ namespace diskretni_mapd_simulace
         //gets time windows for orders to be delivered in
         public void getTimeWindows()
         {
+            int largeInt = 1000000;
             long[][] tw = new long[ordersToProcess.Count][];
             for (int i = 0; i < ordersToProcess.Count; i++)
             {
-                tw[i] = new long[] { 0, db.locations.Count }; //for now, time windows are arbitrary large
+                tw[i] = new long[] { 0, largeInt }; //for now, time windows are arbitrary large
             }
             this.TimeWindows = tw;
         }

@@ -40,7 +40,6 @@ namespace diskretni_mapd_simulace.Windows
             g.Children.Add(sp);
             
 
-
             TextBlock id_tbl = new TextBlock
             {
                 Text = "Select algorithm",
@@ -54,16 +53,17 @@ namespace diskretni_mapd_simulace.Windows
 
             ComboBox algo_cb = new ComboBox
             {
-                Text = "Initial location",
+                Text = "Select algorithm",
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 VerticalAlignment = VerticalAlignment.Stretch,
-                Height = 40,
+                Height = 20,
             };
             foreach (string algo in database.algorithms)
             {
                 algo_cb.Items.Add(algo);
             }
             sp.Children.Add(algo_cb);
+            algo_cb.SelectedIndex = 0;
 
             Button bt = new Button
             {

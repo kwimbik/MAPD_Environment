@@ -9,9 +9,13 @@ namespace diskretni_mapd_simulace
 {
     public class Plan
     {
-        public string value;
-        //TODO: rather than value in string, I will hold for each agent Plan, consisting of PlanSteps
+        public string mapName = "";
         public List<PlanStep> steps = new List<PlanStep>();
-        public Agent agent;
+        public SolutionPacket solutionPacket;
+
+        public List<Order> orders = new List<Order>();
+        public List<Agent> agents = new List<Agent>();
+
+        public Dictionary<Agent, List<Order>> agentOrderDict = new Dictionary<Agent, List<Order>>();
     }
 }

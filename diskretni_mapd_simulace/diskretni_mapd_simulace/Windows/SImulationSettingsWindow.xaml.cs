@@ -46,14 +46,14 @@ namespace diskretni_mapd_simulace.Windows
                 Label lb = new Label { Content = $"Agent: {a.id}", Margin = new Thickness(0,0,0,10) };
                 wp.Children.Add(lb);
 
-                RadioButton rb1 = new RadioButton
+                CheckBox rb1 = new CheckBox
                 {
                     Content = "Visible",
                     IsChecked = true,
                 };
                 wp.Children.Add(rb1);
 
-                RadioButton rb2 = new RadioButton
+                CheckBox rb2 = new CheckBox
                 {
                     Content = "Highlight",
                     IsChecked=false,
@@ -92,10 +92,44 @@ namespace diskretni_mapd_simulace.Windows
 
             acp_btn.Click += (sender, e) =>
             {
-                this.Close();
+                this.Hide();
             };
             sp.Children.Add(acp_btn);
             this.Content = grid;
+
+            WrapPanel colors_wp = new WrapPanel();
+            CheckBox defaultColrs_cb = new CheckBox
+            {
+                Content = "Default Colors",
+                IsEnabled = true,
+            };
+            colors_wp.Children.Add(defaultColrs_cb);
+
+            CheckBox customColrs_cb = new CheckBox
+            {
+                Content = "Custom Colors",
+                IsEnabled = true,
+            };
+            colors_wp.Children.Add(customColrs_cb);
+
+            defaultColrs_cb.Checked += (sender, e) =>
+            {
+                defaultColrs_cb.IsEnabled = false;
+                customColrs_cb.IsEnabled = true;
+                customColrs_cb.IsChecked = false;
+                pr.setColorsDefault();
+            };
+
+            customColrs_cb.Checked += (sender, e) =>
+            {
+                customColrs_cb.IsEnabled = false;
+                defaultColrs_cb.IsEnabled = true;
+                defaultColrs_cb.IsChecked = false;
+                pr.setColorsPallete();
+            };
+
+
+            sp.Children.Add(colors_wp);
         }
     }
 }

@@ -1,4 +1,6 @@
-﻿using System;
+﻿using diskretni_mapd_simulace.Entities;
+using Org.BouncyCastle.Asn1.X509;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,54 +12,206 @@ namespace diskretni_mapd_simulace
     {
         public List<Location> locations = new List<Location>();
         public List<Agent> agents = new List<Agent>();
+        public Scenario scenario = new Scenario();
 
-        public Location[][] locationMap;
+        public Location[][] locationMap = new Location[0][];
 
-        public string selectedAlgo = "Greedy"; // default
-        public List<string> algorithms = new List<string> { "Greedy" };
+        public string selectedAlgo = "CENTRAL_CBS"; // default
+        public List<string> algorithms = new List<string> { "TP", "Greedy", "TPTS", "CENTRAL_ASTAR", "CENTRAL_CBS", "LNS" };
 
-        //TODO: return only non delivered orders but keep all in db
         public List<Order> orders = new List<Order>();
         public int[] gridSize = new int[2]; // najit neco na praci se souradnicema
 
-        public string outputFile = "plan.txt";
+        public string outputFile = "plans/plan.txt";
+        public string mapName = "Room";
 
-        public void setTestData()
+        public Plan currentPlan = new Plan();
+
+        public bool LoadScenario(int numberOfOrders)
         {
-            // Colors definiton, TODO: color assigner with some clever heuristic
-            byte[] pink = new byte[] { 255, 192, 203 };
-            byte[] red = new byte[] { 255, 0, 0 };
-            byte[] green = new byte[] { 0, 255, 0 };
-            byte[] blue = new byte[] { 0, 0, 255 };
-            Order o1 = new Order() { id = "1", currLocation = locations[1], targetLocation = locations[6], color = blue };
-            Order o2 = new Order() { id = "2", currLocation = locations[720], targetLocation = locations[1195], color = blue };
-            Order o3 = new Order { id = "3", currLocation = locations[627], targetLocation = locations[321], color = blue };
-            
-            
-            Order o4 = new Order() { id = "4", currLocation = locations[2], targetLocation = locations[32], color = pink};
-            Order o5 = new Order() { id = "5", currLocation = locations[1161], targetLocation = locations[1199], color = pink };
-            Order o6 = new Order { id = "6", currLocation = locations[361], targetLocation = locations[686], color = pink };
+            if (numberOfOrders > scenario.orders.Count) return false;
+            //resets the orders and set a new ones
+            foreach (var o in orders)
+            {
+                o.currLocation.orders.Clear();
+                o.targetLocation.orders.Clear();
+            }
+            orders.Clear();
 
-            orders.Add(o1);
-            orders.Add(o2);
-            orders.Add(o3);
-            locations[1].orders.Add(o1);
-            locations[720].orders.Add(o2);
-            locations[627].orders.Add(o3);
-            orders.Add(o4);
-            orders.Add(o5);
-            orders.Add(o6);
-            locations[2].orders.Add(o4);
-            locations[1161].orders.Add(o5);
-            locations[361].orders.Add(o6);
-            agents.Add(new Agent() { id = "1", baseLocation = locations[817] } );
-            agents.Add(new Agent() { id = "2", baseLocation = locations[82] } );
+            for (int i = 0; i < numberOfOrders; i++)
+            {
+                Order o = scenario.orders[i];
+                orders.Add(o);
+                o.currLocation.orders.Add(o);
+            }
 
+            
+            agents.Clear();
+            foreach (var a in scenario.agents)
+            {
+                agents.Add((Agent)a.Clone());
+            }
+            return true;
+        }
+
+
+        public void clearOrders()
+        {
+            foreach (var o in orders)
+            {
+                o.currLocation.orders.Clear();
+                o.targetLocation.orders.Clear();
+            }
+            orders.Clear();
+            currentPlan = new Plan();
+        }
+
+        public static int getDistance(Location loc1, Location loc2)
+        {
+            if (loc1.locationDistanceValue.ContainsKey(loc2)) return loc1.locationDistanceValue[loc2];
+            else if (loc1.id == Location.mockLocationId || loc2.id == Location.mockLocationId) return int.MaxValue; // Mock location
+            else
+            {
+                findDistance(loc1, loc2);
+            }
+            return loc1.locationDistanceValue[loc2];
+        }
+
+        private static void findDistance(Location loc1, Location loc2)
+        {
+            List<(Location, int)> locationList = new List<(Location, int)>();
+            List<int> closedLocationIds = new List<int>();
+            Location current = loc1;
+            int time;
+
+            locationList.Add((loc1, 0));
+            closedLocationIds.Add(loc1.id);
+
+            while (locationList.Count > 0)
+            {
+                //locationList = locationList.OrderBy(l => l.Item2).ToList();
+                (current, time) = locationList[0];
+                locationList.RemoveAt(0);
+
+                if (current.id == loc2.id)
+                {
+                    loc1.locationDistanceValue[loc2] = time;
+                    loc2.locationDistanceValue[loc1] = time;
+                    return;
+                }
+
+                var adjacentSquares = current.accessibleLocations;
+
+                foreach (var neigh in adjacentSquares)
+                {
+                   if (closedLocationIds.Contains(neigh.id) == false)
+                    {
+                        locationList.Add((neigh, time + 1));
+                        closedLocationIds.Add(neigh.id);
+                    }
+                }
+            }
+
+
+        }
+
+        private void precountAccessibleLocations(Location l)
+        {
+            if (l.type == (int)Location.types.free)
+            {
+                List<Location> neigLocations = new List<Location>();
+                int[] coordinates = l.coordination;
+
+                //check for ap boundaries and location type
+                if (coordinates[1] + 1 < locationMap[0].Length)
+                {
+                    if (locationMap[coordinates[0]][coordinates[1] + 1] != null && locationMap[coordinates[0]][coordinates[1] + 1].type == (int)Location.types.free)
+                    {
+                        l.accessibleLocations.Add(locationMap[coordinates[0]][coordinates[1] + 1]);
+                    }
+                }
+
+                if (coordinates[1] - 1 >= 0)
+                {
+                    if (locationMap[coordinates[0]][coordinates[1] - 1] != null && locationMap[coordinates[0]][coordinates[1] - 1].type == (int)Location.types.free)
+                    {
+                        l.accessibleLocations.Add(locationMap[coordinates[0]][coordinates[1] - 1]);
+                    }
+                }
+
+                if (coordinates[0] + 1 < locationMap.GetLength(0))
+                {
+                    if (locationMap[coordinates[0] + 1][coordinates[1]] != null && locationMap[coordinates[0] + 1][coordinates[1]].type == (int)Location.types.free)
+                    {
+                        l.accessibleLocations.Add(locationMap[coordinates[0] + 1][coordinates[1]]);
+                    }
+                }
+
+                if (coordinates[0] - 1 >= 0)
+                {
+                    if (locationMap[coordinates[0] - 1][coordinates[1]] != null && locationMap[coordinates[0] - 1][coordinates[1]].type == (int)Location.types.free)
+                    {
+                        l.accessibleLocations.Add(locationMap[coordinates[0] - 1][coordinates[1]]);
+                    }
+                }
+            }
+        }
+
+        public void clearScenario()
+        {
+            foreach (var l in locations)
+            {
+                l.orders.Clear();
+            }
+            foreach (var a in agents)
+            {
+                a.baseLocation.agents.Clear();
+            }
+            agents.Clear();
+            orders.Clear();
+            scenario = new Scenario();
+            currentPlan = new Plan();
+        }
+
+        public void clearMap()
+        {
+            clearScenario();
+            locationMap = new Location[0][];
+            locations.Clear();
+        }
+
+        public void loadMap(int rows, int cols)
+        {
+            setLocationMap(rows, cols);
+            createPassages();
+
+        }
+
+        public  void createPassages()
+        {
+            int id = 0;
+            foreach (Location l in locations)
+            {
+                foreach (Location neighbour in l.accessibleLocations)
+                {
+                    bool exists = false;
+                    foreach (Passage p in l.passages)
+                    {
+                        if (p.a == neighbour || p.b == neighbour) exists = true;
+                    }
+                    if (!exists)
+                    {
+                        Passage p = new Passage { a = l, b = neighbour, Id = id++ };
+                        l.passages.Add(p);
+                        neighbour.passages.Add(p);
+                    }
+                }
+            }
         }
 
         public void setLocationMap(int rows, int cols)
         {
-            int mapSize = rows;
+            int mapSize = rows+1;
 
             //init the map
             locationMap = new Location[mapSize][];
@@ -70,7 +224,33 @@ namespace diskretni_mapd_simulace
             {
                 locationMap[location.coordination[0]][location.coordination[1]] = location;
             }
-            Console.WriteLine("done");
+            foreach (var location in locations)
+            {
+                precountAccessibleLocations(location);
+            }
+
+            createPassages(locations);
+        }
+
+        public static void createPassages(List<Location> locations)
+        {
+            foreach (Location l in locations)
+            {
+                foreach (Location neighbour in l.accessibleLocations)
+                {
+                    bool exists = false;
+                    foreach (Passage p in l.passages)
+                    {
+                        if (p.a == neighbour || p.b == neighbour) exists = true;
+                    }
+                    if (!exists)
+                    {
+                        Passage p = new Passage { a = l, b = neighbour };
+                        l.passages.Add(p);
+                        neighbour.passages.Add(p);
+                    }
+                }
+            }
         }
 
         public List<Order> getOrdersToProcess()
@@ -110,22 +290,29 @@ namespace diskretni_mapd_simulace
             return null;
         }
 
-        public int getNumOfDeliveredOrders()
+        public int getNumOfDeliveredOrders(List<Agent> agents)
         {
             int count = 0;
-            foreach (var o in orders)
+
+            foreach (var a in agents)
             {
-                if (o.state == (int)Order.states.delivered) count++; 
+                foreach (var o in a.orders)
+                {
+                    if (o.state == (int)Order.states.delivered) count++;
+                }
             }
             return count;
         }
 
-        public int getNumOfNonDeliveredOrders()
+        public int getNumOfNonDeliveredOrders(List<Agent> agents)
         {
             int count = 0;
-            foreach (var o in orders)
+            foreach (var a in agents)
             {
-                if (o.state != (int)Order.states.delivered) count++;
+                foreach (var o in a.orders)
+                {
+                    if (o.state != (int)Order.states.delivered) count++;
+                }
             }
             return count;
         }

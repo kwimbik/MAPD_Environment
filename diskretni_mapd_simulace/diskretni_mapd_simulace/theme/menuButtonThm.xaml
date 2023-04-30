@@ -12,8 +12,9 @@
 								Background="{TemplateBinding Background}">
 							<TextBlock	TextAlignment="Center"
 										Text="{TemplateBinding Property=Content}"
-										Margin="0,25,0,0"
-										FontSize="15">
+										FontSize="15"
+										HorizontalAlignment="Center"
+										VerticalAlignment="Center">
 
 							</TextBlock>
 						</Grid>
@@ -28,7 +29,7 @@
 
 		<Style.Triggers>
 			<Trigger Property="IsMouseOver"  Value="True">
-				<Setter Property="Background" Value="#a4ffe1"></Setter>
+                <Setter Property="Background" Value="#362FD9"></Setter>
 			</Trigger>
 			</Style.Triggers>
 	</Style>

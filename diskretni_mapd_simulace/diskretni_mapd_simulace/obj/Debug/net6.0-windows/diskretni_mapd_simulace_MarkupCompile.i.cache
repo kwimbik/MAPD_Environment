@@ -4,17 +4,17 @@
 exe
 C#
 .cs
-C:\Users\kwimbik\Desktop\skolaa\LS202122\rocnikovej_projekt\rocnikova_prace_simulace\diskretni_mapd_simulace\diskretni_mapd_simulace\obj\Debug\net6.0-windows\
+C:\Users\Kwimbik\Desktop\Skola\bakalarka\mapd_visual\diskretni_mapd_simulace\diskretni_mapd_simulace\obj\Debug\net6.0-windows\
 diskretni_mapd_simulace
 none
 false
 TRACE;DEBUG;NET;NET6_0;NETCOREAPP
-C:\Users\kwimbik\Desktop\skolaa\LS202122\rocnikovej_projekt\rocnikova_prace_simulace\diskretni_mapd_simulace\diskretni_mapd_simulace\App.xaml
-9-727340935
+C:\Users\Kwimbik\Desktop\Skola\bakalarka\mapd_visual\diskretni_mapd_simulace\diskretni_mapd_simulace\App.xaml
+111424799929
 
-3019459092
-196-1024596267
-Simulation.xaml;theme\GridBackgroundThm.xaml;theme\menuButtonThm.xaml;Windows\LocationOptionWindow.xaml;Windows\NewAgentWindow.xaml;Windows\NewOrderWindow.xaml;Windows\selectAlgo.xaml;Windows\SImulationSettingsWindow.xaml;Windows\SimulationVisual.xaml;
+48-1912682580
+213741212698
+BT_Tools\TestingComponent.xaml;Simulation.xaml;theme\GridBackgroundThm.xaml;theme\menuButtonThm.xaml;Windows\LocationOptionWindow.xaml;Windows\NewAgentWindow.xaml;Windows\NewOrderWindow.xaml;Windows\selectAlgo.xaml;Windows\SImulationSettingsWindow.xaml;Windows\SimulationVisual.xaml;Windows\StressTestWindow.xaml;
 
-True
+False
 

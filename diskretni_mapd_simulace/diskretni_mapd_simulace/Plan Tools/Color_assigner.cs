@@ -1,17 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml;
 
 namespace diskretni_mapd_simulace.Plan_Tools
 {
     public class Color_assigner
     {
         Database db;
-        byte[][] colors = new byte[7][] {
+        Routing_solverManager rsm;
+        RoutingSolverResults results;
+        byte[][] colors = new byte[6][] {
                  new byte[]{ 255, 0, 0 },
-                 new byte[]{ 0, 255, 0 },
                  new byte[] { 255, 165, 0 },
                  new byte[]{ 0, 0, 255 },
                  new byte[]{ 255, 0, 165 },
@@ -26,8 +29,8 @@ namespace diskretni_mapd_simulace.Plan_Tools
 
         public void assignColors(RoutingSolverResults rsr)
         {
-            //TODO: locations where agent is supposed to go, not necessearly orders -> find a way to get orders for each agent
             Agent a;
+            List<Order> loadedOrders = new List<Order>();
             for (int i = 0; i < rsr.routingSolverManager.AgentNumber; ++i)
             {
                 a = rsr.routingSolverManager.indexToAgentMap[i];
@@ -39,7 +42,11 @@ namespace diskretni_mapd_simulace.Plan_Tools
                     index = rsr.solution.Value(rsr.routingModel.NextVar(index));
                     foreach (var o in l.orders)
                     {
-                        a.orders.Add(o);
+                        if (loadedOrders.Contains(o) == false)
+                        {
+                            a.orders.Add(o);
+                            loadedOrders.Add(o);
+                        }
                     }
                 }
             }
@@ -56,7 +63,41 @@ namespace diskretni_mapd_simulace.Plan_Tools
                 }
                 agent_counter++;
             }
+        }
 
+        public void assignOrders()
+        {
+            Color_assigner ca = new Color_assigner(db);
+            //TSP task
+            Task TSP = new Task(runTSP);
+
+            //Color assign task
+            Task colorAssign = new Task(() => ca.assignColors(results));
+
+            //Visualize Colors tasl
+            //Task visual = new Task(sv.colorAssignments);
+
+            TSP.Start();
+            TSP.Wait();
+            colorAssign.Start();
+            colorAssign.Wait();
+
+            //visual.Start();
+        }
+
+        private void runTSP()
+        {
+            Routing_solverManager rsm = new Routing_solverManager(db);
+            rsm.getSolutionData();
+            if (rsm.ordersToProcess.Count == 0)
+            {
+                Console.WriteLine("No orders to plan");
+            }
+            else
+            {
+                Routing_solver rs = new Routing_solver(rsm);
+                results = rs.solveProblemAndPrintResults();
+            }
         }
 
         private List<byte[]> obtainColorRange(int num_of_colots)

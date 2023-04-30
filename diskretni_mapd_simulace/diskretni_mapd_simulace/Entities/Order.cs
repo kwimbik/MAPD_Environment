@@ -14,14 +14,20 @@ namespace diskretni_mapd_simulace
         public int state;
         public byte[] color;
 
+        public int timeFrom;
+        public int timeTo = 1000000;
+
         public int priority { get; set; }
+
+        public string colorBox = "";
 
 
         public enum states
         {
-            pending,
-            processed,
-            delivered
+            pending = 0,
+            processed = 1,
+            delivered = 2,
+            targeted = 3,
         }
 
     }

@@ -9,6 +9,8 @@ namespace diskretni_mapd_simulace
 {
     public class mapParserIO
     {
+        string wall = "T@";
+        string spcae = ".";
         string file;
         Database db;
 
@@ -18,60 +20,53 @@ namespace diskretni_mapd_simulace
             this.file = file;
         }
 
-        public string[][] readInputFile()
+        public char[][] readInputFile()
         {
-            List<string[]> map = new List<string[]>();
+            List<char[]> map = new List<char[]>();
 
             int id_couter = 0;
             int line_counter = 0;
-            foreach (string line in File.ReadLines(file))
+
+            int mapWidth = 0;
+
+            try
             {
-                string[] row = line.Split();
-                if (line[0] == '0' || line[0] == '1')
+                foreach (string line in File.ReadLines(file))
                 {
-                    map.Add(row);
-                    for (int i = 0; i < row.Length; i++)
+                    char[] row = line.ToCharArray();
+
+                    
+                    if (line[0] == 'T' || line[0] == '@' || line[0] == '.')
                     {
-                        createLocation(id_couter++, new int[] { line_counter, i}, row[i]);
+                        if (mapWidth == 0) mapWidth = row.Length;
+                        else if (mapWidth != row.Length)
+                        {
+                            throw new Exception();
+                        }
+                        map.Add(row);
+                        for (int i = 0; i < row.Length; i++)
+                        {
+                            createLocation(id_couter++, new int[] { line_counter, i }, row[i]);
+                        }
+                        line_counter++;
                     }
                 }
-                //Agent
-                else if (line[0] == 'A')
-                {
-                    Agent a = new Agent
-                    {
-                        id = row[1],
-                        baseLocation = db.getLocationByID(int.Parse(row[2])),
-                    };
-                    db.agents.Add(a);
-                    //TODO: add function to visualize agent
-                }
-                //Order
-                else if (line[0] == 'O')
-                {
-                    Order o = new Order
-                    {
-                        id = row[1],
-                        currLocation = db.getLocationByID(int.Parse(row[2])),
-                        targetLocation = db.getLocationByID(int.Parse(row[3])),
-                        state = (int)Order.states.pending,
-                    };
-                    db.orders.Add(o);
-                    //TODO: add function to visualize order
-                }
-                line_counter++;
+            }
+            catch (Exception)
+            {
+                return new char[][] { };
             }
             return map.ToArray();
         }
 
         //Creates location corresponing to one tile
-        private void createLocation(int id, int[] coord, string t)
+        private void createLocation(int id, int[] coord, char t)
         {
             Location l = new Location();
             l.id = id;
             l.coordination = coord;
             db.locations.Add(l);
-            l.type = (t == "0") ? (int)Location.types.free : (int)Location.types.wall;
+            l.type = (t == '.') ? (int)Location.types.free : (int)Location.types.wall;
         }
     }
 }

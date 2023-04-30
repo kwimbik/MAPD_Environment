@@ -5,55 +5,82 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 using diskretni_mapd_simulace.Entities;
+using System.Runtime.CompilerServices;
+using System.Numerics;
+using System.Windows.Controls;
+using System.Windows;
 
 namespace diskretni_mapd_simulace.IO_Tools
 {
     public static class PlanWriterIO
-    {
-        //TODO: take all agents, their plan and write them chronologically
-        public static void writePlan(string fileName,Database db)
+    {       
+        private static void writeAgents(StreamWriter sw, Plan plan)
         {
-            StreamWriter sw = new StreamWriter(fileName);
-
-            //gather all plans
-            List<Plan> plans = new List<Plan>();
-            Plan currPlan = new Plan();
-
-
-            foreach (Agent a in db.agents)
+            foreach (var agent in plan.agents)
             {
-                if (a.plan.steps.Count > 0) plans.Add(a.plan);
+                sw.WriteLine($"A-{agent.id}-{agent.baseLocation.id}");
             }
+        }
 
 
-            while (plans.Count > 0) 
+        private static void writeOrders(StreamWriter sw, Plan plan)
+        {
+            foreach (var order in plan.orders.OrderBy(x=> int.Parse(x.id)))
             {
-                int smallestTime = int.MaxValue;
-                foreach (Plan p in plans)
+                sw.WriteLine($"O-{order.id}-{order.currLocation.id}-{order.targetLocation.id}");
+            }
+        }
+
+        private static void writeAgentOrderAssignments(StreamWriter sw, Plan plan)
+        {
+            foreach (Agent a in plan.agents)
+            {
+                if (plan.agentOrderDict[a].Count == 0) continue;
+                string orders = "";
+                for (int i = 0; i < plan.agentOrderDict[a].Count; i++)
                 {
-                    if (p.steps[0].time < smallestTime)
-                    {
-                        smallestTime = p.steps[0].time;
-                        currPlan = p;
-                    }
+                    orders += plan.agentOrderDict[a][i].id;
+                    if (i != plan.agentOrderDict[a].Count - 1) orders += ",";
                 }
-                PlanStep ps = currPlan.steps[0];
+               
+                sw.WriteLine($"AS-{a.id}-{orders}");
+            }
+        }
+
+
+        public static void writePlan(string fileName, Plan plan)
+        {
+            StreamWriter sw;
+            try
+            {
+                sw = new StreamWriter(fileName);
+            }
+            catch
+            {
+                MessageBox.Show("File is open");
+                return;
+            }
+            
+
+            writeAgents(sw, plan);
+            writeOrders(sw, plan);
+            writeAgentOrderAssignments(sw, plan); 
+
+            foreach (PlanStep ps in plan.steps)
+            {
                 if (ps.type == (int)PlanStep.types.movement)
                 {
-                    sw.WriteLine($"{ps.time}-A-{ps.type}-{currPlan.agent.id}-{ps.locationId}");
-
+                    sw.WriteLine($"{ps.time}-A-{ps.type}-{ps.agentId}-{ps.locationId}");
                 }
                 if (ps.type == (int)PlanStep.types.pickup)
                 {
-                    sw.WriteLine($"{ps.time}-A-{ps.type}-{currPlan.agent.id}-{ps.locationId}-{ps.orderId}");
+                    sw.WriteLine($"{ps.time}-A-{ps.type}-{ps.agentId}-{ps.locationId}-{ps.orderId}");
 
                 }
                 if (ps.type == (int)PlanStep.types.deliver)
                 {
-                    sw.WriteLine($"{ps.time}-A-{ps.type}-{currPlan.agent.id}-{ps.locationId}-{ps.orderId}");
+                    sw.WriteLine($"{ps.time}-A-{ps.type}-{ps.agentId}-{ps.locationId}-{ps.orderId}");
                 }
-                currPlan.steps.RemoveAt(0);
-                if (currPlan.steps.Count <= 0) plans.Remove(currPlan);
             }
             sw.Close();
         }

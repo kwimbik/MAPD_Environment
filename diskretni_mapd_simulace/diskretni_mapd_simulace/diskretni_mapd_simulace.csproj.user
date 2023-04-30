@@ -2,17 +2,26 @@
 <Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup />
   <ItemGroup>
+    <Compile Update="BT_Tools\TestingComponent.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="Simulation.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Update="Windows\selectAlgo.xaml.cs">
+    <Compile Update="Windows\SelectAlgo.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Update="Windows\SImulationSettingsWindow.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="Windows\StressTestWindow.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Page Update="BT_Tools\TestingComponent.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="Simulation.xaml">
       <SubType>Designer</SubType>
     </Page>
@@ -22,10 +31,13 @@
     <Page Update="theme\menuButtonThm.xaml">
       <SubType>Designer</SubType>
     </Page>
-    <Page Update="Windows\selectAlgo.xaml">
+    <Page Update="Windows\SelectAlgo.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Windows\SImulationSettingsWindow.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Windows\StressTestWindow.xaml">
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>

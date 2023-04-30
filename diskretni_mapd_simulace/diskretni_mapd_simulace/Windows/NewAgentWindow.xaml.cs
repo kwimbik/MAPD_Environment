@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Aspose.Pdf.Operators;
+using iTextSharp.text;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -21,8 +23,14 @@ namespace diskretni_mapd_simulace
     {
         Database database;
         Simulation sim;
-        public NewAgentWindow(Database db, Simulation simulationUI)
+        Simulace_Visual sv;
+
+        int controlWidth = 50;
+
+
+        public NewAgentWindow(Database db, Simulation simulationUI, Simulace_Visual sv)
         {
+            this.sv = sv;
             sim = simulationUI;
             database = db;
             InitializeComponent();
@@ -36,30 +44,71 @@ namespace diskretni_mapd_simulace
             StackPanel sp = new StackPanel();
             newAgent_grid.Children.Add(sp);
 
-            TextBox tb = new TextBox
+            DockPanel dp1 = new DockPanel();
+            sp.Children.Add(dp1);
+
+            Label id_lb = new Label { Content = "Agent Id" };
+            dp1.Children.Add(id_lb);
+
+            TextBlock id_tb = new TextBlock
             {
-                Text = "Agent ID",
-                HorizontalAlignment = HorizontalAlignment.Stretch,
+                Text = database.agents.Count.ToString(),
+                HorizontalAlignment = HorizontalAlignment.Left,
+                VerticalAlignment = VerticalAlignment.Stretch,
+                TextAlignment = TextAlignment.Center,
+                Height = 25,
+                Width = controlWidth,
+            };
+            dp1.Children.Add(id_tb);
+
+            DockPanel dp2 = new DockPanel();
+            sp.Children.Add(dp2);
+
+            Label location_label = new Label { Content = "Location" };
+            dp2.Children.Add(location_label);
+
+            TextBox location_X_tb = new TextBox
+            {
+                Text = "",
+                HorizontalAlignment = HorizontalAlignment.Left,
                 VerticalAlignment = VerticalAlignment.Stretch,
                 Height = 25,
+                Width = controlWidth,
             };
-            sp.Children.Add(tb);
+            dp2.Children.Add(location_X_tb);
 
-            ComboBox loc_cb = new ComboBox
+            TextBox location_Y_tb = new TextBox
             {
-                Text = "Location",
+                Text = "",
+                HorizontalAlignment = HorizontalAlignment.Left,
+                VerticalAlignment = VerticalAlignment.Stretch,
+                Height = 25,
+                Width = controlWidth,
+            };
+            dp2.Children.Add(location_Y_tb);
+            
+            Button random_btn = new Button
+            {
+                Content = "Random",
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 VerticalAlignment = VerticalAlignment.Stretch,
-                Height = 40,
+                Style = (Style)FindResource("MenuButonTheme"),
+                Height = 60,
             };
-            foreach (Location loc in database.locations)
+            sp.Children.Add(random_btn);
+
+            random_btn.Click += (sender, e) =>
             {
-                if (loc.type == (int)Location.types.free) loc_cb.Items.Add($"{loc.id}");
+                var random = new Random();
+               
+                int X = random.Next(database.locationMap.Length);
+                int Y = random.Next(database.locationMap[0].Length);
+                
+                location_X_tb.Text = X.ToString();
+                location_Y_tb.Text = Y.ToString();
+            };
 
-            }
-            sp.Children.Add(loc_cb);
-
-            Button bt = new Button
+                Button bt = new Button
             {
                 Content = "Accept",
                 HorizontalAlignment = HorizontalAlignment.Stretch,
@@ -71,25 +120,38 @@ namespace diskretni_mapd_simulace
 
             bt.Click += (sender, e) =>
             {
-                Location location = database.getLocationByID(int.Parse(loc_cb.Text));
+                int X;
+                int Y;
+                bool parsedX = int.TryParse(location_X_tb.Text, out X);
+                bool parsedY = int.TryParse(location_Y_tb.Text, out Y);
 
-                if (location.type == (int)Location.types.free)
+                if (parsedX && parsedY && Y >= 0 && X >= 0)
                 {
-                    Agent vehicle = new Agent
+                    Location location = database.locationMap[X][Y];
+
+                    if (location.type == (int)Location.types.free)
                     {
-                        id = tb.Text,
-                        baseLocation = location,
-                        targetLocation = location,
-                    };
-                    database.agents.Add(vehicle);
-                    location.agents.Add(vehicle);
-                    this.Close();
-                    sim.updateUI();
+                        Agent agent = new Agent
+                        {
+                            id = id_tb.Text,
+                            baseLocation = location,
+                            currentLocation = location,
+                        };
+                        database.agents.Add(agent);
+                        location.agents.Add(agent);
+                        database.scenario.agents.Add(agent);
+                        this.Close();
+                        sim.updateUI();
+                    }
+                    else
+                    {
+                        MessageBox.Show("Invalid location, free location must be selected");
+                    }
                 }
                 else
                 {
-                    MessageBox.Show("Invalid location, free location must be selected");
-                }                
+                    MessageBox.Show("Invalid location, only valid coordinates are accepted");
+                }
             };
         }
     }
