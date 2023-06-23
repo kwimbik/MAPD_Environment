@@ -16,14 +16,15 @@ namespace diskretni_mapd_simulace
 
         public Location[][] locationMap = new Location[0][];
 
-        public string selectedAlgo = "CENTRAL_CBS"; // default
-        public List<string> algorithms = new List<string> { "TP", "Greedy", "TPTS", "CENTRAL_ASTAR", "CENTRAL_CBS", "LNS" };
+        public string selectedAlgo = "TP"; // default
+        public List<string> algorithms = new List<string> { "TP", "Greedy", "TPTS", "CENTRAL_ASTAR", "CENTRAL_CBS",};
 
         public List<Order> orders = new List<Order>();
         public int[] gridSize = new int[2]; // najit neco na praci se souradnicema
 
         public string outputFile = "plans/plan.txt";
         public string mapName = "Room";
+        public string scenarioName = "";
 
         public Plan currentPlan = new Plan();
 
@@ -43,6 +44,7 @@ namespace diskretni_mapd_simulace
                 Order o = scenario.orders[i];
                 orders.Add(o);
                 o.currLocation.orders.Add(o);
+                o.idealServiceTime = Database.getDistance(o.currLocation, o.targetLocation);
             }
 
             
@@ -68,6 +70,7 @@ namespace diskretni_mapd_simulace
 
         public static int getDistance(Location loc1, Location loc2)
         {
+            return Math.Abs(loc1.coordination[0] - loc2.coordination[0]) + Math.Abs(loc1.coordination[1] - loc2.coordination[1]);
             if (loc1.locationDistanceValue.ContainsKey(loc2)) return loc1.locationDistanceValue[loc2];
             else if (loc1.id == Location.mockLocationId || loc2.id == Location.mockLocationId) return int.MaxValue; // Mock location
             else
@@ -77,6 +80,59 @@ namespace diskretni_mapd_simulace
             return loc1.locationDistanceValue[loc2];
         }
 
+        public void setFrequencies(double freq)
+        {
+            double counter = 0;
+            int time = 1;
+            for (int i = 0; i < scenario.orders.Count; i++)
+            {
+                if (freq < 1)
+                {
+                    while (counter < 1)
+                    {
+                        time++;
+                        counter += freq;
+                    }
+                    scenario.orders[i].timeFrom = time;
+                    counter = 0;
+                }
+                else
+                {
+                    if (counter < freq)
+                    {
+                        counter++;
+                    }
+                    else
+                    {
+                        time++;
+                        counter = 1;
+                    }
+                    scenario.orders[i].timeFrom = time;
+                }
+            }
+        }
+
+        public void generateAgents(int numOfAgents, int seed)
+        {
+            Random r = new Random(seed);
+            List<int> used = new List<int>();
+            scenario.agents.Clear();
+            for (int i = 0; i < numOfAgents; i++)
+            {
+                bool validLocation = false;
+                while (validLocation == false)
+                {
+                    int rInt = r.Next(0, locations.Count);
+                    if (locations[rInt].type == (int)Location.types.free && scenario.orders.Where(x => x.currLocation.id == locations[rInt].id).ToList().Count == 0 && used.Contains(rInt) == false)
+                    {
+                        Console.WriteLine($"Baselocation: {locations[rInt].coordination[0]}-{locations[rInt].coordination[1]}\n");
+                        validLocation = true;
+                        used.Add(rInt);
+                        scenario.agents.Add(new Agent { id = i.ToString(), baseLocation = locations[rInt], currentLocation = locations[rInt] });
+                    }
+                }
+            }
+        }
         private static void findDistance(Location loc1, Location loc2)
         {
             List<(Location, int)> locationList = new List<(Location, int)>();
@@ -111,8 +167,6 @@ namespace diskretni_mapd_simulace
                     }
                 }
             }
-
-
         }
 
         private void precountAccessibleLocations(Location l)
@@ -183,8 +237,6 @@ namespace diskretni_mapd_simulace
         public void loadMap(int rows, int cols)
         {
             setLocationMap(rows, cols);
-            createPassages();
-
         }
 
         public  void createPassages()
@@ -234,6 +286,7 @@ namespace diskretni_mapd_simulace
 
         public static void createPassages(List<Location> locations)
         {
+            int id = 0;
             foreach (Location l in locations)
             {
                 foreach (Location neighbour in l.accessibleLocations)
@@ -245,7 +298,7 @@ namespace diskretni_mapd_simulace
                     }
                     if (!exists)
                     {
-                        Passage p = new Passage { a = l, b = neighbour };
+                        Passage p = new Passage { a = l, b = neighbour, Id = id++ };
                         l.passages.Add(p);
                         neighbour.passages.Add(p);
                     }

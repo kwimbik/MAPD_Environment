@@ -1,0 +1,6 @@
+- charakterizacni vzorec pro pocrty agentu pro environmenty (aproximacni) 
+-mestska mapa misto arandom (pararela letiste napr?)
+-makespan parametr optimalni doruceni objednavky vs realne (service time?)
+- jakou variantu mapd jsem zvolil a proc
+-video priloha ma smysl
+-sorcovat ve 3 na zacatku staci, explicitni citace, definice, theoremy atd citoavat

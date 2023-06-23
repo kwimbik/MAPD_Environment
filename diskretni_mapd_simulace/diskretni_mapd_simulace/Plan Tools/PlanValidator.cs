@@ -129,17 +129,19 @@ namespace diskretni_mapd_simulace.Plan_Tools
             }
 
             List<PlanStep> stepBuffer = new List<PlanStep>();
-            while (index < plan.steps.Count)
+            bool end = false;
+            int endIndex = int.MaxValue;
+            while (index < plan.steps.Count && end == false)
             {
                 PlanStep ps = plan.steps[index++];
                 if (ps.type != (int)PlanStep.types.movement) continue;
                 if (usedLocationIds.Contains(ps.locationId))
                 {
                     agentPaths[ps.agentId].Add(ps.locationId);
-                    break;
+                    endIndex = time;
                 }
-
-                usedLocationIds.Add(ps.locationId);
+                else usedLocationIds.Add(ps.locationId);
+                
                 if (agentPaths.ContainsKey(ps.agentId))
                 {
                     agentPaths[ps.agentId].Add(ps.locationId);
@@ -149,6 +151,8 @@ namespace diskretni_mapd_simulace.Plan_Tools
                     agentPaths[ps.agentId] = new List<int> { ps.locationId } ;
                 }
                 time = ps.time;
+                if (time > endIndex) end = true;
+                
             }
             int endTime = plan.steps[index-1].time;
             time_windows.Add((startTime, endTime));

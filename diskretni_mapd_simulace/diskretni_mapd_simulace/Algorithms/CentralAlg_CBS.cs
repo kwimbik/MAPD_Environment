@@ -1,13 +1,17 @@
-﻿using diskretni_mapd_simulace.Entities;
+﻿using diskretni_mapd_simulace.BT_Tools;
+using diskretni_mapd_simulace.Entities;
 using Org.BouncyCastle.Asn1.X509;
+using Org.BouncyCastle.Bcpg;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace diskretni_mapd_simulace.Algorithms
 {
+
     public static class CentralAlg_CBS
     {
         /// <summary>
@@ -16,6 +20,9 @@ namespace diskretni_mapd_simulace.Algorithms
         /// <param name="orders"></param>
         /// <param name="numOfAgents"></param>
         /// <returns></returns>
+        /// 
+        public static List<int> searchTreeDepth = new List<int>();
+
         private static List<Location> createTaskList(List<Order> orders, int numOfAgents)
         {
             List<Location> result = new List<Location>();
@@ -94,6 +101,7 @@ namespace diskretni_mapd_simulace.Algorithms
 
         public static Plan run(ProblemObject po)
         {
+            searchTreeDepth.Clear();
             List<Order> unassignedOrders = po.orders;
 
             Plan plan = new Plan();
@@ -118,15 +126,14 @@ namespace diskretni_mapd_simulace.Algorithms
                     }
                     else if (unassignedOrders[i].timeFrom > token.time) break; //I assume orders are sorted by time
                 }
-
                 assignTasks(token);
 
                 var solution = CBS.Run(po.agents, po.locations, token.orders, token.time);
 
                 foreach (var agent in solution.Keys)
                 {
-                    //we assign to every agent exactly next location in their planned path
-                    agent.taskList = solution[agent];
+                   //we assign to every agent exactly next location in their planned path
+                   agent.taskList = solution[agent];
                 }
                 updateToken(token, plan);
             }
@@ -139,6 +146,8 @@ namespace diskretni_mapd_simulace.Algorithms
             {
                 plan.agentOrderDict.Add(agent, new List<Order>(agent.orders));
             }
+            ExperimentDataWriter.writeCBSDATA(searchTreeDepth, po.agents.Count);
+            plan.serviceTime = Algorithm.getAverageServiceTimeDelay(plan.orders);
             return plan;
         }
 
@@ -156,7 +165,7 @@ namespace diskretni_mapd_simulace.Algorithms
         private static Token initializeToken(ProblemObject po)
         {
             Token t = new Token();
-            t.orders = po.orders;
+            t.orders = new List<Order>();
             t.time = 0;
             t.locationMap = po.locationMap;
             t.locations = po.locations;
@@ -181,7 +190,7 @@ namespace diskretni_mapd_simulace.Algorithms
                 PlanStep ps = a.taskList.Dequeue();
                 ps.time = t.time;
                 p.steps.Add(ps);
-                a.currentLocation = getLocationById(ps.locationId, t.locations);
+                a.currentLocation = t.locations[ps.locationId];
 
                 if (ps.type == (int)PlanStep.types.deliver)
                 {
@@ -189,6 +198,7 @@ namespace diskretni_mapd_simulace.Algorithms
                     t.deliveredOrders.Add(o);
                     t.inProcessOrders.Remove(o);
                     a.assignedOrder = null;
+                    o.realServiceTime = t.time - o.timeFrom;
                 }
 
                 else if (ps.type == (int)PlanStep.types.pickup)

@@ -43,7 +43,7 @@ namespace diskretni_mapd_simulace
         //Once solver is ready, pass number of scenarios to solve / stress test testtin to the PlanCreator
         public void setSettings(int settingOfOrders, int firstKOrders)
         {
-            if (settingOfOrders != 0 && settingOfOrders != 1 && settingOfOrders != 2)
+            if (settingOfOrders != 0 && settingOfOrders != 1 && settingOfOrders != 2 && settingOfOrders != 3)
             {
                 throw new ArgumentException("Wrong settings parametr");
             }
@@ -67,6 +67,16 @@ namespace diskretni_mapd_simulace
         private ProblemObject createProblemObject()
         {
             ProblemObject po = new ProblemObject(db.orders, db.agents, db.locations, db.locationMap);
+            List<Location> initLocations = new List<Location>();
+            List<Location> targetLocations = new List<Location>();
+            foreach (var o in po.orders)
+            {
+                var init = o.currLocation;
+                var target = o.targetLocation;
+                if (initLocations.Contains(init) || targetLocations.Contains(target)) throw new Exception($"Assert, doplicate objednavky: \n {o.currLocation.coordination[0]},{o.currLocation.coordination[1]}");
+                initLocations.Add(init);
+                targetLocations.Add(target);
+            }
 
             return po;
         }
@@ -129,10 +139,11 @@ namespace diskretni_mapd_simulace
             {
                 PlanWriterIO.writePlan(outputFIle, simulationPlan);
             }
-            SolutionPacket sp = new SolutionPacket(simulationPlan.steps.Count, ts, currentRun, po.agents.Count, algorithm, db.mapName, simulationPlan.steps[simulationPlan.steps.Count-1].time);
+            
+            SolutionPacket sp = new SolutionPacket(simulationPlan.steps.Count, ts, firstKOrders, po.agents.Count, algorithm, db.mapName,db.scenarioName, simulationPlan.steps[simulationPlan.steps.Count-1].time, simulationPlan.serviceTime);
             plan.solutionPacket = sp;
             plan.mapName = db.mapName;
-            MessageBox.Show($"Plan steps: {plan.solutionPacket.number_of_steps}\n Time:{plan.solutionPacket.run_time}");
+            //MessageBox.Show($"Plan steps: {plan.solutionPacket.number_of_steps}\n Time:{plan.solutionPacket.run_time}");
 
             return plan;
         }

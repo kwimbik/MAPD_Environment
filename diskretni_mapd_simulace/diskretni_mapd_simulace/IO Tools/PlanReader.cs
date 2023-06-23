@@ -10,6 +10,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Drawing.Design;
 using Microsoft.VisualBasic.Logging;
+using diskretni_mapd_simulace.Entities;
 
 namespace diskretni_mapd_simulace
 {
@@ -60,12 +61,23 @@ namespace diskretni_mapd_simulace
         Database db;
         List<Agent> agentsToPlan = new List<Agent>();
         List<Order> ordersToPlan = new List<Order>();
+        List<Order> initialOrders = new List<Order>();
 
         List<Location> locationForMapCreation = new List<Location>();
 
         public PlanReader(Database db)
         {
             this.db = db;
+        }
+
+        public void speedUp()
+        {
+            if (StopInMs > 10) StopInMs /= 2;
+        }
+
+        public void slowDown()
+        {
+            if (StopInMs < 100) StopInMs *= 2;
         }
 
         private void resetMap()
@@ -98,6 +110,7 @@ namespace diskretni_mapd_simulace
         private void clearReader()
         {
             ordersToPlan.Clear();
+            initialOrders.Clear();
             agentsToPlan.Clear();
             locationForMapCreation.Clear();
         }
@@ -153,14 +166,14 @@ namespace diskretni_mapd_simulace
                 sv.changeColor(agent.currentLocation.coordination, agent.color);
             }
 
-            foreach (var order in ordersToPlan)
+            foreach (var order in initialOrders)
             {
                 order.color = defaultBlue;
                 order.colorBox = "blue";
                 if (order.state != (int)Order.states.delivered)
                 {
                     //sv.changeColor(order.currLocation.coordination, order.color);
-                    sv.displayOrder(order.currLocation.coordination, order.colorBox);
+                    //sv.displayOrder(order.currLocation.coordination, order.colorBox);
                 }
             }
         }
@@ -188,6 +201,38 @@ namespace diskretni_mapd_simulace
             else
             {
                 setColorsDefault();
+            }
+        }
+
+        private void setFrequencies(double freq, List<Order> orders)
+        {
+            double counter = 0;
+            int time = 1;
+            for (int i = 0; i < orders.Count; i++)
+            {
+                if (freq < 1)
+                {
+                    while (counter < 1)
+                    {
+                        time++;
+                        counter += freq;
+                    }
+                    orders[i].timeFrom = time;
+                    counter = 0;
+                }
+                else
+                {
+                    if (counter < freq)
+                    {
+                        counter++;
+                    }
+                    else
+                    {
+                        time++;
+                        counter = 1;
+                    }
+                    orders[i].timeFrom = time;
+                }
             }
         }
 
@@ -256,7 +301,8 @@ namespace diskretni_mapd_simulace
 
                         Order order = new Order { id = row[1], currLocation = l, targetLocation = db.getLocationByID(int.Parse(row[3])), color = defaultBlue };
 
-                        ordersToPlan.Add(order);
+                        //ordersToPlan.Add(order);
+                        initialOrders.Add(order);
                         l.orders.Add(order);
                         continue;
                     }
@@ -279,6 +325,7 @@ namespace diskretni_mapd_simulace
                         setColorsPallete();
                         updateSimInfo(time);
                         problemSetup = false;
+                        setFrequencies(0.5, initialOrders);
                         foreach (var a in agentsToPlan)
                         {
                             if (a.orders.Count > 0)
@@ -313,6 +360,14 @@ namespace diskretni_mapd_simulace
                 
                 else if (int.Parse(row[0]) != time) {
 
+                    foreach (var o in initialOrders.ToList())
+                    {
+                        if (o.timeFrom <= int.Parse(row[0]))
+                        {
+                            initialOrders.Remove(o);
+                            ordersToPlan.Add(o);
+                        }
+                    }
                     
                     //draw all oders first, if agents overstep order -> agent color has priority
                     foreach (var o in ordersToPlan)
@@ -423,6 +478,10 @@ namespace diskretni_mapd_simulace
 
         public Order getOrderById(string Id)
         {
+            foreach (Order o in initialOrders)
+            {
+                if (o.id == Id) return o;
+            }
             foreach (Order o in ordersToPlan)
             {
                 if (o.id == Id) return o;

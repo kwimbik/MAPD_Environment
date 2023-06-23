@@ -35,11 +35,13 @@ namespace diskretni_mapd_simulace.IO_Tools
 
                     if (int.TryParse(row[0], out int value))
                     {
-                        Order o = parseOrder(row, orderCount);
+                        Order o;
+                        if (fileName != "mapd-scenarios/room-64-64-16-random-EXP1.scen") o = parseOrder(row, orderCount);
+                        else o = parseOrderEXPT1(row, orderCount);
 
                         if (o.currLocation.type == (int)Location.types.wall || o.targetLocation.type == (int)Location.types.wall)
                         {
-                            //MessageBox.Show($"Invalid scenario, order: {o.id} is placed in the wall, please upload correct scenario");
+                            MessageBox.Show($"Invalid scenario, order: {o.id} is placed in the wall, please upload correct scenario");
                             //db.clearScenario();
                             continue;
                         }
@@ -51,7 +53,8 @@ namespace diskretni_mapd_simulace.IO_Tools
                     }
                     else if (row[0] == "A")
                     {
-                        Agent a = parseAgent(row, agentCount);
+                        Agent a  = parseAgent(row, agentCount);
+                      
 
                         if (a.baseLocation.type == (int)Location.types.wall)
                         {
@@ -80,10 +83,31 @@ namespace diskretni_mapd_simulace.IO_Tools
         //Creates Order with given locations and id
         private Order parseOrder(string[] row, int orderCount)
         {
+            
+            //example row: 39,room-64-64-16.map,64,64,46,62,21,62,156.19595947,0
+            Location baseLocation = db.locationMap[int.Parse(row[5])][int.Parse(row[4])];
+            Location targetLocation = db.locationMap[int.Parse(row[7])][int.Parse(row[6])];
+
+            int timeFrom =  (row.Length > 9) ? timeFrom = int.Parse(row[9]) : 0; //either order has set init time or default 0
+
+            return new Order { id = orderCount.ToString(), currLocation = baseLocation, targetLocation = targetLocation, timeFrom = timeFrom };
+        }
+
+         /// <summary>
+        /// This is for ability to replicate first experiment, y axis was read as x and visa versa. Resulting in switch of all the locations.
+        /// Nevertheless, this should no have affect the validity of the experiment, the runtimes would have been similiar but makespans could slighly differ
+        /// </summary>
+        /// <param name="row"></param>
+        /// <param name="orderCount"></param>
+        /// <returns></returns>
+        private Order parseOrderEXPT1(string[] row, int orderCount)
+        {
+
             //example row: 39,room-64-64-16.map,64,64,46,62,21,62,156.19595947,0
             Location baseLocation = db.locationMap[int.Parse(row[4])][int.Parse(row[5])];
             Location targetLocation = db.locationMap[int.Parse(row[6])][int.Parse(row[7])];
-            int timeFrom =  (row.Length > 9) ? timeFrom = int.Parse(row[9]) : 0; //either order has set init time or default 0
+
+            int timeFrom = (row.Length > 9) ? timeFrom = int.Parse(row[9]) : 0; //either order has set init time or default 0
 
             return new Order { id = orderCount.ToString(), currLocation = baseLocation, targetLocation = targetLocation, timeFrom = timeFrom };
         }

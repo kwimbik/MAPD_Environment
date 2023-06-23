@@ -21,6 +21,9 @@ namespace diskretni_mapd_simulace
 
         public string colorBox = "";
 
+        public int idealServiceTime = 0;
+        public int realServiceTime = 0;
+
 
         public enum states
         {

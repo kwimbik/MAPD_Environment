@@ -17,6 +17,7 @@ using diskretni_mapd_simulace.Entities;
 using OperationsResearch.Pdlp;
 using System.Collections.Generic;
 using System.Numerics;
+using diskretni_mapd_simulace.BT_Tools;
 
 namespace diskretni_mapd_simulace
 
@@ -83,10 +84,10 @@ namespace diskretni_mapd_simulace
             ///TESTING MODE
             if (testMode)
             {
-                mapParserIO mp = new mapParserIO("maps/room-64-64-16.map", db);
+                mapParserIO mp = new mapParserIO("maps/warehouse-20-40-10-2-2.map", db);
                 sv = new Simulace_Visual(mp.readInputFile(), db, planReader, this);
                 planReader.sv = sv;
-                db.mapName = "room-64-64-16-random";
+                db.mapName = "warehouse-20-40-10-2-2";
                 mapLoaded = true;
                 db.outputFile = outputFile;
                 //db.setTestData();
@@ -96,7 +97,8 @@ namespace diskretni_mapd_simulace
                 //sv.WindowState = WindowState.Minimized;
                 sv.Show();
 
-                ScenarioParserIO sp = new ScenarioParserIO("mapd-scenarios/room-64-64-16-random.scen", db);
+                ScenarioParserIO sp = new ScenarioParserIO("mapd-scenarios/warehouse-20-40-10-2-2-random-25.scen", db);
+                db.scenarioName = "warehouse-20-40-10-2-2-random-25";
                 sp.loadScenario();
                 scenarioLoaded = true;
                 //sv.createPlanMap();
@@ -218,6 +220,22 @@ namespace diskretni_mapd_simulace
                 Height = buttonHeight,
             };
             sp.Children.Add(clearMap_btn);
+
+            Button testingMode_btn = new Button
+            {
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                VerticalAlignment = VerticalAlignment.Stretch,
+                Content = "Testing mode",
+                Style = (Style)FindResource("MenuButonTheme"),
+                Height = buttonHeight,
+            };
+            sp.Children.Add(testingMode_btn);
+
+            testingMode_btn.Click += (sender, e) =>
+            {
+                TestingComponent tc = new TestingComponent(db, this, sv, planCreator);
+                tc.Show();
+            };
 
             Button help_btn = new Button
             {
@@ -490,6 +508,9 @@ namespace diskretni_mapd_simulace
                 //simple create plan for given problem + export it to .plan
                 if (stressTest_cb.IsChecked == false)
                 {
+                    //Pouze pro nahravani
+                    db.setFrequencies(2);
+                    db.generateAgents(300, 43);
                     Plan plan = planCreator.Solve();
                     db.currentPlan = plan;
                     Task readPlanTask = new Task(() => planReader.readPlan(db.outputFile));
@@ -686,7 +707,9 @@ namespace diskretni_mapd_simulace
                     }
 
                     string mapName = Path.GetFileName(uploadScenarioFile);
+                    string scenName = Path.GetFileName(uploadScenarioFile);
                     db.outputFile = plans_folder + mapName + ".plan";
+                    db.scenarioName = scenName;
                     scenarioLoaded = true;
                     updateUI();
                 }

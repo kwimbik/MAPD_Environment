@@ -20,15 +20,27 @@ namespace diskretni_mapd_simulace.BT_Tools
     /// </summary>
     public partial class TestingComponent : Window
     {
+        PlanCreator pr;
         Grid g = new Grid();
         Database db;
+        Simulation s;
+        Simulace_Visual sv;
+        int[] agents = {30};
+        double[] frequencies = {0.5};
+        int numberOfOrders = 200;
+        int seed = 43;
+        
 
-        public TestingComponent(Database db)
+
+        public TestingComponent(Database db, Simulation s, Simulace_Visual sv, PlanCreator pr)
         {
             InitializeComponent();
+            this.db = db;
+            this.sv = sv;
+            this.s = s;
+            this.pr = pr;
             createLayout();
             this.Content = g;
-            this.db = db;
         }
 
 
@@ -36,33 +48,43 @@ namespace diskretni_mapd_simulace.BT_Tools
         {
             StackPanel sp = new StackPanel();
             g.Children.Add(sp);
-            Label orderNum = new Label() { Content = "Num of orders" };
+            Label orderNum = new Label() { Content = "Number of Orders" };
             sp.Children.Add(orderNum);
 
             TextBox orderNum_tb = new TextBox
             {
-                Text = "",
+                Text = numberOfOrders.ToString(),
             };
             sp.Children.Add(orderNum_tb);
 
-            Label agentNum = new Label() { Content = "Range of agents" };
+            Label orderFreq = new Label() { Content = "Order frequencies"  };
+            sp.Children.Add(orderFreq);
+
+            TextBox orderFreq_tb = new TextBox
+            {
+                Text = string.Join(",", frequencies),
+            };
+            sp.Children.Add(orderFreq_tb);
+
+            Label agentNum = new Label() { Content = "Number of agents"  };
             sp.Children.Add(agentNum);
 
             TextBox agentNum_tb = new TextBox
             {
-                Text = "",
+                Text = string.Join(",", agents),
             };
             sp.Children.Add(agentNum_tb);
 
-            Label runsNum = new Label() { Content = "Number of runs" };
-            sp.Children.Add(runsNum);
+            Label seedNum = new Label() { Content = "seed"  };
+            sp.Children.Add(seedNum);
 
-            TextBox runsNum_tb = new TextBox
+            TextBox seedNumTxb = new TextBox
             {
-                Text = "",
+                Text = seed.ToString(),
             };
-            sp.Children.Add(runsNum_tb);
+            sp.Children.Add(seedNumTxb);
 
+            
             Button start_btn = new Button
             {
                 Content = "Start",
@@ -71,24 +93,31 @@ namespace diskretni_mapd_simulace.BT_Tools
 
             start_btn.Click += (sender, e) =>
             {
-                PlanCreator planCreator = new PlanCreator(db);
-                int numOfOrders = int.Parse(orderNum_tb.Text);
-               
-                
-                planCreator.setSettings(3, numOfOrders); //set BT settings + num of orders
-
-
-                int numOfAgents = int.Parse(agentNum_tb.Text);
-                int numOfRuns = int.Parse(runsNum_tb.Text);
-                for (int i = 0; i < numOfAgents; i++)
+                pr.setSettings(3, numberOfOrders); //set BT settings + num of orders
+                for (int i = 0; i < agents.Length; i++)
                 {
-                    for (int j = 0; j < numOfRuns; j++)
-                    {
-                        planCreator.LoadScenario();
-                        Plan plan = planCreator.Solve();
-                        SolutionPacket sp = plan.solutionPacket;
+                    db.generateAgents(agents[i], seed);
 
-                        ExperimentDataWriter.WritedData(sp, "BT_data/data");
+                    for (int j = 0; j < frequencies.Length; j++)
+                    {
+                        db.setFrequencies(frequencies[j]);
+                        var validScenario = pr.LoadScenario();
+                        if (validScenario)
+                        {
+                            Plan plan = pr.Solve();
+                            SolutionPacket sp = plan.solutionPacket;
+                            int movements = plan.steps.Where(x => x.type == (int)PlanStep.types.movement).Count();
+                            int waiting = plan.steps.Where(x => x.type == (int)PlanStep.types.waiting).Count();
+                            double cost = movements + 0.1*waiting;
+
+                            ExperimentDataWriter.WritedData(sp, frequencies[j],seed, "BT_data/Experiment2_WAREHOUSE.csv", movements, waiting, cost);
+                        }
+                        else
+                        {
+                            //throw new ArgumentException("Wrong scenario");
+                            Console.WriteLine(  );
+                        }
+                       
                     }
                 }
                

@@ -191,6 +191,35 @@ Remaining: 0",
             };
             sp.Children.Add(tb_info);
 
+            Button speedUpBtn = new Button
+            {
+                Content = "+",
+                Foreground = Brushes.Black,
+                Height = 60,
+                Style = (Style)FindResource("MenuButonTheme"),
+            };
+
+            speedUpBtn.Click += (sender, e) =>
+            {
+                pr.speedUp();
+            };
+
+            sp.Children.Add(speedUpBtn);
+
+            Button slowDownBtn = new Button
+            {
+                Content = "-",
+                Foreground = Brushes.Black,
+                Height = 60,
+                Style = (Style)FindResource("MenuButonTheme"),
+            };
+
+            slowDownBtn.Click += (sender, e) =>
+            {
+                pr.slowDown();
+            };
+            sp.Children.Add(slowDownBtn);
+
 
             simGrid.Children.Add(sp);
             Grid.SetColumn(sp, simGrid.ColumnDefinitions.Count - 1);
@@ -442,16 +471,25 @@ Remaining: 0",
             for (int i = 0; i < locationIds.Count - 1; i++)
             {
                 //in case agent stays in position for multiple rounds, ignore
-                if (locationIds[i] == locationIds[i + 1]) continue;
                 if (i == locationIds.Count -2)
                 {
                     //head of the path is colored in black, so its better visible
                     c = Color.FromRgb(0, 0, 0);
                 }
-                 this.Dispatcher.Invoke(() =>
+                if (locationIds[i] == locationIds[i + 1])
                 {
-                    locationLineDict[(locationIds[i], locationIds[i + 1])].Stroke = new SolidColorBrush(c);
-                });
+                    this.Dispatcher.Invoke(() =>
+                    {
+                        locationLineDict[(locationIds[i-1], locationIds[i])].Stroke = new SolidColorBrush(c);
+                    });
+                }
+                else
+                {
+                    this.Dispatcher.Invoke(() =>
+                    {
+                        locationLineDict[(locationIds[i], locationIds[i + 1])].Stroke = new SolidColorBrush(c);
+                    });
+                }
             }
         }
 

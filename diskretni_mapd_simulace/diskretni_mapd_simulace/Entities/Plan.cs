@@ -10,6 +10,7 @@ namespace diskretni_mapd_simulace
     public class Plan
     {
         public string mapName = "";
+        public double serviceTime = 0;
         public List<PlanStep> steps = new List<PlanStep>();
         public SolutionPacket solutionPacket;
 

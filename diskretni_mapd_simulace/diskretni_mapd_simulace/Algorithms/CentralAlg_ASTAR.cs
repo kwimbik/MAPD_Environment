@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static Google.Protobuf.Reflection.SourceCodeInfo.Types;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.TextBox;
 
 namespace diskretni_mapd_simulace.Algorithms
 {
@@ -62,9 +64,6 @@ namespace diskretni_mapd_simulace.Algorithms
             {
                 Agent a = agents[i];
                 a.assignedTask = tasks[costMatrix[i]];
-
-                //TODO: find closest free position
-                if (a.assignedTask.id == Location.mockLocationId) a.assignedTask = a.currentLocation;
             }
             return;
         }
@@ -87,6 +86,7 @@ namespace diskretni_mapd_simulace.Algorithms
 
         public static Plan run(ProblemObject po)
         {
+            Random rng = new Random(43);
             List<Order> unassignedOrders = po.orders;
 
             Plan plan = new Plan();
@@ -114,13 +114,20 @@ namespace diskretni_mapd_simulace.Algorithms
 
                 assignTasks(token);
 
-                //every step we update all agents
+                bool CalcSucess = true;
+                //every step we update all agents, TODO: nejdriv ty co maji assigned order
+                //po.agents = po.agents.OrderByDescending(x => x.assignedOrder != null).ToList(); 
                 foreach (var agent in po.agents)
                 {
-                    updateToken(agent, token);
+                    CalcSucess = updateToken(agent, token);
+                    if (CalcSucess == false) break;
                 }
-
-                updateToken(token, plan);
+                if (CalcSucess) updateToken(token, plan);
+                else
+                {   
+                    po.agents = po.agents.OrderBy(a => rng.Next()).ToList();
+                    token.time += 1;
+                }
             }
 
 
@@ -143,30 +150,38 @@ namespace diskretni_mapd_simulace.Algorithms
             return null;
         }
 
-        private static void updateToken(Agent a, Token t)
+        private static bool updateToken(Agent a, Token t)
         {
+            if (a.assignedTask.id == -1)
+            {
+                //idle agent
+                var adjacentSquares = getAccessableLocations(a.currentLocation, t.time + 1);
+                if (adjacentSquares.Count > 0)
+                {
+                    adjacentSquares = adjacentSquares.OrderByDescending(x => x.accessibleLocations.Count).ToList();
+                    var taskList = planStepsFromLocList(adjacentSquares[0], a, t.time, t);
+                    a.taskList = new Queue<PlanStep>();
+                    a.taskList.Enqueue(taskList[0]);
+                    return true;
+                }
+                else return false;
+            }
             a.taskList = calculateTaskPath(a, t, a.assignedTask);
+            if (a.taskList != null) return true;
+            return false;
         }
 
-        private static Location findClosestAvailableLocation(Agent a, int time)
-        {
-            //search through all neighbours to find one such that is is not occupied next turn
-            foreach (var loc in a.currentLocation.accessibleLocations)
-            {
-                if (loc.occupiedAt.Contains(time) == false) return loc;
-            }
-            return new Location();
-        }
+       
 
 
        
         private static void markOccupiedTaskPath(PlanStep step, Token t, Agent a)
         {
             Location l = getLocationById(step.locationId, t.locations);
-            l.occupiedAt.Add(t.time);
+            l.occupiedAt.Add(t.time + 1);
             if (l.id != a.currentLocation.id)
             {
-                Location.getPassageFromLocation(l, a.currentLocation).occupied.Add(t.time);
+                Location.getPassageFromLocation(l, a.currentLocation).occupied.Add(t.time + 1 );
             }
         }
 
@@ -183,8 +198,16 @@ namespace diskretni_mapd_simulace.Algorithms
 
             List<Location> locationList = Algorithm.getPathForAgentAndTask(a.currentLocation, location, t);
             PlanStep task = planStepsFromLocList(locationList[0], a, time, t)[0]; //take only the first task
-            
-            //A* DID NOT FIND PATH -> ALLOW WAITING -> write function for this, its used at least twice
+
+            //A* did not find available path -> compute wait
+            if (locationList.Count == 1 && locationList[0].id != location.id)
+            {
+                var planSep = waitFunction(a, t, location);
+                if (planSep != null) return new Queue<PlanStep>(new List<PlanStep> { planSep });
+                return null;
+            }
+
+
             if (locationList.Count == 0)
             {
                 PlanStep ps = new PlanStep();
@@ -199,18 +222,48 @@ namespace diskretni_mapd_simulace.Algorithms
                 }
                 else
                 {
-                    Location l = findClosestAvailableLocation(a, t.time + 1);
+                    Location l = Algorithm.findClosestAvailableLocation(a.currentLocation, t.time + 1);
+                    if (l.id == 0) return null;
                     ps.locationId = l.id;
                     l.occupiedAt.Add(t.time + 1);
                 }
 
                 return new Queue<PlanStep>(new List<PlanStep> { ps });
             }
+            if (locationList.Count == 1 && locationList[0].id == 0) return null; 
 
             markOccupiedTaskPath(task, t, a); // marks passages as occupied so in A*, some neighbours might not appear as avaliable
             Queue<PlanStep> planStep = new Queue<PlanStep>();
             planStep.Enqueue(task);
             return planStep;
+        }
+
+        private static PlanStep waitFunction(Agent a, Token t, Location target)
+        {
+            PlanStep ps = new PlanStep();
+            ps.time = t.time + 1;
+            ps.agentId = a.id;
+            var locations = getAccessableLocations(a.currentLocation, t.time);
+            locations = locations.OrderBy(x => Database.getDistance(x, target)).ToList();
+            if (locations.Count < 1) return null;
+            if (locations[0].id == a.currentLocation.id) ps.type = (int)PlanStep.types.waiting;
+            else ps.type = (int)PlanStep.types.movement;
+            ps.locationId = locations[0].id;
+
+            return ps;
+        }
+
+        private static List<Location> getAccessableLocations(Location l, int t)
+        {
+
+            List<Location> locations = new List<Location>();
+            if (l.occupiedAt.Contains(t + 1) == false) locations.Add(l);
+            foreach (var nei in l.accessibleLocations)
+            {
+                Passage p = Location.getPassageFromLocation(l, nei);
+                if (p.occupied.Contains(t + 1) == false && nei.occupiedAt.Contains(t + 1) == false) locations.Add(nei);
+            }
+            return locations;
         }
 
         private static List<PlanStep> planStepsFromLocList(Location l, Agent a, int time, Token t)
@@ -249,7 +302,7 @@ namespace diskretni_mapd_simulace.Algorithms
         private static Token initializeToken(ProblemObject po)
         {
             Token t = new Token();
-            t.orders = po.orders;
+            t.orders = new List<Order>();
             t.time = 0;
             t.locationMap = po.locationMap;
             t.locations = po.locations;
@@ -273,7 +326,7 @@ namespace diskretni_mapd_simulace.Algorithms
             {
                 PlanStep ps = a.taskList.Dequeue();
                 p.steps.Add(ps);
-                a.currentLocation = getLocationById(ps.locationId, t.locations);
+                a.currentLocation = t.locations[ps.locationId];
 
                 if (ps.type == (int)PlanStep.types.deliver)
                 {
